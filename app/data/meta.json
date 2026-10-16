@@ -2,9 +2,8 @@
  "title": "한국 상장사 가치평가 툴킷 — 공개 화면(예시)",
  "data_scope": "증권신고서(합병) 외부평가 의견서 2015-01~2026-09 제출분(2015~2016은 원문 미수신) + 합병 후 사업보고서 실적",
  "as_of": "2026-09-30",
- "source_report": "reports/p5b_final.md",
- "source_commit": "0a8d7c6",
  "status": "🔸",
+ "internal_commit": "0a8d7c6",
  "n_assumption_opinions": 157,
  "files": {
   "assumptions_range.csv": 1404,
@@ -15,5 +14,42 @@
   "fss_compare.csv": 2,
   "cagr_bands.csv": 4
  },
- "definitions": "reports/p5b_final.md 4·5·7·8절, P6-A 엑셀 참고 표(src/p5/b_reference.py)"
+ "chain": {
+  "deals": 294,
+  "excluded": 127,
+  "dcf_targets": 167,
+  "spac": 121,
+  "non_spac": 46,
+  "parsed": 114,
+  "not_withdrawn": 113,
+  "merger_fy_le_2025": 108,
+  "linked": 95,
+  "spac_linked": 90,
+  "spac_due": 90,
+  "error_rows": 463
+ },
+ "exclude": {
+  "no_body": 75,
+  "listed_both": 41,
+  "holding": 10,
+  "financial": 1
+ },
+ "withdrawn_confirmed": 14,
+ "post_status": {
+  "해당 연도 미도래": 3,
+  "보고서 없음": 1,
+  "표 있음·실적 미기재": 1,
+  "비교표 미기재": 11,
+  "표·실적 있음": 5
+ },
+ "parser_out_of_sample": {
+  "n": 97,
+  "frozen_ok": 55,
+  "final_ok": 64
+ },
+ "repo_url": "https://github.com/Mevius-Skyblue/korea-valuation-insights",
+ "app_url": "https://korea-valuation-insights-nadjarrtmvgmg7kxs9ujyy.streamlit.app/",
+ "methodology_url": "https://github.com/Mevius-Skyblue/korea-valuation-insights/blob/main/METHODOLOGY.md",
+ "data_notice_url": "https://github.com/Mevius-Skyblue/korea-valuation-insights/blob/main/DATA_NOTICE.md",
+ "sleep_note": "한동안 방문이 없으면 앱이 잠들어, 첫 접속 때 깨우는 데 시간이 걸릴 수 있다"
 }

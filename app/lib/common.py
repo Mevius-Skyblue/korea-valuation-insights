@@ -55,5 +55,6 @@ def footer() -> None:
     st.divider()
     st.caption(f"**면책** — {DISCLAIMER}")
     st.caption(f"**출처** — DART 전자공시({DART}): {md(m['data_scope'])}. 집계 기준일 {m['as_of']}. "
-               f"정의·검증: 프로젝트 보고서 {m['source_report']}(커밋 {m['source_commit']}). "
+               f"정의·검증: [METHODOLOGY.md]({m['methodology_url']}) · [DATA_NOTICE.md]({m['data_notice_url']})"
+               f"(내부 검증 커밋 {m['internal_commit']}). "
                "개별 거래·회사·평가기관은 표시하지 않고 집계만 보여 준다. 🔸 = 단일 출처·2차 인용, ⚠️ = 원문 미확인")

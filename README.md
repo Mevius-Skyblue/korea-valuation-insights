@@ -3,8 +3,8 @@
 증권신고서(합병)에 실린 외부평가 의견서를 집계한 공개 화면과, 사용자 입력형 DCF 계산기입니다.
 
 - 작성자: GitHub [Mevius-Skyblue](https://github.com/Mevius-Skyblue)
-- 배포 링크: (배포 후 추가)
-- 라이선스: 코드 [MIT](LICENSE) · 데이터 안내 [DATA_NOTICE.md](DATA_NOTICE.md)
+- 앱: https://korea-valuation-insights-nadjarrtmvgmg7kxs9ujyy.streamlit.app/ — 한동안 방문이 없으면 앱이 잠들어, 첫 접속 때 깨우는 데 시간이 걸릴 수 있다
+- 방법론: [METHODOLOGY.md](METHODOLOGY.md) · 데이터 안내: [DATA_NOTICE.md](DATA_NOTICE.md) · 라이선스: 코드 [MIT](LICENSE)
 
 ## 화면
 1. **실무 할인율 가정** — 의견서 157건의 MRP·SRP·WACC·영구성장률·영구가치 비중(평가기준 연도별 중앙값·사분위·n), Rf 만기 표시, 출처 분류 변화, 한공회 규모위험 프리미엄 인용 연표(2차 인용)
@@ -13,7 +13,7 @@
 
 ## 데이터 출처
 - DART 전자공시(https://dart.fss.or.kr): 증권신고서(합병) 외부평가 의견서 2015-01\~2026-09 제출분(2015\~2016은 원문 미수신) + 합병 후 사업보고서 실적
-- 자세한 출처·한계: [DATA_NOTICE.md](DATA_NOTICE.md)
+- 표본·정의·한계: [METHODOLOGY.md](METHODOLOGY.md), 출처·무보증: [DATA_NOTICE.md](DATA_NOTICE.md)
 - 집계 기준일 2026-09-30. `app/data/`에는 **집계값만** 있다(개별 거래·회사·평가기관 이름 없음)
 - 계산 엔진: `src/valuation/dcf.py`, `wacc.py`, `levering.py`(프로젝트 평가 엔진과 같은 파일)
 

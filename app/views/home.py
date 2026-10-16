@@ -17,7 +17,9 @@ st.markdown(f"""
 - **한계**: 스팩 합병 중심 표본, 2015\\~2016 원문 미수신, 2017\\~2019는 정정 전 신고서, 일부 값은 2차 인용(🔸)이다. 집계만 보여 준다.
 """)
 st.subheader("방법론 문서")
-st.info("공개 저장소가 만들어지면 여기에 방법론·데이터 출처 문서 링크를 넣는다(P6-B2).", icon="📄")
+st.markdown(f"- [METHODOLOGY.md]({m['methodology_url']}) — 표본 정의·건수 사슬·달성률 정의·출처 분류 규칙·계산기 공식·한계\n"
+            f"- [DATA_NOTICE.md]({m['data_notice_url']}) — 데이터 출처·2차 인용·무보증\n"
+            f"- 공개 저장소: [{m['repo_url'].removeprefix('https://')}]({m['repo_url']}) (코드 MIT)")
 st.subheader("데이터 범위")
 st.write(md(f"{m['data_scope']} · 집계 기준일 {m['as_of']}"))
 footer()
