@@ -4,6 +4,7 @@ Every page ends with footer() -> disclaimer + data source + as-of date (public-s
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -18,13 +19,23 @@ DISCLAIMER = ("투자 권유가 아닙니다. 모든 수치는 공개 공시를 
 DART = "https://dart.fss.or.kr"
 
 
+def _digest(name: str) -> str:
+    """Content hash of a data file: the cache key changes when a deploy updates the file (P6-B3: a cache keyed by the
+    name only kept the old meta.json in the running cloud process after a push -> KeyError)."""
+    return hashlib.sha256((DATA / name).read_bytes()).hexdigest()
+
+
 @st.cache_data
-def load(name: str) -> pd.DataFrame:
+def _read_csv(name: str, digest: str) -> pd.DataFrame:
     return pd.read_csv(DATA / name, encoding="utf-8")
 
 
-@st.cache_data
+def load(name: str) -> pd.DataFrame:
+    return _read_csv(name, _digest(name))
+
+
 def meta() -> dict:
+    """Small file: read every run (never stale)."""
     return json.loads((DATA / "meta.json").read_text(encoding="utf-8"))
 
 
