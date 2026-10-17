@@ -1,0 +1,3 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/build.yaml에서 공개 앱이 읽는 최상위 키만 (corpcode_key, krx_as_of)
+krx_as_of: '20260930'
+corpcode_key: '20261001'

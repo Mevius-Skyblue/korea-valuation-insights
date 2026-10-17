@@ -1,0 +1,55 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7c1.yaml에서 공개 앱이 읽는 최상위 키만 (assumptions)
+assumptions:
+  rf_tenor:
+    allowed:
+    - 5
+    - 10
+  mrp:
+    min: 0.03
+    max: 0.15
+  beta_u:
+    min: 0.1
+    max: 3.0
+  de:
+    min: 0.0
+    max: 5.0
+    note: 목표 D/E(배)
+  kd:
+    min: 0.0
+    max: 0.25
+    note: 세전 Kd. Rf보다 낮으면 경고(거부는 아님)
+  srp:
+    min: 0.0
+    max: 0.1
+  g_start:
+    min: -0.5
+    max: 1.0
+    note: 출발 성장률
+  normal_margin:
+    min: -1.0
+    max: 0.8
+    note: 출발 정상 영업이익률(v2 m0, 적자 경로는 LTM 출발값)
+  g_terminal:
+    min: -0.02
+    max: 0.04
+    note: WACC보다 작아야 함(재계산 때 검사)
+  scenario_width:
+    min: 0.0
+    max: 0.1
+    note: 비관·낙관 성장률·이익률 이동 폭(±)
+  peers:
+    note: 자동 초안 피어 중에서 포함/제외(빈 목록 허용 → 피어 배수 N/M, βu는 직접 입력 필요). 새 피어 추가는 재수집(빠른 재계산 아님)
+  sotp_discount:
+    min: 0.0
+    max: 0.9
+  premium:
+    stake_band:
+    - lt25
+    - 25to50
+    - gt50
+    buyer_group:
+    - strategic
+    - financial
+    - all
+    note: 블록 프리미엄 입력(predict.premium_range)
+  reject: 범위를 벗어나거나 형식이 틀리면 거부하고 이유를 돌려준다(가정은 바뀌지 않음)

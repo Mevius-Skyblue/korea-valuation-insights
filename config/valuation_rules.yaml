@@ -1,0 +1,53 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/valuation_rules.yaml에서 공개 앱이 읽는 최상위 키만 (common_rules, structure)
+structure:
+  nci_share_min: 0.1
+  nci_share_basis: 비지배지분 시가(상장 종속회사) 우선, 없으면 장부
+  listed_sub_margin_gap_pp: 5.0
+  listed_sub_growth_gap_pp: 10.0
+  status: ⚠️
+  source: 프로젝트 가정
+  basis: 비지배 비중이 크면 연결 현금흐름 중 남의 몫을 장부로 빼는 오차가 커지고, 상장 종속회사는 시장가가 있어 지분가치를 직접 쓸 수 있다. 부문 이익률·성장 차이가 크면 하나의 연결 DCF로는 가정이 섞인다
+common_rules:
+  source: 사용자 지시(P3-C3 프롬프트 2026-10-03)
+  status: 🔸
+  basis: 교과서·실무상 결함 4개(베타 신뢰성 표시, Kd ≥ Rf, RONIC 출발점 혼합, 기준일 하드코딩)
+  beta:
+    report: 피어별 회귀 R²·β 표준오차 표 출력
+    warn_r2_median_below: 0.1
+    base: blume_then_hamada
+    blume:
+      weight_raw: 0.67
+      constant: 0.33
+    index: 대상 상장 시장 지수 기본(기존 규칙), 다른 지수는 민감도
+    sensitivity:
+    - raw_regression
+    - monthly_5y_blume
+    - other_index
+    note: 'P3-A 장부부터 RF·JW 기본값이 이미 이 식이었다(사전 확인: JW 피어 KOSPI βu 0.354 = Blume 값, 원 β면 0.12). 이 규칙은 그것을 공통 규칙으로 명문화하고 경고·민감도를 더한다'
+  kd:
+    floor: rf
+    unrated: CB3Y_BBBm
+    aa_minus_or_better: CB3Y_AAm
+    a_plus_to_bbb_plus:
+      base: max_actual_aa_minus
+      sensitivity:
+      - notch_linear
+      - CB3Y_BBBm
+    bbb_or_below_rated: CB3Y_BBBm
+    rating_scale:
+    - AAA
+    - AA+
+    - AA
+    - AA-
+    - A+
+    - A
+    - A-
+    - BBB+
+    - BBB
+    - BBB-
+    - BB+
+  ronic:
+    start_nopat: NOPAT_FY2026 = FY2026 매출 × 정상 영업이익률 × (1 − 실효세율). 실적·정상 이익률 혼합 금지
+    bounds: '회사별 기존 규칙 그대로(RF: 대체 규칙 RONIC ≤ 0 또는 ≤ g → WACC / JW: [WACC, 과거 3년 ROIC])'
+  as_of_values:
+    rule: LTM 연도·반기, D&A 연도 등 기준일 의존 값은 회사 config meta(as_of, bs_date, ltm)에서만 읽는다. LTM = FY(ltm.year − 1) + ltm.period(ltm.year) − ltm.period(ltm.year − 1)

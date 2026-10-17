@@ -1,0 +1,1902 @@
+[
+{
+"check_ps": 71246.47852480109,
+"code": "000650",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "천일고속",
+"path": "loss",
+"sha256": "ad999d101bf8cd1f2d989ac730b8a8bd122e2cc463e20e52395a77feeb46080c"
+},
+{
+"check_ps": 56012.18135910737,
+"code": "001060",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "JW중외제약",
+"path": "general",
+"sha256": "e8acd0f4aa865065596697c18ab0ba5c8861dd0f89056d03f6c907c4786fcec5"
+},
+{
+"check_ps": 286538.8457389424,
+"code": "001120",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "LX인터내셔널",
+"path": "nci",
+"sha256": "bd432c04cf43caf1dd1fa17a789b628e3f5cf026c8c18726498fc7bbd89292b7"
+},
+{
+"check_ps": 5894.358329575299,
+"code": "001390",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "KG케미칼",
+"path": "sotp",
+"sha256": "a73c3dc36b46d9e2e365be8d98704db75862b63ca70502e396a03d7fff48d119"
+},
+{
+"check_ps": 81452.40676977056,
+"code": "001460",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "BYC",
+"path": "general",
+"sha256": "b102be2119ea241327e3f3a0cc7cfac8b3cc94940ea428750c0afc264b7fb085"
+},
+{
+"check_ps": 58415.808779144376,
+"code": "002460",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "HS화성",
+"path": "general",
+"sha256": "f9aaae3995a60492cc76171953cca545809c1a94c4d082a57e99ec2ee51d4038"
+},
+{
+"check_ps": 12867.746782249145,
+"code": "002790",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "아모레퍼시픽홀딩스",
+"path": "sotp",
+"sha256": "86077061477d74468795710b5a4a2e09bb0a139396f4c5f080b2cb11202a3f07"
+},
+{
+"check_ps": 40797.961333693114,
+"code": "002990",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "금호건설",
+"path": "loss",
+"sha256": "4e71cbdc19fe69f81b97a6be871d75aa7d1637acb9cd7f205293e7bf72f2aa9b"
+},
+{
+"check_ps": 154421.97194865398,
+"code": "003070",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "코오롱글로벌",
+"path": "loss",
+"sha256": "b1bbfe6a2fd45638a744d26c596ac4104d16f0ed8b83b1ce54e1f215d599909a"
+},
+{
+"check_ps": 12697.601771190979,
+"code": "003090",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "대웅",
+"path": "sotp",
+"sha256": "feb61b49ab0624f17840efb544a73a7a5f3b70734b6afae1e8b7f4ac7a4b30d1"
+},
+{
+"check_ps": 41525.364753352886,
+"code": "003100",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "선광",
+"path": "general",
+"sha256": "4b3a8c955da9a94a13dc7727ae762c1fe637db90fefc8e4815b978f7ff9a94f6"
+},
+{
+"check_ps": 45587.55831953296,
+"code": "003200",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "일신방직",
+"path": "nci",
+"sha256": "0138ab989314d21d066bb421899067edf5f30f7e29e4f62cc221f26b43c6b2fa"
+},
+{
+"check_ps": 28458.98691848685,
+"code": "003220",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "대원제약",
+"path": "sotp",
+"sha256": "8b1b36b6e0a49ebffe62729775bfefd69e8937392a4697e25fea5d61bb348378"
+},
+{
+"check_ps": 23052.186415371547,
+"code": "003480",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "한진중공업홀딩스",
+"path": "nci",
+"sha256": "adbe573f80b7d37b4db24e189322c581e53889df710afbcd210bf2b5cfe97445"
+},
+{
+"check_ps": 9680.961684139678,
+"code": "004250",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "NPC",
+"path": "general",
+"sha256": "3a1cb4129f8d251222e25713e1b9d5a7cf79d4e53c58ac15ec05be8ebcd835a2"
+},
+{
+"check_ps": 215782.7352226335,
+"code": "004490",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "세방전지",
+"path": "general",
+"sha256": "59dbe8f5f0c91207bfd6f796a0463766792a3e5256f49dba09080f64a885b009"
+},
+{
+"check_ps": 76059.8626929616,
+"code": "006040",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "동원산업",
+"path": "sotp",
+"sha256": "b821bc84b490016d348713b0ef89d0296abbe6ea1e05bcdf38d5a0a4aa0a0c31"
+},
+{
+"check_ps": 85285.15587877159,
+"code": "007690",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "국도화학",
+"path": "general",
+"sha256": "c2cf6ccf4ae479e9e31fe3bf9872b17e6fa581f8dd8c85ad4268e54fbec008de"
+},
+{
+"check_ps": 1737.8129960149267,
+"code": "008350",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "남선알미늄",
+"path": "general",
+"sha256": "dcf6620c995f7662d39476773f7b56af1b9cdc250d0882711a2051979ed837b8"
+},
+{
+"check_ps": 77620.92318046806,
+"code": "010780",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "아이에스동서",
+"path": "sotp",
+"sha256": "4525f32b8df08de5cc36b8efeb6426282ee95017f1928b6e429312065ed03bc5"
+},
+{
+"check_ps": 7760.78711864629,
+"code": "011040",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "경동제약",
+"path": "loss",
+"sha256": "4b964d21de4530f6a93f6f39633e78058968526d59ff2209e3a45e9348fafcfb"
+},
+{
+"check_ps": 803668.9795278019,
+"code": "011070",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "LG이노텍",
+"path": "general",
+"sha256": "1b8367fb998b633207ca1b25ad5a395c6735c05dc206cba0dcc8dcbb86f92f7c"
+},
+{
+"check_ps": 119925.40550047984,
+"code": "011210",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "현대위아",
+"path": "nci",
+"sha256": "3b918b49cbb99090d0010563340e900dadd5e01cbd1e415424c800e85f5c57b8"
+},
+{
+"check_ps": 329804.95181395125,
+"code": "011760",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "현대코퍼레이션",
+"path": "general",
+"sha256": "c63f73dae03335f21d8241028e85368cc8b0a3a328313f666b3da0771d9eb2cf"
+},
+{
+"check_ps": 103370.28456931641,
+"code": "012750",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "에스원",
+"path": "general",
+"sha256": "efd4264116db2ba5b4f51e59347efa969f6b8cd2e17919a4e84547e79439db20"
+},
+{
+"check_ps": 1690.3932960839982,
+"code": "012800",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "대창",
+"path": "sotp",
+"sha256": "670526da5c58607f3d6832f7d3ac07414246aacad13838862ed45be9829e41ed"
+},
+{
+"check_ps": 13185.433789821152,
+"code": "013520",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "화승코퍼레이션",
+"path": "nci",
+"sha256": "b03cea134f6439a3146c33e1ae3f9e8b4776736d400424d88e1c7f49e5e2f8c1"
+},
+{
+"check_ps": 234134.4708439987,
+"code": "014830",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "유니드",
+"path": "general",
+"sha256": "a23bee7d195add074d4fef8ff9252bd775eef04f1702b094628a55335f07fb47"
+},
+{
+"check_ps": 12461.581651632863,
+"code": "015890",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "태경산업",
+"path": "sotp",
+"sha256": "949e460e9d5418bcfdd2cc87395e8b7ab16152306d4c15579e7515f4fdcd12b8"
+},
+{
+"check_ps": 441807.4445702554,
+"code": "016740",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "두올",
+"path": "general",
+"sha256": "529cf8922527539280b22c344b44039fdb304fdc090c80ac92f709ab91a7dccd"
+},
+{
+"check_ps": 10056.245875238517,
+"code": "016880",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "웅진",
+"path": "sotp",
+"sha256": "6e71c31f80358bcfa876361fe5ce35ff2067fbd525725bd7d4ffa6b46dff5d2e"
+},
+{
+"check_ps": 7438.292702236572,
+"code": "017510",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "세명전기",
+"path": "general",
+"sha256": "87d8e761d4f59173571f3c2f00756ee8ad1a45757fb7716043288fd405b24940"
+},
+{
+"check_ps": 63481.119770041565,
+"code": "017800",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "현대엘리베이터",
+"path": "sotp",
+"sha256": "cd811a0894ccfbd25b39acf9521baa82f3c62b3d2084d903e8108b2d4de09738"
+},
+{
+"check_ps": 13547.443499642213,
+"code": "017960",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "한국카본",
+"path": "general",
+"sha256": "97f7a4ba2a2e3435eed78b0e44ce6cd37f3041f02aaa5da4731cbec8f9a042a0"
+},
+{
+"check_ps": 35176.410711121025,
+"code": "018250",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "애경산업",
+"path": "general",
+"sha256": "c851ef5cbcf2461d59a54bacde873b456e046f5e013d25d67beae3dd42c6d0ee"
+},
+{
+"check_ps": 87023.90199297493,
+"code": "018310",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "삼목에스폼",
+"path": "general",
+"sha256": "986ed326942cad7b3bed6815212aa449123961453ed3f7e8cfacf1571aed8799"
+},
+{
+"check_ps": 6395.678649715727,
+"code": "022100",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "포스코DX",
+"path": "general",
+"sha256": "4ffda9f7631a31e9bae879aba9dd3077d5eb75fe6de7788d7da861a14d0a5d29"
+},
+{
+"check_ps": 48961.63081012853,
+"code": "030000",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "제일기획",
+"path": "general",
+"sha256": "476d49dfe0fe3f04615b97cdad81c460924ae28f56d86afe4f0ab1f12119547d"
+},
+{
+"check_ps": 36926.72615287055,
+"code": "033530",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "SJG세종",
+"path": "general",
+"sha256": "0d17bf03f92353306261300024629643f3402e59b3f22e64cc704e4f513a7ae0"
+},
+{
+"check_ps": -3359.374333694593,
+"code": "034120",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "SBS",
+"path": "general",
+"sha256": "db2cd3196a5a069aaefa9de6ee64773ab9d58c2e915c059ada69c9efae3c8ddf"
+},
+{
+"check_ps": 37226.80878533597,
+"code": "034810",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "해성산업",
+"path": "sotp",
+"sha256": "9c997b91f024c15b29099eb54d35ecc0514b0f20ab3c3fedbc2b143d4da6d967"
+},
+{
+"check_ps": 34450.437319642006,
+"code": "035080",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "그래디언트",
+"path": "sotp",
+"sha256": "4b32ab489e702493fbe3d7632877c6fbf4e098bb0cb4bfc87e36d0a85fa657f0"
+},
+{
+"check_ps": 52810.29748239273,
+"code": "035600",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "KG이니시스",
+"path": "sotp",
+"sha256": "1241f547e71aaf83695f6b232e2dcca40b85e3fd8f267676cd9c0ab91bcfe814"
+},
+{
+"check_ps": 17418.80497350691,
+"code": "035610",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "솔본",
+"path": "nci",
+"sha256": "bab18eac4cc1815a557f3cb778b02b222269df65a051a17f89e570533008c828"
+},
+{
+"check_ps": 24704.45853362063,
+"code": "035720",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "카카오",
+"path": "sotp",
+"sha256": "649e4610676fdedb20cb2845fc086a0f621bc6e1461505524d103ca3e8b9232f"
+},
+{
+"check_ps": 12797.148100265402,
+"code": "036030",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "케이티알파",
+"path": "general",
+"sha256": "b338b6419b12c9790cdc6ce2505a2ad6422b451e7a79b19f2a4b6bff11385a94"
+},
+{
+"check_ps": 7880.8842123989625,
+"code": "036200",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "유니셈",
+"path": "general",
+"sha256": "da26569d8a55436c4821c8bb20fb7d121cf50ca141637017090c921d8084082e"
+},
+{
+"check_ps": -487446.4626946046,
+"code": "036570",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "NC",
+"path": "general",
+"sha256": "afecd4c3e4815f76be1c301797d918fc9ae6324f0dc5b6e1418934231a88b877"
+},
+{
+"check_ps": 21395.80866237018,
+"code": "036930",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "주성엔지니어링",
+"path": "general",
+"sha256": "107d33be86cad0fbcfd1ad4e9efac155921e50f5770b315569295669273a773a"
+},
+{
+"check_ps": 28508.378779462448,
+"code": "037460",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "삼지전자",
+"path": "sotp",
+"sha256": "bd594d7342404223ed884c4f62d6b596038a757ad5944aa167e8740794a0071f"
+},
+{
+"check_ps": -17318.61854203465,
+"code": "037710",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "광주신세계",
+"path": "general",
+"sha256": "c7d79eba147387a60ec9d5c82e0e12bc4458d62e4523749c1a6d591b2ba2d76b"
+},
+{
+"check_ps": 107091.33005132448,
+"code": "041510",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "에스엠",
+"path": "sotp",
+"sha256": "2140bf279591ca2e20395a53d6724802c3a29d4ebe69326c47a752a779a84a83"
+},
+{
+"check_ps": 12936.846690792674,
+"code": "041520",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "이엘씨",
+"path": "loss",
+"sha256": "97103a815dd681a56eca800ae398daabf080441781a88aa8efcf9aa970a268d0"
+},
+{
+"check_ps": 106800.98410393347,
+"code": "044820",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "코스맥스비티아이",
+"path": "nci",
+"sha256": "1ce6aaa081cfdd06fff1d4eba272985c1147083516f2e5b32aca7500102ec336"
+},
+{
+"check_ps": 14.823838065810433,
+"code": "047310",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "파워로직스",
+"path": "general",
+"sha256": "0ec80eab7b2310a42731582315e8ff7a1d59c8fdfae3855a35eedea82a851ace"
+},
+{
+"check_ps": 12843.32017548958,
+"code": "051370",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "인터플렉스",
+"path": "general",
+"sha256": "6d49c1aface2a71b6dc632412e7ec3c7cfcd4ba7becc90a67d3b506865c88a65"
+},
+{
+"check_ps": 618687.1115080785,
+"code": "051910",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "LG화학",
+"path": "sotp",
+"sha256": "89e19bcd84f6b13aea8f6a74848678b52d38e353b2ba0de9c112d1997e258472"
+},
+{
+"check_ps": 6806.735710535256,
+"code": "052710",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아모텍",
+"path": "loss",
+"sha256": "e3e9110f24061d1441d3208c87f6677955f4441e37999ceefc7da3145690c674"
+},
+{
+"check_ps": -5765.225532688485,
+"code": "053210",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "스카이라이프",
+"path": "nci",
+"sha256": "5fa876adea90a9acd1f02ca7386bd7c64422902da3ab06ae025e0c0ed8639b1b"
+},
+{
+"check_ps": 41138.36159391719,
+"code": "054950",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "제이브이엠",
+"path": "general",
+"sha256": "fa7a41249c70c2939424cfce4c9fb32123ac6b2c81ef1f0b9a41bd6d22c4771c"
+},
+{
+"check_ps": -2780.2996503615327,
+"code": "059090",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "미코",
+"path": "sotp",
+"sha256": "b40edf333f6dfe2bdffcd240a2a5d124f63cb50e49c701ca828107906d7d57d6"
+},
+{
+"check_ps": 8361.209802987158,
+"code": "060150",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "인선이엔티",
+"path": "general",
+"sha256": "a37c0b0007ece2a6d84b65b8e7802bc847fd61b03cef7110f6bb95bbb0d782a8"
+},
+{
+"check_ps": 6559.82517526425,
+"code": "060370",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "LS마린솔루션",
+"path": "general",
+"sha256": "30c0c5267f3ff0068bc590acfdbffefc68f5512ceed7f3588070059a276f416c"
+},
+{
+"check_ps": 3152.454378988956,
+"code": "064290",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "인텍플러스",
+"path": "loss",
+"sha256": "b865fa70a69f8cce40c507f413be34de6c7c9fdd5bd22df5101e4c164c1d0ac8"
+},
+{
+"check_ps": 106942.82362390563,
+"code": "064550",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "바이오니아",
+"path": "general",
+"sha256": "475c5df4a2237183bd0ac2eb31b5198dbd705e244f57e14c2a12a15c90e502b9"
+},
+{
+"check_ps": 137444.5146249352,
+"code": "066620",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "국보디자인",
+"path": "general",
+"sha256": "04aa37cdd960d9e9b86f30ac40c5097a79e32741661cfe52647ad1b5d6568ac2"
+},
+{
+"check_ps": 129915.18905570071,
+"code": "069620",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "대웅제약",
+"path": "sotp",
+"sha256": "3e2e5cde9a5b6f0bb61c93652d5bc35c4f94ade83ee6e62674c39ff07d3e6c61"
+},
+{
+"check_ps": 5594.251102878807,
+"code": "071320",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "지역난방공사",
+"path": "general",
+"sha256": "ea868320d275c2b069bdfeaf699310b14554f1eb6e974600f5d81f3214545493"
+},
+{
+"check_ps": 33232.37665552071,
+"code": "072870",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "메가스터디",
+"path": "sotp",
+"sha256": "cc2e088e5cf0d633eb215303471770afd6bfe01b91f6a8aa0a451135dd050339"
+},
+{
+"check_ps": 12288.247781437465,
+"code": "078070",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "유비쿼스홀딩스",
+"path": "sotp",
+"sha256": "d60a957f9bf8135489dde5b47c5e67d809d19592ec5be38c2db5f40720f13597"
+},
+{
+"check_ps": -16341.909200475417,
+"code": "078600",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "대주전자재료",
+"path": "general",
+"sha256": "bc5eb3eb74e2aa3cf912a12e39528af4d60540dad2aea82ac5c7865be5c9d70d"
+},
+{
+"check_ps": 1200.6963031202456,
+"code": "080580",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "오킨스전자",
+"path": "general",
+"sha256": "c3efd46211c1e9e7d5c4d113f09220c88b6050e3499899425001a2f5b70500f3"
+},
+{
+"check_ps": 68987.66960013332,
+"code": "081660",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "미스토홀딩스",
+"path": "nci",
+"sha256": "e7ee40f875f4078500ec23930039a95e9f69c4bf65df3a5c41f2668618ba77de"
+},
+{
+"check_ps": 2766.0508033975575,
+"code": "082270",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "젬백스",
+"path": "loss",
+"sha256": "dff5213f397c1d5a99a064147cef5e6cfddc71fb8fb3471b1e2134f4d9d47012"
+},
+{
+"check_ps": 14830.85775535756,
+"code": "082920",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "비츠로셀",
+"path": "general",
+"sha256": "585d94fc22e4d6382e4e1783b055a79f7e456b7d242b8e1187b49948d2f89bf6"
+},
+{
+"check_ps": 24231.29490428237,
+"code": "084110",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "휴온스글로벌",
+"path": "sotp",
+"sha256": "4c264723af91819ecbe52544efd95182e37bc5b7bac78e7611b750819ec0f8ad"
+},
+{
+"check_ps": -23565.431306095234,
+"code": "089010",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "켐트로닉스",
+"path": "sotp",
+"sha256": "bef7be3a3f3fefb467ecbab3e324ea31cf04c94b31a2bfcbb86de6b29fa799ab"
+},
+{
+"check_ps": 8587.097778527746,
+"code": "089600",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "KT나스미디어",
+"path": "general",
+"sha256": "2853d2b1acc90dc48c3d40b68cb2be3c2dc42c821d92974191edf0deee4a0cdd"
+},
+{
+"check_ps": 75622.07525880913,
+"code": "090430",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "아모레퍼시픽",
+"path": "general",
+"sha256": "28123a984899d65ab071586501e352b798a1a293f76bfa2ccbf8549ff5ae1a92"
+},
+{
+"check_ps": 15890.92222426263,
+"code": "092070",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "디엔에프",
+"path": "loss",
+"sha256": "81307e4e8b7a9cfeeea0c3353a33a09a0dccd09c528f43017171bac097f4ccb7"
+},
+{
+"check_ps": 23404.756280768866,
+"code": "092730",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "네오팜",
+"path": "general",
+"sha256": "f84b6419a12c0a77639e8ff14dd60d6fe1b355677cce88d6280dcc6745437b53"
+},
+{
+"check_ps": 34451.8926183051,
+"code": "092790",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "넥스틸",
+"path": "general",
+"sha256": "184aa5c2c12939bf051cda9007f377b0321facc9abc5609a92133f1f6089a281"
+},
+{
+"check_ps": 1194.9671866734357,
+"code": "093370",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "후성",
+"path": "sotp",
+"sha256": "b67c40ae2fc67889c0a4ac5a92e6499a49779a075ab02979116dc899716bd97f"
+},
+{
+"check_ps": 28018.92222560785,
+"code": "094840",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "슈프리마에이치큐",
+"path": "general",
+"sha256": "934dd1b72ce03ff91e8aade199055eee9c79f8cfba4cb2eb57c321ee62161845"
+},
+{
+"check_ps": 26708.45662269521,
+"code": "096530",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "씨젠",
+"path": "loss",
+"sha256": "62489977252b1b596a59c81fff8439a04f93351c1cb652bd4521ebca7398d911"
+},
+{
+"check_ps": 248457.57706062216,
+"code": "096770",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "SK이노베이션",
+"path": "sotp",
+"sha256": "2953d6de748ba3a22361c5559957a5315d1d1417ef50ca5150ff034c6bb24a49"
+},
+{
+"check_ps": 53779.046732208386,
+"code": "100840",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "SNT에너지",
+"path": "general",
+"sha256": "4d9b290dd8e308f5e1535895866c0f72492250328ebac90fb68d254078686f47"
+},
+{
+"check_ps": 10760.440138777618,
+"code": "102260",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "동성케미컬",
+"path": "sotp",
+"sha256": "2e44ca62f474b0d3df18980e4b669a334faebfec8bac5926b006ef5078754761"
+},
+{
+"check_ps": -3558.1956541691457,
+"code": "102460",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "이연제약",
+"path": "loss",
+"sha256": "dd0718febaa69df07211174faa7ddce186409b775663b5c44ee0315a5804016c"
+},
+{
+"check_ps": -812.3777307594966,
+"code": "114190",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "강원에너지",
+"path": "nci",
+"sha256": "2db7e3eae3653ae87e5e98f7dccd2276c632ca2ee536bb6d7a73af715c06177c"
+},
+{
+"check_ps": 22805.37639492191,
+"code": "114840",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아이패밀리에스씨",
+"path": "general",
+"sha256": "dc9d6759e15793eaff7c5c04a3b0707aaf8560f3f4bf3291441e3e3301faab6b"
+},
+{
+"check_ps": 6969.258830400901,
+"code": "119830",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아이텍",
+"path": "loss",
+"sha256": "fc49f385cf50aebc732b2632d1a5d802077668aaa765ce0f43663868e0f029c5"
+},
+{
+"check_ps": 49945.506061168824,
+"code": "120110",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "코오롱인더",
+"path": "general",
+"sha256": "6cbb73d12c0eae07900604dfb0cc35c616f91646b7e0fc3e458d916c0969e15e"
+},
+{
+"check_ps": 66348.61271953396,
+"code": "122870",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "와이지엔터테인먼트",
+"path": "nci",
+"sha256": "ac4c3b13447f814e37d3cac0aa0906e86f22262c2c12bdfafa12eabd8c04ca3f"
+},
+{
+"check_ps": 3537.933534583807,
+"code": "126730",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "코칩",
+"path": "general",
+"sha256": "2173af3946fd95c15671b3458eccb7af8ec884c4e099d7491ed0614c67c4dceb"
+},
+{
+"check_ps": 2762.8555640061154,
+"code": "134580",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "탑코미디어",
+"path": "loss",
+"sha256": "3cb7c2e42aba99100e5692f64f34a8bb35526a3cf3e62061fbd6a0d8c2e66c2d"
+},
+{
+"check_ps": 12087.617330281506,
+"code": "137310",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "에스디바이오센서",
+"path": "loss",
+"sha256": "bce75c01de08d2608afe1c1c1c39e49eafef5ae7abe17c462ec4b86fd65a1a23"
+},
+{
+"check_ps": 834.4527779284158,
+"code": "138360",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "앤로보틱스",
+"path": "loss",
+"sha256": "367c5cbc5a95fac2590f46a296a4e4443c5ba6447a0910105e2e7ea2d53769ee"
+},
+{
+"check_ps": 6505.00531889548,
+"code": "138610",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "나이벡",
+"path": "loss",
+"sha256": "ac90dca487ea87d070281e11fd2cb059b78bf6868e3620938c246542f2352c23"
+},
+{
+"check_ps": 31519.61656624384,
+"code": "143160",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아이디스",
+"path": "nci",
+"sha256": "2a7dd63718e73753585a1101f73553fd9f37ce401bd2f617c7f7f37c0e93ca50"
+},
+{
+"check_ps": 7228.3246601146675,
+"code": "147830",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "제룡산업",
+"path": "general",
+"sha256": "d88073243ef2e08fca69fb24cfe455dabb0caa6392d64e4c45ea1f074b0f4f5b"
+},
+{
+"check_ps": 7487.760722171199,
+"code": "149950",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아바텍",
+"path": "general",
+"sha256": "01c76f21cd24c81b6fb7706162f17af92e26bad9883d4d70053ba216a004da55"
+},
+{
+"check_ps": 11873.029302815105,
+"code": "159010",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아스플로",
+"path": "loss",
+"sha256": "7a1f41e0c8b60c931d03223df52607dafb857b713e0a4c03975c543297be9e26"
+},
+{
+"check_ps": 30459.317379062257,
+"code": "160980",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "싸이맥스",
+"path": "general",
+"sha256": "e9cba91cd43ba11447ca9ac14688a7abfddadbc48074df23eadb9cf29dc8ba0c"
+},
+{
+"check_ps": 72586.13957724706,
+"code": "161890",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "한국콜마",
+"path": "sotp",
+"sha256": "9bf64d8b2f817feb168422c9c0856352d7e3de275f623083e94be2d840b9bc90"
+},
+{
+"check_ps": 145134.7141919,
+"code": "185750",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "종근당",
+"path": "general",
+"sha256": "c5c66a08d04c909c7d35d5b1a0fd74133314d2be856bbf9959b6f34cce6530f8"
+},
+{
+"check_ps": 77740.78410659383,
+"code": "192440",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "슈피겐코리아",
+"path": "general",
+"sha256": "c404ff62cdcce456ddfc92f7429a6e0cf118db7738eded24067a3ed9d03d3c92"
+},
+{
+"check_ps": 14376.81791420348,
+"code": "200130",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "콜마비앤에이치",
+"path": "general",
+"sha256": "b03f54d3a4395534031c223e17e8124dcb9870dad4407553e8766f3e245cdfdf"
+},
+{
+"check_ps": 1175.910278126232,
+"code": "203650",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "드림시큐리티",
+"path": "sotp",
+"sha256": "c9c086272d836d5eb12934c00e4abfadc609478c8dfbbe59ddd1980b3eb58f9a"
+},
+{
+"check_ps": -4262.970296900041,
+"code": "204270",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "제이앤티씨",
+"path": "loss",
+"sha256": "ccfc0f5208b2b0bdea8740383ab399f3e145e15ca9296340489e8f140dd4beb5"
+},
+{
+"check_ps": 30920.6007421403,
+"code": "213420",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "덕산네오룩스",
+"path": "general",
+"sha256": "878b46942e06bda7214868519178c9a85b855eda3b4c78b7ffb978c8fd584d08"
+},
+{
+"check_ps": 18607.555021951226,
+"code": "213500",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "한솔제지",
+"path": "general",
+"sha256": "c17be7788e02a16129febf770c0a00bf7e23fa7d6b6cd3131d92e92540e3fd47"
+},
+{
+"check_ps": 3866.963576822696,
+"code": "214370",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "케어젠",
+"path": "general",
+"sha256": "d4db27f016b7ca384bbbfbafbf00e3e96ec5b5de146773dac04fb7bdd733026b"
+},
+{
+"check_ps": 10187.612160317956,
+"code": "214430",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아이쓰리시스템",
+"path": "general",
+"sha256": "c59438f052247d0542d1f01fb4439bbf465e9eb6bbbbc63c11752967cc20acd3"
+},
+{
+"check_ps": 145980.95685617556,
+"code": "215200",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "메가스터디교육",
+"path": "sotp",
+"sha256": "c17b8a8e00e0ca80a26b40e954456037878176f133a47802e61d9b86dc66146f"
+},
+{
+"check_ps": 15546.323505052193,
+"code": "219130",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "타이거일렉",
+"path": "general",
+"sha256": "29aededbfbe430cf0aea6ec9e5f692cd9c16898043c6689e61e618fac951c4c8"
+},
+{
+"check_ps": 1510.2046397211116,
+"code": "220100",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "퓨쳐켐",
+"path": "loss",
+"sha256": "9ea602f18f24afe2619979e96788e1fd61a41afadd173ee84cf5d1d75f68951e"
+},
+{
+"check_ps": 5785.1926749747445,
+"code": "222080",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "SFA넥셀",
+"path": "general",
+"sha256": "e615634a345aa19d7a00bab23a2edfbeabf7fcd9550304de85e731b3da8f9c2f"
+},
+{
+"check_ps": 36416.380414203064,
+"code": "227840",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "현대코퍼레이션홀딩스",
+"path": "general",
+"sha256": "cab3d1d8f1bd58b73d37a0255b977366c8b53021510c17921911758ab7aa0c83"
+},
+{
+"check_ps": 18198.827274975753,
+"code": "228850",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "레이언스",
+"path": "general",
+"sha256": "21cb80c4ccceaa4e4d8a3fe999c709c087fb17ef709b555baf2b21a24df7841f"
+},
+{
+"check_ps": 32659.760862586212,
+"code": "237880",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "클리오",
+"path": "general",
+"sha256": "afb9adfb97effb055e5ccd494bd878133cad0590be47b3abf881c0cc03e99d90"
+},
+{
+"check_ps": 10160.916864858327,
+"code": "241710",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "코스메카코리아",
+"path": "sotp",
+"sha256": "32ba755521cf7ef2cbe1984d04ebb7ab72fabe24043e96daad1b22f0df85038f"
+},
+{
+"check_ps": -3174.246191930255,
+"code": "246710",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "티앤알바이오팹",
+"path": "loss",
+"sha256": "7013c067e7e248ec07fe252633bb8caa2aef5f07d08e21a1d25d12593b2b9887"
+},
+{
+"check_ps": 12278.334367978354,
+"code": "248070",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "솔루엠",
+"path": "general",
+"sha256": "3d2166620f33bae763b42cb81e70fbf4bbb11dd26160297080d5c3313ed41d63"
+},
+{
+"check_ps": 3527.9365265866313,
+"code": "265740",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "엔에프씨",
+"path": "general",
+"sha256": "22452c4bc8a8ffbecccb0c6455fbaf2de0273e6eec98678f7a59a25c75d1f65c"
+},
+{
+"check_ps": 203768.59987287922,
+"code": "267290",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "경동도시가스",
+"path": "general",
+"sha256": "569760405f0523efb19428a30d561eb2263cac989b3a9dd584edf614b1c5e712"
+},
+{
+"check_ps": 1573.410015502739,
+"code": "267320",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "나인테크",
+"path": "loss",
+"sha256": "5efc693ec971c98e25508d57fd038d3c0167c947e08eee020590b0758592b781"
+},
+{
+"check_ps": 173574.1463254036,
+"code": "268280",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "미원에스씨",
+"path": "general",
+"sha256": "bb8525b464c9d89044a5ebc6fc65611904420a413990d9510f76c696f70e6fdf"
+},
+{
+"check_ps": 10941.139492130831,
+"code": "271940",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "일진하이솔루스",
+"path": "loss",
+"sha256": "09442ef85787465e055acb91507414fbe92ec864c6a8824dc6acb5c5b384f388"
+},
+{
+"check_ps": 22970.053817856537,
+"code": "272210",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "한화시스템",
+"path": "general",
+"sha256": "aac4a2c8fd3ae725b40d6d19ef4956530fe0c18fdc7c50dd5b770d52bef2358b"
+},
+{
+"check_ps": -64731.70981119139,
+"code": "278280",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "천보",
+"path": "loss",
+"sha256": "13bd6d41c4d94ae558421e6b945629ddb86e6a4c4725d7040bb8b6e65a6a8943"
+},
+{
+"check_ps": 149947.68599631064,
+"code": "285130",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "SK케미칼",
+"path": "sotp",
+"sha256": "327572330c3dc672d1544c10200939e57ce2b884429db383f0338e9bae697db6"
+},
+{
+"check_ps": 17856.30042269596,
+"code": "285490",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "노바텍",
+"path": "general",
+"sha256": "a9d6a25f194f65ad1fcd0181ad948975d31b320d35bb3c40b2ee8239e07ab6a1"
+},
+{
+"check_ps": 1094.581990532475,
+"code": "290690",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "아리바이오홀딩스",
+"path": "loss",
+"sha256": "267fee9bf5a91a085ec189cb2f9b2dffe335c2a8c6027b7d8a8bd2b9f52cd685"
+},
+{
+"check_ps": 341.488641936808,
+"code": "297090",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "씨에스베어링",
+"path": "general",
+"sha256": "9196ed89487eff7a8b27bffb5ebe0c4c80abdb21725d2b96e4dbb4a5dd0d8e7c"
+},
+{
+"check_ps": 355195.92903099436,
+"code": "298020",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "효성티앤씨",
+"path": "nci",
+"sha256": "6d5c01a93ba916e37b63ef34e17bab18fe7c5a0eebbcf1ee78c5844843ebac8e"
+},
+{
+"check_ps": 1883.5310632247003,
+"code": "298690",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "에어부산",
+"path": "general",
+"sha256": "f6fdb8f87fdb5f24ffd75a573988eabe2418844beb8459191c57c8aae6aed393"
+},
+{
+"check_ps": 1054.945270962726,
+"code": "302440",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "SK바이오사이언스",
+"path": "loss",
+"sha256": "a2a8bd076c4b0764d15337f97b232632bd951a57fb138feb9114acc037aa613b"
+},
+{
+"check_ps": 220617.7010830304,
+"code": "307950",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "현대오토에버",
+"path": "general",
+"sha256": "f15b57f4d1097ec0f7e62752a910c068fb637468c91db0783ace1127e8983983"
+},
+{
+"check_ps": -1032.3648018100123,
+"code": "314130",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "지놈앤컴퍼니",
+"path": "loss",
+"sha256": "62fb47547bf151cea3a5cc31b14788755394f9e79779a3ee255a943a0cfe1e0e"
+},
+{
+"check_ps": 6473.242824497109,
+"code": "327260",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "RF머트리얼즈",
+"path": "sotp",
+"sha256": "3f836f2a9f8b686aa9b21eedc2acf1d4406869a5c5f212296cbf0f9a270850ba"
+},
+{
+"check_ps": 1921.0369767701638,
+"code": "338220",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "뷰노",
+"path": "loss",
+"sha256": "925c34d7a4a25b7c410a8bea1487302ad85f1a070511ce1bbb447b8ffa3f15a1"
+},
+{
+"check_ps": 121673.72320499511,
+"code": "344820",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "KCC글라스",
+"path": "general",
+"sha256": "a1f113df1f05da2d2f0949cb531c5b458481250eed9096292a6f3fb37917ee19"
+},
+{
+"check_ps": 25012.0596572734,
+"code": "353810",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "이지바이오",
+"path": "general",
+"sha256": "91b4b26122b45fe860904b701a34d2f2a508cc4ab8c4f9d73a1044b09ef581b2"
+},
+{
+"check_ps": 1531.149996875304,
+"code": "356680",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "엑스게이트",
+"path": "general",
+"sha256": "c77de2e0ff5be35caad00e76977c7d224e8a2f3f2b63cb98f3728652110401a8"
+},
+{
+"check_ps": 252788.12364905595,
+"code": "375500",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "DL이앤씨",
+"path": "general",
+"sha256": "5b473f0ae6ec966be0488157b7d50c3aec441bac0030dffe92b1504448e64d9b"
+},
+{
+"check_ps": 2984.5687202922704,
+"code": "382800",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "지앤비에스 에코",
+"path": "general",
+"sha256": "6ccd87508d46ca27bcd186479e5ee91875de88246e7a52e767ccb507ca3f8bd1"
+},
+{
+"check_ps": 4150.30475483492,
+"code": "383310",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "에코프로에이치엔",
+"path": "general",
+"sha256": "3b254d078f71c6050432c983397647ac52c1c3127799b337bda03ae6e3ede1a7"
+},
+{
+"check_ps": 674.38915301034,
+"code": "388790",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "라이콤",
+"path": "loss",
+"sha256": "562902313d7d9e2743a58f4cfb0837415ecc51633c0427dcdd91e26f1a9a7705"
+},
+{
+"check_ps": -2874.362243717304,
+"code": "394280",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "오픈엣지테크놀로지",
+"path": "loss",
+"sha256": "fb7beef7c1f4d23348d7ec11fce346271b85d1b1ac7465df08efae48f98da796"
+},
+{
+"check_ps": 34189.10254898038,
+"code": "403550",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "쏘카",
+"path": "general",
+"sha256": "99f5a562063f87fdce02711dd785b72b19eaf1ae13dc8bff1108ba97a8cc36a4"
+},
+{
+"check_ps": -1592.013922351549,
+"code": "405100",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "큐알티",
+"path": "general",
+"sha256": "be1bc5413b552f062dcfb72b846537bffa41e9f37b3dfdefad7d30a4e50c239b"
+},
+{
+"check_ps": -1101.3782912120387,
+"code": "417500",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "제이아이테크",
+"path": "general",
+"sha256": "4f00a85318902014dc0713d2496c0de76c7ddb04b596f3d28bdcede9ac3cb7b7"
+},
+{
+"check_ps": -1331.9195669684173,
+"code": "418550",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "제이오",
+"path": "general",
+"sha256": "6cb9c8b471cc775feb344e5a87e66b343a473adde8a8a8fcb2ac62d952de3437"
+},
+{
+"check_ps": 24632.103908051646,
+"code": "419530",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "SAMG엔터",
+"path": "general",
+"sha256": "fc838533e5fab7ee04d4a1c1c639455933bbaa0517ed5e1f5ccc141f22b3ff6d"
+},
+{
+"check_ps": 7542.57158408424,
+"code": "445180",
+"hold": false,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "퓨릿",
+"path": "general",
+"sha256": "d775582706449dec5896d2625fbd853415cdb00a966e7f0eb868cbd726ed2982"
+},
+{
+"check_ps": 43350.135766479994,
+"code": "462520",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSPI",
+"name": "조선내화",
+"path": "general",
+"sha256": "a2975bb52583e78c9e41465ea17292178ee39c4ddc2365d551378bb90f8b00df"
+},
+{
+"check_ps": -213884.95771752315,
+"code": "472850",
+"hold": true,
+"kind": "evaluable",
+"market": "KOSDAQ",
+"name": "폰드그룹",
+"path": "nci",
+"sha256": "f9365ce1d1d8494020f3fe5df04f3c60009095f7a9af27b7b51c9773dc2caca5"
+},
+{
+"check_ps": null,
+"code": "000370",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "한화손해보험",
+"path": null,
+"sha256": "2bbd0a152b5c3f77885d42cf84e0c838d32f0d582f19336ac8fceec7df467880"
+},
+{
+"check_ps": null,
+"code": "000720",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "현대건설",
+"path": null,
+"sha256": "e98703ae6df91275a1fa0184ae0cdb4f29e1dc29776ce99c67792084fcb36267"
+},
+{
+"check_ps": null,
+"code": "000810",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "삼성화재",
+"path": null,
+"sha256": "bec416a548cd3b6d14f0b39406b2044aad6f97d582f0dc1511ab3f9649ee890c"
+},
+{
+"check_ps": null,
+"code": "001450",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "현대해상",
+"path": null,
+"sha256": "170117568a0cae7dfa492ab2d3901defb2c9e34a2302c3188c8db9b5e6a30938"
+},
+{
+"check_ps": null,
+"code": "001500",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "현대차증권",
+"path": null,
+"sha256": "1dfa1e8af201b36e59332544361e52a3575f7b3a400a44a10785b006c5e6eadd"
+},
+{
+"check_ps": null,
+"code": "007700",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "F&F홀딩스",
+"path": null,
+"sha256": "5e94830f62799f438f294291f6f8df7bbd4945544cc11ab28cf2e40805cd86ec"
+},
+{
+"check_ps": null,
+"code": "012450",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "한화에어로스페이스",
+"path": null,
+"sha256": "13f27a203e3f1a5bdb748cce9c50ff4e9842d70e770319165a9dd1a7b5609df6"
+},
+{
+"check_ps": null,
+"code": "016360",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "삼성증권",
+"path": null,
+"sha256": "afdc9351df9db311f1a2456478674d9c67cc48990b8180501126bc31117a9b63"
+},
+{
+"check_ps": null,
+"code": "026890",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "스틱인베스트먼트",
+"path": null,
+"sha256": "73138dcfcaad76ceba5225c8db797bbf1775947ac86ab353e3ee132836ec4b96"
+},
+{
+"check_ps": null,
+"code": "028300",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "HLB",
+"path": null,
+"sha256": "9d3d091353223fecd348c653e59e09218cf8d29acbed9ee72467fa2788a1665e"
+},
+{
+"check_ps": null,
+"code": "032190",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "다우데이타",
+"path": null,
+"sha256": "0b71ee54695d1d824dfa61c1c69311419959ee1a9185889f920defd224ad1467"
+},
+{
+"check_ps": null,
+"code": "038540",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "상상인",
+"path": null,
+"sha256": "122d89313d7e828e8ea6258ae0af805836760c5b0cc5c410a5bc166eabe764c1"
+},
+{
+"check_ps": null,
+"code": "041190",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "우리기술투자",
+"path": null,
+"sha256": "4b2baa46885648ced45b60c098e582ce8add668a7a25c7df04b1abbd5086064e"
+},
+{
+"check_ps": null,
+"code": "052020",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "에스티큐브",
+"path": null,
+"sha256": "b5dc11243685b9310e8939d6cc6d01346ce9a1bb220d4b86a614ba13948bd232"
+},
+{
+"check_ps": null,
+"code": "071050",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "한국금융지주",
+"path": null,
+"sha256": "5559a6523c065885004b1e2e0c0c473c86ed243d719e81f7d1914734969854f8"
+},
+{
+"check_ps": null,
+"code": "095700",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "제넥신",
+"path": null,
+"sha256": "5b092bdeb3cff98998b25de515b5cc940e7fb19c5ce62f00851e53b3eebfc4de"
+},
+{
+"check_ps": null,
+"code": "100790",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "미래에셋벤처투자",
+"path": null,
+"sha256": "ed674337045dcc836e4201dd8b319526bd76a2ed18f6f38079d80f3337a4494f"
+},
+{
+"check_ps": null,
+"code": "123890",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "한국자산신탁",
+"path": null,
+"sha256": "c3d55bb496e49a64cda8ba77b3e1b8fee3f4b4495a586ca3852abb278ce479b1"
+},
+{
+"check_ps": null,
+"code": "125210",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "아모그린텍",
+"path": null,
+"sha256": "277d6146fd1c0774daf24c6fa15082faf48edfb3f92b45be5467eac8c80a8d37"
+},
+{
+"check_ps": null,
+"code": "138930",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "BNK금융지주",
+"path": null,
+"sha256": "8b5c6625eaadd27392faf66b620ed3f0c152771a317837f88892a48e525e0225"
+},
+{
+"check_ps": null,
+"code": "175330",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "JB금융지주",
+"path": null,
+"sha256": "dafa987a8f9a624dbdea14dcbdbb21e4cb9ae813e1bc124fd1123f3c4721e1a5"
+},
+{
+"check_ps": null,
+"code": "199800",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "툴젠",
+"path": null,
+"sha256": "9351eac3ed87bad4c515d8812422f11cf0c6a2579a815456412e7996db74d56d"
+},
+{
+"check_ps": null,
+"code": "204620",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "글로벌텍스프리",
+"path": null,
+"sha256": "c42527db14dc09282494935ac7656438e9b495cfb1ff759abf7bd8a349c01981"
+},
+{
+"check_ps": null,
+"code": "217730",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "강스템바이오텍",
+"path": null,
+"sha256": "f609bef827038e7e2423a4dd1b845f71f9ae7c81486fed539f26679ae444bf06"
+},
+{
+"check_ps": null,
+"code": "293580",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "나우IB",
+"path": null,
+"sha256": "e7e3d5416884bc29e90e8840dff36c7dcb3deb3a6ed65d30726c9b39b77d2f47"
+},
+{
+"check_ps": null,
+"code": "298380",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "에이비엘바이오",
+"path": null,
+"sha256": "a0c07433ed2827838c87ef694a04fbb5f419d3bec09225f60ea6d724e7795433"
+},
+{
+"check_ps": null,
+"code": "316140",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "우리금융지주",
+"path": null,
+"sha256": "b4cc53b2b34587097e1e670452fd908575b0fbf284c7a8862becaf5f581cc477"
+},
+{
+"check_ps": null,
+"code": "348340",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "뉴로메카",
+"path": null,
+"sha256": "3d060c58b3e19be7ddb1dd4d6c225c816da550d6274abe43516496843fc60b08"
+},
+{
+"check_ps": null,
+"code": "377300",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "카카오페이",
+"path": null,
+"sha256": "678487c9d98a5f7060f7b9f9c91924b83cd09bf73dc99e494befee0bd177b109"
+},
+{
+"check_ps": null,
+"code": "443670",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "에스피소프트",
+"path": null,
+"sha256": "7f5dfa3fad4b45c210afbd1768ecdbbe461f4e48bf4a16171558860c3e7d53ee"
+},
+{
+"check_ps": null,
+"code": "454910",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSPI",
+"name": "두산로보틱스",
+"path": null,
+"sha256": "b52986a6ac75f01f31dbe33be4f0c4ee8fd832456950451e4ecbf807e08001e7"
+},
+{
+"check_ps": null,
+"code": "455900",
+"hold": null,
+"kind": "out_of_scope",
+"market": "KOSDAQ",
+"name": "엔젤로보틱스",
+"path": null,
+"sha256": "ff7e12b775191f2861ff5d6c77a74ffea720e6fb4f4999c186f144c09aa00455"
+}
+]

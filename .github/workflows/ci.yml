@@ -1,0 +1,48 @@
+# 공개 저장소 korea-valuation-insights 의 GitHub Actions 워크플로(P7-C3 적용). scripts/build_public_bundle.py 가
+# 이 파일을 .github/workflows/ci.yml 로, docs/ci/test_public_app.py 를 tests/test_public_app.py 로 복사한다.
+# 비밀값·KRX 자료 없이 도는 시험만: 공개 묶음에는 API 키·DB·시세가 없다(회사별 공개 스냅샷 = DART·ECOS 자료와 집계값).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read            # 읽기만 (배포는 Streamlit Community Cloud가 main을 직접 읽는다)
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0     # gitleaks 가 전체 이력을 본다
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest==8.4.2
+      - name: secret scan (gitleaks, whole history)
+        if: runner.os == 'Linux'
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # GitHub가 주는 기본 토큰(저장소 비밀값을 새로 만들지 않음)
+      - name: no data / DB / key files
+        shell: bash
+        run: |
+          ! git ls-files | grep -E '(^|/)(data|outputs|logs)/|\.duckdb$|(^|/)\.env'
+          ! git grep -n -E '[A-Z]+_API_[K]EY|DATA_GO_KR_[K]EY'      # key names (written so the pattern itself is not one)
+      - name: tests (snapshots, replay, session files, workspaces, screens)
+        env:
+          PYTHONPATH: .
+        run: pytest -q tests

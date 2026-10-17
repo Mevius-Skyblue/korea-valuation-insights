@@ -1,0 +1,45 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7b3b.yaml에서 공개 앱이 읽는 최상위 키만 (loss_path, sotp_guard, turnaround)
+loss_path:
+  trigger: 게이트 G2(3년 모두 영업손실) 또는 G3(3년 합계 ≤ 0)에 걸린 회사
+  eligible:
+    min_revenue_won: 10000000000
+    min_revenue_to_mktcap: 0.05
+    basis: 매출이 시가총액에 비해 아주 작은 회사(초기 바이오 등)는 가치가 파이프라인(임상 성공 확률 × 미래 현금흐름)에 있어 매출 배수·이익률 수렴으로 평가할 수 없다(Damodaran, 젊은·적자 기업 평가 🔸). 100억은 G4와 같은 기준, 5%는 프로젝트 가정(⚠️)
+    out_of_scope: '기준 미달은 지금처럼 탈락. 사유 ''적자 경로 범위 밖(매출 기준 미달: 파이프라인 가치 평가 필요)'''
+  method:
+    a_ev_sales:
+      rule: 포함 피어(core) EV/Sales 사분위 주당 범위 [q25, q75](대상 LTM 매출 × 배수 → 순차입금·비영업·비지배 → 주당). 기존 상대가치 계산 그대로
+      role: 대표 범위
+      validity: config/p7b3.yaml peer_validity(q25 ≤ 0, q75/q25 > 3)이면 범위 해석 불가(회색)
+      basis: 적자 기업은 이익 배수가 없어 매출 배수가 기본 상대가치 지표다(🔸). 피어는 흑자 피어라 대상의 이익률 개선을 전제한 범위다(한계로 표시)
+    b_transition_dcf:
+      margin: 출발 = 대상 LTM 영업이익률(FY2025 + 2026 H1 − 2025 H1), 2032년(명시 기간 끝)에 피어 LTM 영업이익률 중앙값에 도달하도록 직선으로 올림
+      years: 6
+      converge_share: 1.0
+      no_peer_margin: 피어 이익률 중앙값이 없으면(피어 3곳 미만) 수렴 없음 → 게이트 G8에서 멈춤
+      growth: mechanical_v2 출발 성장률 규칙 그대로(clip −10%~+25%, 2030년까지 g로 체감)
+      terminal: 기존 규칙 그대로(Gordon, 가치동인 FCF, RONIC [WACC, 과거 ROIC])
+      basis: '적자·전환 기업은 현재 이익률이 아니라 성숙 기업(피어) 이익률로 수렴하는 경로를 명시적으로 가정한다(Damodaran 젊은 기업 DCF: 목표 이익률 + 수렴 기간 🔸). 6년·직선은 기존 v2 수렴 기간과 같게 둔 프로젝트 가정(⚠️). 완전 수렴(1.0)은 낙관적 가정이므로 가정 민감도 표시'
+    c_funding:
+      rule: 명시 기간(2H26~2032) 예측 FCF 누적합의 최저값이 음수이고 그 크기가 재무상태표일 현금성(브리지 현금성)보다 크면 '추가 자금 필요(희석 위험)'
+      output: 판단 목록 1순위(영향 계산과 무관하게 맨 위), 엑셀 Forecast 누적 FCF 행 + Checks WARN(살아 있는 수식)
+      basis: 적자 기업 가치는 생존을 전제한다. 자금이 모자라면 유상증자·CB로 기존 주주가 희석된다(🔸)
+    headline: 대표 = (a) 범위 + (b) 값을 함께. (b)는 기존 유효성 가드(config/p7b2b.yaml)를 그대로 받는다(걸리면 (b)만 '보류'). (a) 범위가 해석 불가이고 (b)도 보류면 전체 '자동 결과 보류'
+    fixed_text: 적자 기업 — 가정 민감도가 매우 큼
+  outputs: 엔진(company_dcf v2 입력 start=ltm), 엑셀(M0V2 = LTM 이익률 수식, 수렴 비율 1.0 입력, EV/Sales 범위는 Peers 시트 기존 수식, 누적 FCF·자금 점검 check), 보고서 적자 경로 문단, Diagnostics L절, summary.json loss_path
+  scope: 자동 초안만
+turnaround:
+  rule: '|LTM 영업이익률 − 5년 중앙값(v2 출발값)| ≥ 10%p, 또는 부호가 다르고 차이 ≥ 2%p'
+  threshold_pp: 0.1
+  sign_flip_min_pp: 0.02
+  candidate: '''LTM 이익률 출발'' 후보 = v2와 같은 계산에서 출발값만 LTM 이익률(피어 쪽 50% 수렴 그대로). 주당가치를 계산·표시'
+  output: 판단 목록 1순위(영향 계산과 무관하게 맨 위), Diagnostics 이익률 후보 표, summary.json turnaround
+  default: 기본값은 v2 그대로(후보만)
+  basis: 최근 실적이 과거 분포를 벗어나면 과거 중앙값 정상화가 구조 변화를 놓칠 수 있다. 어느 쪽이 정상인지는 사람이 판단(🔸)
+  scope: 적자 경로 회사는 이미 LTM 출발이므로 해당 없음
+sotp_guard:
+  parent_ev_nonpositive: 모회사 영업가치(EV, 9/30) ≤ 0 → 대표값 보류 + 판단 목록 1순위
+  market_multiple: 3.0
+  market_rule: '높은 쪽: 상장 지분 할인 50% 적용 주당 ÷ 종가 > 3 → 보류. 낮은 쪽: 할인 0% 주당 ÷ 종가 < 1/3 → 보류. (가장 유리한 할인 가정으로도 시장가 3배 안에 못 들어오면 보류)'
+  discount_review: 상장 지분 할인은 판단 목록 상위(1순위 항목들 바로 뒤)
+  basis: 틀린 숫자보다 평가 불가(docs/quality_standard.md). 할인 0~50%는 지주회사 할인 관찰 범위(🔸)

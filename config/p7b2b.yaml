@@ -1,0 +1,28 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7b2b.yaml에서 공개 앱이 읽는 최상위 키만 (mechanical_v2, validity_guard)
+mechanical_v2:
+  normal_margin:
+    start: 최근 5개 회계연도(FY2021~2025) 영업이익률(매출 > 0인 해)의 중앙값. 자료가 3~4년이면 그 중앙값, 3년 미만이면 v1(3년 평균)
+    converge_to: 포함 피어(core)의 LTM 영업이익률 중앙값(피어 3곳 이상일 때만, 아니면 수렴 없음)
+    converge_share: 0.5
+    converge_path: 2026 = 0 → 2032 = 50%, 연도에 비례(직선). 체감·영구 구간은 2032 값 그대로
+    scenario: 시나리오 이익률 이동은 경로 전체에 평행 이동(출발·도착 같은 폭)
+    basis: 경기순환 기업은 한 해·짧은 평균이 아니라 사이클 평균 이익률로 정상화한다(Damodaran 정상화 이익 🔸). 초과 수익성은 경쟁으로 산업 평균 쪽으로 평균 회귀한다(Fama·French 2000 수익성 평균 회귀, 경쟁우위 소멸 🔸). 중앙값은 손실·호황 한 해의 영향을 줄인다. 50%·6년은 '완전 수렴'을 가정하지 않는 보수적 중간값(프로젝트
+      가정 ⚠️)
+  start_growth:
+    rule: g0 = clip(0.5 × 대상 매출 CAGR(v1과 같은 기간) + 0.5 × 피어 매출 성장률 중앙값, −10%, +25%)
+    weight_own: 0.5
+    clip:
+    - -0.1
+    - 0.25
+    peer_growth: 포함 피어의 FY2023→FY2025 매출 2년 CAGR(fs_std, FY2023 없으면 FY2024→FY2025 1년) 중앙값. 피어 3곳 미만이면 대상 CAGR만(clip은 적용)
+    fade: 'v1과 같음: 2030년까지 g_terminal(2%)로 체감'
+    scenario: 시나리오 성장률 이동은 clip 뒤 g0에 더함
+    basis: 과거 성장 하나로 미래를 외삽하면 성장 지속성이 낮다는 실증과 어긋난다(기저율·base rate 혼합, Mauboussin 🔸). 피어 성장과 반씩 섞어 극단값을 줄인다. clip은 기계적 경로가 다루기 어려운 극단 성장 방지(⚠️)
+  v1_kept: v1(3년 평균 이익률, 5년 CAGR)은 대안 후보로 계속 계산·표시(엑셀 Diagnostics, 판단 목록 '기본 경로 v1')
+validity_guard:
+  conditions:
+    equity_nonpositive: 기본 시나리오·SRP 0% 주식가치 ≤ 0
+    terminal_heavy: 0.85
+    far_from_both: 3.0
+    key_metric_missing: 대상 LTM 매출 ≤ 0 또는 결측, LTM 영업이익 결측, FY2023~2025·LTM D&A가 원문·보완·추정으로도 결측
+  output: 해당하면 summary.json·화면 대표값 = '자동 결과 보류' + 사유 + 판단 목록 1순위. 엑셀·보고서에는 값과 경고를 함께(분석가용)

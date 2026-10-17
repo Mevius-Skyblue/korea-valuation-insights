@@ -1,0 +1,17 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/premium_p2c3.yaml에서 공개 앱이 읽는 최상위 키만 (quantile_regression)
+quantile_regression:
+  quantiles:
+  - 0.25
+  - 0.5
+  - 0.75
+  estimator: statsmodels QuantReg (default settings)
+  ci: pairs bootstrap, 1,000 resamples, seed 20261002, percentile 95% CI
+  fit_measure: Koenker-Machado pseudo R1 = 1 - V(model) / V(intercept only)
+  cross_validation:
+    folds: 5
+    seed: 20261002
+    split: random, deals shuffled once
+    metrics:
+    - 'mean pinball loss per quantile: model vs unconditional quantile of the training fold'
+    - coverage of the predicted 25-75% interval in the test folds (expected about 50%)
+    - number of crossing predictions (q25 > q50 or q50 > q75) in the test folds

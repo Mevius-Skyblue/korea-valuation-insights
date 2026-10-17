@@ -1,0 +1,54 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7b2.yaml에서 공개 앱이 읽는 최상위 키만 (diagnostics)
+diagnostics:
+  basis: 기본 시나리오, SRP 0%(엑셀 기본 선택), Gordon
+  signal_peer:
+    range: ev_ebitda
+    min_n: 3
+    green: q25 ≤ DCF ≤ q75
+    yellow: 0.67 × q25 ≤ DCF < q25 또는 q75 < DCF ≤ 1.5 × q75
+    red: 그 밖
+    yellow_low: 0.67
+    yellow_high: 1.5
+  signal_market:
+    green:
+    - 0.67
+    - 1.5
+    yellow:
+    - 0.5
+    - 2.0
+    red: 그 밖
+  overall: 두 신호 중 나쁜 쪽(빨강 > 노랑 > 초록, 회색은 다른 신호를 따름)
+  reverse:
+    target: 피어 EV/EBITDA 중앙값 주당(n < 3이면 EV/Sales 중앙값 주당)
+    solve:
+    - normal_margin
+    - start_growth
+    - wacc
+    ranges:
+      margin_shift:
+      - -0.3
+      - 0.4
+      start_growth:
+      - -0.3
+      - 0.6
+      wacc:
+      - 0.03
+      - 0.3
+    accuracy: 역산 값으로 다시 계산한 주당 − 목표 주당의 절댓값 ≤ 1원
+  composition: '주식가치 대비: 영구가치 현재가치(Gordon, 9/30 이월), 명시·체감 기간 현재가치, 현금성, 비영업, −총차입금(리스 포함), −비지배'
+  anomalies:
+    loss_year_in_margin: 정상 이익률 계산 연도(FY2023~2025)에 영업손실 연도 포함
+    margin_volatility: FY2021~2025 영업이익률 표준편차 > 2 × 시나리오 이익률 폭(2%p) = 4%p
+    growth_volatility: FY2021~2025 매출 성장률 표준편차 > 2 × 시나리오 성장률 폭(2%p) = 4%p
+    roic_below_wacc: 과거 3년 ROIC(RONIC 상한) < 기본 WACC
+    terminal_heavy: 영구가치 비중 > 75% 또는 < 0%
+    bridge_heavy: 브리지 항목 하나의 절댓값 > 주식가치의 50%
+    negative_equity_scenario: 시나리오 × SRP 9칸 중 주당 < 0인 칸이 있음
+  margin_candidates:
+  - id: ex_loss_3y
+    label: 손실 연도 제외 3년 평균(FY2023~2025 중 영업이익 > 0인 해)
+  - id: median_5y
+    label: 5년 중앙값(FY2021~2025)
+  - id: peer_median
+    label: 피어 LTM 영업이익률 중앙값(포함 피어)
+  outputs: summary.json diagnostics, 엑셀 새 시트 Diagnostics(엔진 값은 회색 + 출처, 신호는 살아 있는 수식), 보고서 새 절 '결과 해석 주의'(숫자는 엑셀 칸 추적)

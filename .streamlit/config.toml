@@ -1,5 +1,17 @@
+# KVI 밸류에이션 워크벤치 theme (same as the PC screen, .streamlit/config.toml of the private repository)
+[theme]
+base = "light"
+primaryColor = "#F07224"
+backgroundColor = "#F4F4F2"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#15171B"
+
+[client]
+toolbarMode = "minimal"
+
 [browser]
 gatherUsageStats = false
 
 [server]
 headless = true
+maxUploadSize = 5

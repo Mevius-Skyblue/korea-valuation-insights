@@ -1,0 +1,7 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7b3.yaml에서 공개 앱이 읽는 최상위 키만 (peer_validity)
+peer_validity:
+  order: 기존 규칙(P7-B2·B2b)으로 기준 배수 선택 → 아래 중 하나라도 해당하면 피어 신호 '해석 불가(회색)' + 사유
+  lower_nonpositive: 피어 배수 주당 범위 하단(q25 주당) ≤ 0
+  spread_ratio: 3.0
+  target_metric_small: 0.02
+  guard_link: 피어 범위가 해석 불가면 유효성 가드 '피어·시장 양쪽 3배'는 피어 중앙값 없음으로 보고 적용 안 함

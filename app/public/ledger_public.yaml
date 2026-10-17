@@ -1,0 +1,195 @@
+_public_note: 'P7-C3 공개 축약본: 자동 초안 계산이 읽는 절만(원본 config/valuation_rf.yaml)'
+beta:
+  basis: 'P1: KOSPI 기준 R² ≤ 0.07 → KOSDAQ. 지수·자본구조 관행은 ⚠️'
+  blume:
+    constant: 0.33
+    weight_raw: 0.67
+  de_rule: 각 회사 회귀 기간 안 재무상태표 시점(FY·H1) D/E의 평균. D = 총차입금 + 리스부채, E = 그 날(직전 거래일)
+    시가총액
+  options:
+  - freq: monthly
+    index: KOSDAQ
+    years: 5
+  - freq: weekly
+    index: KOSPI
+    years: 2
+  - label: RF 자체 베타(Blume)
+    source: target
+  peer_statistic: median
+  peer_tiers:
+  - core
+  - extended
+  regression:
+    adjust: blume
+    freq: weekly
+    index: KOSDAQ
+    years: 2
+  short_history_rule: 스팩 합병 등 이력이 짧은 회사(라이콤, 코스텍시스)도 주간 2년 사용, 월간 5년은 표시만
+  source: 정보 단말 기본 설정(주간 2년·Blume), Hamada 실무 표준(docs/p3_inputs_research.md 1절)
+  status: 🔸
+  tax_for_hamada: 0.22
+  tax_for_hamada_options:
+  - 0.242
+  unlever: hamada
+capital_structure:
+  basis: RF 기준일 D/E(주가 급등)와 기간평균이 크게 다름 → 피어 중앙값을 목표로, 두 값은 민감도
+  source: 프로젝트 가정
+  status: ⚠️
+corporate_tax:
+  basis: law.go.kr 개정이유·국회예산정책처 확인. 중소기업 세액감면(조특법 제7조)은 RF 해당 여부 미확인 → 기본 미적용(⚠️),
+    민감도
+  brackets:
+  - from: 0
+    rate: 0.11
+    to: 200000000
+  - from: 200000000
+    rate: 0.22
+    to: 20000000000
+  - from: 20000000000
+    rate: 0.242
+    to: 300000000000
+  - from: 300000000000
+    rate: 0.275
+    to: null
+  dcf_method: progressive
+  regime: 2026~
+  sme_tax_credit:
+    applied: false
+    options:
+    - true
+    rate_range:
+    - 0.05
+    - 0.3
+  source: 법인세법(법률 제21217호, 2025-12-23 공포, 2026-01-01 시행), 지방세법 제103조의20(법률 제21308호)
+  status: ✅
+  wacc_method: marginal
+cost_of_debt:
+  basis: RF는 무등급. 실제 차입은 방위사업 이차보전·상생대출(0.74~0.86%)이 대부분이라 시장 조달비용이 아님 → BBB- 기본(보수적),
+    실제 이자율 병기. D/E가 작아 WACC 영향 작음
+  source: ECOS 817Y002 2026-09-30, RF 2026 반기보고서 주석 16(20260814001631)
+  status: ⚠️
+dcf:
+  basis: '기준 시점 일치(사용자 수정 2026-10-03): 7~9월 현금흐름 포함. 2032 성장률(기본 10%)에서 영구성장률로 한 번에
+    내려가는 단절은 민감도 후보'
+  cash_flow_start: '2026-07-01'
+  discount_date: '2026-06-30'
+  exit_multiple:
+    basis: 피어 core+extended EV/EBITDA 중앙값(n=5, P3-A peer_p3, LTM 2026H1)
+    value: 14.57
+  explicit_end: 2032
+  mid_year: true
+  roll_forward: wacc
+  source: 프로젝트 가정
+  status: ⚠️
+  terminal:
+    also: exit
+    primary: gordon
+  terminal_capex_to_dna: 1.1
+  terminal_nwc_growth: true
+decisions:
+  basis: D1~D5 사용자 확정. SRP 기본값은 한공회 표가 들어오면 srp.value/bands에 넣는다
+  sensitivity_de:
+  - 0.0
+  sensitivity_kd:
+    code: CB3Y_AAm
+    value: 0.04703
+  source: 사용자 결정 2026-10-03 (P3-B 프롬프트, Cowork 권고 확정)
+  srp_columns:
+  - 0.0
+  - 0.01
+  - 0.02
+  status: 🔸
+  structure: sotp
+meta:
+  as_of: '2026-09-30'
+  basis: 사용자 지시(P3-A 프롬프트 2026-10-03)
+  bs_date: '2026-06-30'
+  fs_div: CFS
+  ltm:
+    period: H1
+    year: 2026
+  status: 🔸
+  target:
+    corp_code: '01343665'
+    market: KOSDAQ
+    name: RF머트리얼즈
+    stock_code: '327260'
+mrp:
+  basis: 가이던스 범위 중앙값. 2024~2026 최종 권고 범위 원문은 미확인(⚠️) → 7~9% 민감도
+  options:
+  - 0.07
+  - 0.09
+  reference_lines:
+  - label: 한공회 포럼 2026 설문 점추정
+    value: 0.08167
+  - label: KCMI
+    value: 0.087
+  - label: Fernandez 하단 스트레스
+    value: 0.055
+  source: 한공회 MRP 가이던스 7~9%(2022 발표·2023 유지), 2026-05 설문 8.167%(CPA뉴스 2026-05-29,
+    한국세정신문 2026-05-29)
+  status: ✅
+  value: 0.08
+nci:
+  basis: 비지배지분이 큼(약 69%가 외부주주). 상장 종속회사라 시가 기준 차감이 대안 → P3-B 결정 항목
+  source: '2026 반기보고서 주석 1·31(20260814001631): 지분율 30.91%, RFHIC 위임 포함 의결권 44.09%'
+  status: ⚠️
+net_debt:
+  basis: 단기금융자산(CP·전단채·금융채·MMF형 수익증권)은 1년 안 현금화 가능 → 현금성. 정부보조금 차감은 2026-06-30 현재
+    0
+  source: 프로젝트 정의(P1 9절 남은 위험 → P3-A 확정)
+  status: 🔸
+non_operating: []
+p3c1:
+  basis: 프로젝트 가정. 기존 3개 시나리오·P3-B2 사전 고정 설계는 바꾸지 않는다
+  block:
+    base: 평가기준일까지 20거래일 VWAP(2026-09-02~09-30, 거래대금 합 ÷ 거래량 합, 수정 계수 적용)
+    premium_source: 'predict.premium_range 이웃 50건 분위(사용자 결정 D1: 경고 → 이웃 사용)'
+    tax_premium:
+      general: 0.2
+      law: 상속세 및 증여세법 제63조 제3항, 시행령 제53조(최대주주 할증 20%, 중소기업·일정 중견기업 제외)
+      sme_exempt: true
+      status_note: 법령 원문 확인 결과는 reports/p3c1_relative.md에 기록
+  source: 사용자 지시(P3-C1 프롬프트 2026-10-03), docs/p3_inputs_research.md 3.4
+  status: ⚠️
+risk_free:
+  basis: 평가보고서 표본에서 5년 48%·10년 39%(권세훈·한상범 2024 재인용) → 기본 5년, 10년 민감도
+  date_rule: 기준일, 휴일이면 직전 영업일
+  options:
+  - code: KTB10Y
+    item: '010210000'
+    label: 국고채 10년
+    value: 0.04407
+  source: 한국은행 ECOS 817Y002 시장금리(일별) 010200001, 2026-09-30
+  status: ✅
+  tenor: 5
+  tenor_basis: P5-B 의견서 Rf 만기 표시 57건 중 10년 56건(reports/p5b_final.md 7절) → 10년을 선택
+    칸으로 추가. 기본 5년 불변
+  tenor_codes:
+    5: KTB5Y
+    10: KTB10Y
+  value: 0.04203
+  value_series:
+    code: KTB5Y
+    item: '010200001'
+    name: 국고채(5년)
+    stat: 817Y002
+shares:
+  basis: 기준일 주당가치 분모 = 유통주식수. 기준일 이후 이벤트는 공시목록(2026-06-01~10-03)으로 확인
+  source: DART 접수번호 위 history
+  status: ✅
+srp:
+  band_basis: 대상 시가총액(기준일)
+  bands: []
+  basis: 구간 표 미확보. RF 시가총액(공개 비표시)이 어느 구간인지 모름 → 민감도로만
+  options:
+  - 0.0
+  - 0.0402
+  - 0.0486
+  source: 한공회 2026년 1월 기준 규모위험프리미엄 연구(기사 인용). 구간 경계·전체 표 원문 미확보
+  status: ⚠️
+  value: null
+working_capital:
+  basis: 계약부채(재화이전 선수금, 2026-06 134.8억)는 영업 관련 → 운전자본 부채. 차입 성격 아님
+  source: 프로젝트 정의
+  status: 🔸
