@@ -261,6 +261,10 @@ def set_assumption(s: dict, field: str, value, reason: str | None = None, judgem
     if not ok:
         return {"ok": False, "reason": why, "session": s, "result": None}
     cur = current(s)
+    if field in cur["overrides"] and cur["overrides"][field] == v:
+        # P7-C3 fix C3-F4: the same value again is not a change (no new version). A slow server re-sent the value of a
+        # re-keyed input after each new version and the versions ran away (v16)
+        return {"ok": True, "reason": "", "session": s, "result": cur["result"], "noop": True}
     ov = {**cur["overrides"], field: v}
     try:
         r = recalc.recalc(s["draft_config"], ov, ctx=session_ctx(s))
