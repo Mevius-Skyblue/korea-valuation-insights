@@ -136,8 +136,7 @@ def diag() -> None:
             "job_count": len(jobs), "job_peak_mb_max": max((j.get("peak_mb") or 0 for j in jobs), default=None),
             "job_peak_mb_last": jobs[-1].get("peak_mb") if jobs else None, "job_seconds_last": jobs[-1].get("seconds") if jobs else None,
             "cpu_count": os.cpu_count(), "time": time.strftime("%Y-%m-%dT%H:%M:%S")}
-    st.json(rows)
-    st.json(jobs[-10:])
+    st.code(json.dumps({"diag": rows, "jobs": jobs[-10:]}, ensure_ascii=False, indent=1), language="json")
 
 
 # ---------------------------------------------------------------- moved pages, calculator, banner
