@@ -201,8 +201,20 @@ def _premium(c: nav.Ctx) -> None:
     lab = {"lt25": "지분 25% 미만", "25to50": "지분 25~50%", "gt50": "지분 50% 초과", "strategic": "전략적 인수자", "financial": "재무적 인수자",
            "other": "기타 인수자", "all": "인수자 전체"}
     st.markdown(f"<span class='wb-chip'>{lab.get(pm['stake_band'])}</span><span class='wb-chip'>{lab.get(pm['buyer_group'])}</span>"
-                f"<span class='wb-chip'>시총 백분위 {pm['pct']:.1f}</span><span class='wb-chip'>{ui.esc(pm['period'])}</span>",
-                unsafe_allow_html=True)
+                f"<span class='wb-chip'>{'기준일 시총 백분위(고정)' if pm.get('pct_fixed') else '시총 백분위'} {pm['pct']:.1f}</span>"
+                f"<span class='wb-chip'>{ui.esc(pm['period'])}</span>", unsafe_allow_html=True)
+    # P7-C3b: the three ways the rule chooses from (aggregates only: quartiles and counts; no deal names, dates or values)
+    nb, bd, rg = pm.get("neighbour") or {}, pm.get("band") or {}, pm.get("regression") or {}
+    cv = pm.get("cv_improvement")
+    rows = [["비슷한 거래 이웃 50건", F.pct(nb.get("q25"), 1), F.pct(nb.get("q50"), 1), F.pct(nb.get("q75"), 1),
+             f"{nb.get('n', '—')}건" + (f" (같은 시장 {nb['n_same_market']})" if nb.get("n_same_market") is not None else "")],
+            [f"시총 백분위 구간 표 {bd.get('band', '')}", F.pct(bd.get("q25"), 1), F.pct(bd.get("q50"), 1), F.pct(bd.get("q75"), 1),
+             f"{bd.get('n', '—')}건" + (" (n<10 주의)" if (bd.get("n") or 0) < 10 else "")],
+            ["분위 회귀", F.pct(rg.get("q25"), 1), F.pct(rg.get("q50"), 1), F.pct(rg.get("q75"), 1),
+             "채택" if cv is not None and cv >= 0.05 else "미채택"]]
+    ui.table(["방식", "하위 25%", "중앙값", "상위 25%", "건수·채택"], rows, num_cols=(1, 2, 3), min_width=480,
+             caption=(f"대표 출력 = {METHOD.get(pm['method'], pm['method'])}. 분위 회귀 채택 기준: CV 중앙값 손실 개선 ≥ 5%"
+                      + (f"(지금 {cv:.2%})" if cv is not None else "") + ". 거래별 값·거래 이름은 표시하지 않습니다"))
     if pm.get("warnings"):
         st.markdown(f"<p class='wb-kpi-note wb-warn'>주의: {ui.esc('; '.join(warn_ko(w) for w in pm['warnings']))[:400]}</p>",
                     unsafe_allow_html=True)

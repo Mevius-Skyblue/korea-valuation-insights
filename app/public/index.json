@@ -1,5 +1,27 @@
 [
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+},
+"pct": 43.6,
+"pct_exact": 43.59452736318408,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+}
+},
 "check_ps": 71246.47852480109,
 "code": "000650",
 "hold": false,
@@ -7,9 +29,31 @@
 "market": "KOSPI",
 "name": "천일고속",
 "path": "loss",
-"sha256": "ad999d101bf8cd1f2d989ac730b8a8bd122e2cc463e20e52395a77feeb46080c"
+"sha256": "08e851e9199b3ede78d3e5f499eb948b47b3d8e994ef15738a4760b736b0de8e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 67.2,
+"pct_exact": 67.22636815920399,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 56012.18135910737,
 "code": "001060",
 "hold": false,
@@ -17,9 +61,31 @@
 "market": "KOSPI",
 "name": "JW중외제약",
 "path": "general",
-"sha256": "e8acd0f4aa865065596697c18ab0ba5c8861dd0f89056d03f6c907c4786fcec5"
+"sha256": "6729c5ee69e7f2a4d15807514d0f06435a23adf9f31c1d252d722bf81e63b37e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 77.4,
+"pct_exact": 77.42537313432835,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 286538.8457389424,
 "code": "001120",
 "hold": true,
@@ -27,9 +93,31 @@
 "market": "KOSPI",
 "name": "LX인터내셔널",
 "path": "nci",
-"sha256": "bd432c04cf43caf1dd1fa17a789b628e3f5cf026c8c18726498fc7bbd89292b7"
+"sha256": "894bf1177df770dccfe8bb7bbd376f1af96e4e2ee0e34b3ba9af49f0ac96efa5"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+},
+"pct": 51.3,
+"pct_exact": 51.30597014925373,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+}
+},
 "check_ps": 5894.358329575299,
 "code": "001390",
 "hold": false,
@@ -37,9 +125,31 @@
 "market": "KOSPI",
 "name": "KG케미칼",
 "path": "sotp",
-"sha256": "a73c3dc36b46d9e2e365be8d98704db75862b63ca70502e396a03d7fff48d119"
+"sha256": "9ec0fdad7fe9ee76ed82bd6ee6aca4d9b413322e27ea4c9f41abd46ac0792cfd"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+},
+"pct": 45.8,
+"pct_exact": 45.833333333333336,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+}
+},
 "check_ps": 81452.40676977056,
 "code": "001460",
 "hold": false,
@@ -47,9 +157,31 @@
 "market": "KOSPI",
 "name": "BYC",
 "path": "general",
-"sha256": "b102be2119ea241327e3f3a0cc7cfac8b3cc94940ea428750c0afc264b7fb085"
+"sha256": "e8dd5a1820372d2cca907a8b6629aa87aacf9f4bfb13f07e8afd404c8c33c48c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.0050676985368532
+},
+"pct": 30.7,
+"pct_exact": 30.6592039800995,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.0050676985368532
+}
+},
 "check_ps": 58415.808779144376,
 "code": "002460",
 "hold": false,
@@ -57,9 +189,31 @@
 "market": "KOSPI",
 "name": "HS화성",
 "path": "general",
-"sha256": "f9aaae3995a60492cc76171953cca545809c1a94c4d082a57e99ec2ee51d4038"
+"sha256": "c360616b64b352a9182dc0c858605bc585ad86a78adfd39efbd0db7f604d41ee"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 79.3,
+"pct_exact": 79.2910447761194,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 12867.746782249145,
 "code": "002790",
 "hold": false,
@@ -67,9 +221,31 @@
 "market": "KOSPI",
 "name": "아모레퍼시픽홀딩스",
 "path": "sotp",
-"sha256": "86077061477d74468795710b5a4a2e09bb0a139396f4c5f080b2cb11202a3f07"
+"sha256": "35a26bbde1368ee3a2f5d71e830f7f2f7a9a73f78f11a61d776e57622dd8b9d4"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 61.8,
+"pct_exact": 61.75373134328358,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 40797.961333693114,
 "code": "002990",
 "hold": false,
@@ -77,9 +253,31 @@
 "market": "KOSPI",
 "name": "금호건설",
 "path": "loss",
-"sha256": "4e71cbdc19fe69f81b97a6be871d75aa7d1637acb9cd7f205293e7bf72f2aa9b"
+"sha256": "f7caedd39c1a2cb9f7ccd892e717aee6b39b7fa9f9e8010ad521c54b56a771a2"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+},
+"pct": 47.1,
+"pct_exact": 47.0771144278607,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+}
+},
 "check_ps": 154421.97194865398,
 "code": "003070",
 "hold": true,
@@ -87,9 +285,31 @@
 "market": "KOSPI",
 "name": "코오롱글로벌",
 "path": "loss",
-"sha256": "b1bbfe6a2fd45638a744d26c596ac4104d16f0ed8b83b1ce54e1f215d599909a"
+"sha256": "e19714936f00f8be588ca7368dcd781420c0de528658c76373227939e0e4692a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 71.2,
+"pct_exact": 71.20646766169155,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 12697.601771190979,
 "code": "003090",
 "hold": false,
@@ -97,9 +317,31 @@
 "market": "KOSPI",
 "name": "대웅",
 "path": "sotp",
-"sha256": "feb61b49ab0624f17840efb544a73a7a5f3b70734b6afae1e8b7f4ac7a4b30d1"
+"sha256": "8720b71ea75e542ce05efebf895f199d32c1e4c3674022d11cc692d61119376e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08027333715678242,
+"q50": 0.08047585527300394,
+"q75": 0.3659464060741582
+},
+"pct": 66.4,
+"pct_exact": 66.35057471264368,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08047408174237619,
+"q50": 0.08014904762051306,
+"q75": 0.36540326158854286
+}
+},
 "check_ps": 41525.364753352886,
 "code": "003100",
 "hold": false,
@@ -107,9 +349,31 @@
 "market": "KOSDAQ",
 "name": "선광",
 "path": "general",
-"sha256": "4b3a8c955da9a94a13dc7727ae762c1fe637db90fefc8e4815b978f7ff9a94f6"
+"sha256": "5f684488eb63f5dd8ea262c99caf18855174f864da86ad7b44efa14ff0ceeb62"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+},
+"pct": 48.6,
+"pct_exact": 48.569651741293534,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+}
+},
 "check_ps": 45587.55831953296,
 "code": "003200",
 "hold": false,
@@ -117,9 +381,31 @@
 "market": "KOSPI",
 "name": "일신방직",
 "path": "nci",
-"sha256": "0138ab989314d21d066bb421899067edf5f30f7e29e4f62cc221f26b43c6b2fa"
+"sha256": "b9d75cdfc6701382b8ce87967c6876975e7d3f283fdfea9835652c75c8329c27"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.9343456709875422
+},
+"pct": 39.2,
+"pct_exact": 39.24129353233831,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.9343456709875422
+}
+},
 "check_ps": 28458.98691848685,
 "code": "003220",
 "hold": false,
@@ -127,9 +413,31 @@
 "market": "KOSPI",
 "name": "대원제약",
 "path": "sotp",
-"sha256": "8b1b36b6e0a49ebffe62729775bfefd69e8937392a4697e25fea5d61bb348378"
+"sha256": "dabac915379f79d05f498a278d1d93c2ee4bf0a87500c26cd0f91c7338e046f7"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+},
+"pct": 35.3,
+"pct_exact": 35.26119402985075,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+}
+},
 "check_ps": 23052.186415371547,
 "code": "003480",
 "hold": true,
@@ -137,9 +445,31 @@
 "market": "KOSPI",
 "name": "한진중공업홀딩스",
 "path": "nci",
-"sha256": "adbe573f80b7d37b4db24e189322c581e53889df710afbcd210bf2b5cfe97445"
+"sha256": "8440b40a2f1188cddf7c9f3bf1e10eea787c4162b287c6a97124ac1719b57cb5"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.031993679801472
+},
+"pct": 29.0,
+"pct_exact": 29.04228855721393,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.031993679801472
+}
+},
 "check_ps": 9680.961684139678,
 "code": "004250",
 "hold": true,
@@ -147,9 +477,31 @@
 "market": "KOSPI",
 "name": "NPC",
 "path": "general",
-"sha256": "3a1cb4129f8d251222e25713e1b9d5a7cf79d4e53c58ac15ec05be8ebcd835a2"
+"sha256": "0e16038d64a662307d5711758ae6b1c5cf646c3beca28303f273972168d85c1e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 70.6,
+"pct_exact": 70.58457711442786,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 215782.7352226335,
 "code": "004490",
 "hold": true,
@@ -157,9 +509,31 @@
 "market": "KOSPI",
 "name": "세방전지",
 "path": "general",
-"sha256": "59dbe8f5f0c91207bfd6f796a0463766792a3e5256f49dba09080f64a885b009"
+"sha256": "e6ec44fa4598eb62f433295e4b777551b21d0111fcb21035e7193275f9af1cf9"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 76.6,
+"pct_exact": 76.55472636815921,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 76059.8626929616,
 "code": "006040",
 "hold": false,
@@ -167,9 +541,31 @@
 "market": "KOSPI",
 "name": "동원산업",
 "path": "sotp",
-"sha256": "b821bc84b490016d348713b0ef89d0296abbe6ea1e05bcdf38d5a0a4aa0a0c31"
+"sha256": "8b3937e5b063659981789054002b23a90116794398639281ec8a8c68e12aa926"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 56.3,
+"pct_exact": 56.28109452736319,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 85285.15587877159,
 "code": "007690",
 "hold": false,
@@ -177,9 +573,31 @@
 "market": "KOSPI",
 "name": "국도화학",
 "path": "general",
-"sha256": "c2cf6ccf4ae479e9e31fe3bf9872b17e6fa581f8dd8c85ad4268e54fbec008de"
+"sha256": "91ea9900c2b4f22626a4d5f82cbff00a793d1f7535f4578ed5ec201671705e14"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+},
+"pct": 34.9,
+"pct_exact": 34.88805970149254,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+}
+},
 "check_ps": 1737.8129960149267,
 "code": "008350",
 "hold": false,
@@ -187,9 +605,31 @@
 "market": "KOSPI",
 "name": "남선알미늄",
 "path": "general",
-"sha256": "dcf6620c995f7662d39476773f7b56af1b9cdc250d0882711a2051979ed837b8"
+"sha256": "a79c18644e60b8e9b94b934521f3bd805c2cf8d38aeee454235a82668e700666"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 60.4,
+"pct_exact": 60.385572139303484,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 77620.92318046806,
 "code": "010780",
 "hold": true,
@@ -197,9 +637,31 @@
 "market": "KOSPI",
 "name": "아이에스동서",
 "path": "sotp",
-"sha256": "4525f32b8df08de5cc36b8efeb6426282ee95017f1928b6e429312065ed03bc5"
+"sha256": "288e70103af214a99ec9ece432f51eaa775b422e456a9acac9b65f41e8ff7e4f"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09171111005689325,
+"q50": 0.0618554192589888,
+"q75": 0.33499980166119714
+},
+"pct": 69.2,
+"pct_exact": 69.16666666666667,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09184649594020067,
+"q50": 0.06163501409800659,
+"q75": 0.33463349491508454
+}
+},
 "check_ps": 7760.78711864629,
 "code": "011040",
 "hold": false,
@@ -207,9 +669,31 @@
 "market": "KOSDAQ",
 "name": "경동제약",
 "path": "loss",
-"sha256": "4b964d21de4530f6a93f6f39633e78058968526d59ff2209e3a45e9348fafcfb"
+"sha256": "8cfac010ab2822f4062e4156ead429d13c6caf1a9482d42be169d6a9374ef988"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 93.3,
+"pct_exact": 93.3457711442786,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 803668.9795278019,
 "code": "011070",
 "hold": false,
@@ -217,9 +701,31 @@
 "market": "KOSPI",
 "name": "LG이노텍",
 "path": "general",
-"sha256": "1b8367fb998b633207ca1b25ad5a395c6735c05dc206cba0dcc8dcbb86f92f7c"
+"sha256": "842d42dd63508d5b2be20b3b43ca3d458cbb51972e1ed21f865d4cc1661b6d71"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 75.4,
+"pct_exact": 75.43532338308458,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 119925.40550047984,
 "code": "011210",
 "hold": false,
@@ -227,9 +733,31 @@
 "market": "KOSPI",
 "name": "현대위아",
 "path": "nci",
-"sha256": "3b918b49cbb99090d0010563340e900dadd5e01cbd1e415424c800e85f5c57b8"
+"sha256": "85b6dc649dc76641bc167b47e6c7dc537b8d26d9fc2a04953dd6096386404068"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 55.2,
+"pct_exact": 55.16169154228856,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 329804.95181395125,
 "code": "011760",
 "hold": true,
@@ -237,9 +765,31 @@
 "market": "KOSPI",
 "name": "현대코퍼레이션",
 "path": "general",
-"sha256": "c63f73dae03335f21d8241028e85368cc8b0a3a328313f666b3da0771d9eb2cf"
+"sha256": "3aeece8ced5b0aa2c101b6be05ffbb1abe0cfd41f3ca152e6cf688767340c53b"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 85.0,
+"pct_exact": 85.01243781094527,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 103370.28456931641,
 "code": "012750",
 "hold": false,
@@ -247,9 +797,31 @@
 "market": "KOSPI",
 "name": "에스원",
 "path": "general",
-"sha256": "efd4264116db2ba5b4f51e59347efa969f6b8cd2e17919a4e84547e79439db20"
+"sha256": "b097ce0bcbe0ff9dcfea37623015fcbc92fcad1e03afc4bab193e9e01592dbaf"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.031993679801472
+},
+"pct": 29.4,
+"pct_exact": 29.415422885572138,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.031993679801472
+}
+},
 "check_ps": 1690.3932960839982,
 "code": "012800",
 "hold": false,
@@ -257,9 +829,31 @@
 "market": "KOSPI",
 "name": "대창",
 "path": "sotp",
-"sha256": "670526da5c58607f3d6832f7d3ac07414246aacad13838862ed45be9829e41ed"
+"sha256": "23e966764313b7b4622970ecc8af1fe2ff7984cbf7fa2830c3425f5cb6c3d62d"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 0.99853214303146
+},
+"pct": 33.6,
+"pct_exact": 33.64427860696517,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 0.99853214303146
+}
+},
 "check_ps": 13185.433789821152,
 "code": "013520",
 "hold": true,
@@ -267,9 +861,31 @@
 "market": "KOSPI",
 "name": "화승코퍼레이션",
 "path": "nci",
-"sha256": "b03cea134f6439a3146c33e1ae3f9e8b4776736d400424d88e1c7f49e5e2f8c1"
+"sha256": "00935906ad08226a8e6dec16643f8e8cb876fc14a84ddf62fb3bc2dda69aabbe"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 59.6,
+"pct_exact": 59.63930348258707,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 234134.4708439987,
 "code": "014830",
 "hold": false,
@@ -277,9 +893,31 @@
 "market": "KOSPI",
 "name": "유니드",
 "path": "general",
-"sha256": "a23bee7d195add074d4fef8ff9252bd775eef04f1702b094628a55335f07fb47"
+"sha256": "d7de71aaca738ae4804fcf194190c6f66f6bc79ed55182585044249af90dd5b4"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+},
+"pct": 35.1,
+"pct_exact": 35.13681592039801,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+}
+},
 "check_ps": 12461.581651632863,
 "code": "015890",
 "hold": false,
@@ -287,9 +925,31 @@
 "market": "KOSPI",
 "name": "태경산업",
 "path": "sotp",
-"sha256": "949e460e9d5418bcfdd2cc87395e8b7ab16152306d4c15579e7515f4fdcd12b8"
+"sha256": "d304f1ae6724bf66d6b1aafbfbbe9fcf7d69a9072b823805cf4c8e532637215e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.0050676985368532
+},
+"pct": 30.9,
+"pct_exact": 30.907960199004975,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.0050676985368532
+}
+},
 "check_ps": 441807.4445702554,
 "code": "016740",
 "hold": true,
@@ -297,9 +957,31 @@
 "market": "KOSPI",
 "name": "두올",
 "path": "general",
-"sha256": "529cf8922527539280b22c344b44039fdb304fdc090c80ac92f709ab91a7dccd"
+"sha256": "b0c7ae60068931b1f90c546d2e8a79826c831dbace45c9de50cda7240d5cd93d"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+},
+"pct": 36.0,
+"pct_exact": 36.007462686567166,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.3598879862896702,
+"q75": 0.9793043164940216
+}
+},
 "check_ps": 10056.245875238517,
 "code": "016880",
 "hold": true,
@@ -307,9 +989,31 @@
 "market": "KOSPI",
 "name": "웅진",
 "path": "sotp",
-"sha256": "6e71c31f80358bcfa876361fe5ce35ff2067fbd525725bd7d4ffa6b46dff5d2e"
+"sha256": "53ef6c3aca0699c70c6b45e8ead3380b4ce5ce64b37c9e080a16ae27ae5c55cd"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.06440050945866943,
+"q50": 0.10631646035367792,
+"q75": 0.40889271423908347
+},
+"pct": 62.4,
+"pct_exact": 62.44252873563219,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.06422777574548405,
+"q50": 0.10659766693837941,
+"q75": 0.40936007112205475
+}
+},
 "check_ps": 7438.292702236572,
 "code": "017510",
 "hold": false,
@@ -317,9 +1021,31 @@
 "market": "KOSDAQ",
 "name": "세명전기",
 "path": "general",
-"sha256": "87d8e761d4f59173571f3c2f00756ee8ad1a45757fb7716043288fd405b24940"
+"sha256": "9534d13839bdfa0838319428b2ee44225cb32dcb7e1315789978231feb7c1262"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 83.3,
+"pct_exact": 83.27114427860697,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 63481.119770041565,
 "code": "017800",
 "hold": false,
@@ -327,9 +1053,31 @@
 "market": "KOSPI",
 "name": "현대엘리베이터",
 "path": "sotp",
-"sha256": "cd811a0894ccfbd25b39acf9521baa82f3c62b3d2084d903e8108b2d4de09738"
+"sha256": "68e76b8f2d3094d88150d7e24d1003b281ec268ff4fa2bb64c1a1ca2abf2682f"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 73.2,
+"pct_exact": 73.19651741293532,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 13547.443499642213,
 "code": "017960",
 "hold": false,
@@ -337,9 +1085,31 @@
 "market": "KOSPI",
 "name": "한국카본",
 "path": "general",
-"sha256": "97f7a4ba2a2e3435eed78b0e44ce6cd37f3041f02aaa5da4731cbec8f9a042a0"
+"sha256": "6578159908b753e7f2596fd45970de73b369ef55f0dc0f9d28f405c062794f7e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 52.8,
+"pct_exact": 52.798507462686565,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 35176.410711121025,
 "code": "018250",
 "hold": true,
@@ -347,9 +1117,31 @@
 "market": "KOSPI",
 "name": "애경산업",
 "path": "general",
-"sha256": "c851ef5cbcf2461d59a54bacde873b456e046f5e013d25d67beae3dd42c6d0ee"
+"sha256": "451b2342941724c24400f7219cb15b3857c81312e6c184cd1c4bc90f906ed670"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+},
+"pct": 78.0,
+"pct_exact": 77.95977011494253,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+}
+},
 "check_ps": 87023.90199297493,
 "code": "018310",
 "hold": false,
@@ -357,9 +1149,31 @@
 "market": "KOSDAQ",
 "name": "삼목에스폼",
 "path": "general",
-"sha256": "986ed326942cad7b3bed6815212aa449123961453ed3f7e8cfacf1571aed8799"
+"sha256": "70d73c3b9783d7c4145c8d7a961f896f2158623a118d8975eb3b7022129c8907"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 84.4,
+"pct_exact": 84.3905472636816,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 6395.678649715727,
 "code": "022100",
 "hold": true,
@@ -367,9 +1181,31 @@
 "market": "KOSPI",
 "name": "포스코DX",
 "path": "general",
-"sha256": "4ffda9f7631a31e9bae879aba9dd3077d5eb75fe6de7788d7da861a14d0a5d29"
+"sha256": "0b8e29d0c12045404dfb059f943422136eab8b60ffebc01dc0eae7f643a13d41"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 79.9,
+"pct_exact": 79.91293532338308,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 48961.63081012853,
 "code": "030000",
 "hold": false,
@@ -377,9 +1213,31 @@
 "market": "KOSPI",
 "name": "제일기획",
 "path": "general",
-"sha256": "476d49dfe0fe3f04615b97cdad81c460924ae28f56d86afe4f0ab1f12119547d"
+"sha256": "e8d0bca0cee8036d5055faf77c46f33bfd180e3370dcb32b56c973327df931dc"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+},
+"pct": 40.7,
+"pct_exact": 40.733830845771145,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+}
+},
 "check_ps": 36926.72615287055,
 "code": "033530",
 "hold": false,
@@ -387,9 +1245,31 @@
 "market": "KOSPI",
 "name": "SJG세종",
 "path": "general",
-"sha256": "0d17bf03f92353306261300024629643f3402e59b3f22e64cc704e4f513a7ae0"
+"sha256": "c347a6810fda66f0182161c9fc70f235ea92bb71e11349ba493836a5ef01bee9"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+},
+"pct": 45.0,
+"pct_exact": 44.96268656716418,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+}
+},
 "check_ps": -3359.374333694593,
 "code": "034120",
 "hold": true,
@@ -397,9 +1277,31 @@
 "market": "KOSPI",
 "name": "SBS",
 "path": "general",
-"sha256": "db2cd3196a5a069aaefa9de6ee64773ab9d58c2e915c059ada69c9efae3c8ddf"
+"sha256": "354387a4d73193f1d447eb5d1a455e68cbf68d4abde634873c65d585bd137ce3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.1169208952244844,
+"q50": 0.020814458248506584,
+"q75": 0.2667909592816099
+},
+"pct": 75.4,
+"pct_exact": 75.3735632183908,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11702827023538342,
+"q50": 0.02063965415531377,
+"q75": 0.2665004401381412
+}
+},
 "check_ps": 37226.80878533597,
 "code": "034810",
 "hold": true,
@@ -407,9 +1309,31 @@
 "market": "KOSDAQ",
 "name": "해성산업",
 "path": "sotp",
-"sha256": "9c997b91f024c15b29099eb54d35ecc0514b0f20ab3c3fedbc2b143d4da6d967"
+"sha256": "0d9be28b7f26a1de16708cb4bad2b23dc0a5dddf8b6c31486d1833956a50199a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07373746692814764,
+"q50": 0.09111610442386975,
+"q75": 0.3836301800244215
+},
+"pct": 64.7,
+"pct_exact": 64.74137931034483,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07356940169369702,
+"q50": 0.09138971083060626,
+"q75": 0.3840849056402854
+}
+},
 "check_ps": 34450.437319642006,
 "code": "035080",
 "hold": false,
@@ -417,9 +1341,31 @@
 "market": "KOSDAQ",
 "name": "그래디언트",
 "path": "sotp",
-"sha256": "4b32ab489e702493fbe3d7632877c6fbf4e098bb0cb4bfc87e36d0a85fa657f0"
+"sha256": "d75142dcdd41ac5b904a17627a093aaa345c9764de38500ebc9410c78583703f"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20475691043119038,
+"q75": 0.5858494584332685
+},
+"pct": 82.2,
+"pct_exact": 82.15517241379311,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20475691043119038,
+"q75": 0.5858494584332685
+}
+},
 "check_ps": 52810.29748239273,
 "code": "035600",
 "hold": true,
@@ -427,9 +1373,31 @@
 "market": "KOSDAQ",
 "name": "KG이니시스",
 "path": "sotp",
-"sha256": "1241f547e71aaf83695f6b232e2dcca40b85e3fd8f267676cd9c0ab91bcfe814"
+"sha256": "d04786e32fbdae0b94807996fc72ce9a7d14194bb566435b55345cc65d0a746d"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08050676109351934,
+"q50": 0.08009584637475875,
+"q75": 0.36531484271879155
+},
+"pct": 66.4,
+"pct_exact": 66.4080459770115,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08047408174237619,
+"q50": 0.08014904762051306,
+"q75": 0.36540326158854286
+}
+},
 "check_ps": 17418.80497350691,
 "code": "035610",
 "hold": true,
@@ -437,9 +1405,31 @@
 "market": "KOSDAQ",
 "name": "솔본",
 "path": "nci",
-"sha256": "bab18eac4cc1815a557f3cb778b02b222269df65a051a17f89e570533008c828"
+"sha256": "760bbb1314ca59e9b665b8e046de75618ae03ea4df219396344c39121db6ee51"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 93.8,
+"pct_exact": 93.84328358208955,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 24704.45853362063,
 "code": "035720",
 "hold": false,
@@ -447,9 +1437,31 @@
 "market": "KOSPI",
 "name": "카카오",
 "path": "sotp",
-"sha256": "649e4610676fdedb20cb2845fc086a0f621bc6e1461505524d103ca3e8b9232f"
+"sha256": "8dd78f665d1cf846468ddce58c055a0bd22b679bc384ced9d494475a57fd13e5"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.26607622563765154,
+"q75": 0.7126778164567518
+},
+"pct": 79.7,
+"pct_exact": 79.74137931034483,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.26607622563765154,
+"q75": 0.7126778164567518
+}
+},
 "check_ps": 12797.148100265402,
 "code": "036030",
 "hold": false,
@@ -457,9 +1469,31 @@
 "market": "KOSDAQ",
 "name": "케이티알파",
 "path": "general",
-"sha256": "b338b6419b12c9790cdc6ce2505a2ad6422b451e7a79b19f2a4b6bff11385a94"
+"sha256": "145c75588d86cda2ab0d6c72c68195902480cd096ed298de29a1630b87d2de8b"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.006234485592967076,
+"q50": 0.20475691043119038,
+"q75": 0.5134027907750078
+},
+"pct": 84.1,
+"pct_exact": 84.05172413793103,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.006234485592967076,
+"q50": 0.20475691043119038,
+"q75": 0.5134027907750078
+}
+},
 "check_ps": 7880.8842123989625,
 "code": "036200",
 "hold": false,
@@ -467,9 +1501,31 @@
 "market": "KOSDAQ",
 "name": "유니셈",
 "path": "general",
-"sha256": "da26569d8a55436c4821c8bb20fb7d121cf50ca141637017090c921d8084082e"
+"sha256": "ed2dbfebd919f3b64a4032d7fc2eb3e060fc2161af1c7e328f375319936febf3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 87.1,
+"pct_exact": 87.1268656716418,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": -487446.4626946046,
 "code": "036570",
 "hold": true,
@@ -477,9 +1533,31 @@
 "market": "KOSPI",
 "name": "NC",
 "path": "general",
-"sha256": "afecd4c3e4815f76be1c301797d918fc9ae6324f0dc5b6e1418934231a88b877"
+"sha256": "a4d024e243fb936da9b548c6b525d527cca7deb2be62c6bdd2c747c6ee69e081"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 99.9,
+"pct_exact": 99.85632183908046,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 21395.80866237018,
 "code": "036930",
 "hold": true,
@@ -487,9 +1565,31 @@
 "market": "KOSDAQ",
 "name": "주성엔지니어링",
 "path": "general",
-"sha256": "107d33be86cad0fbcfd1ad4e9efac155921e50f5770b315569295669273a773a"
+"sha256": "b38ced0a464a94957332e44aeab5badb96977a17d398f75bc7928b8f43b4d645"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 90.2,
+"pct_exact": 90.20114942528735,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 28508.378779462448,
 "code": "037460",
 "hold": false,
@@ -497,9 +1597,31 @@
 "market": "KOSDAQ",
 "name": "삼지전자",
 "path": "sotp",
-"sha256": "bd594d7342404223ed884c4f62d6b596038a757ad5944aa167e8740794a0071f"
+"sha256": "37df80e496e88337c3e093a521aa221b3609cd2e2414bb992d75665e4ed53c70"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+},
+"pct": 49.4,
+"pct_exact": 49.440298507462686,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+}
+},
 "check_ps": -17318.61854203465,
 "code": "037710",
 "hold": true,
@@ -507,9 +1629,31 @@
 "market": "KOSPI",
 "name": "광주신세계",
 "path": "general",
-"sha256": "c7d79eba147387a60ec9d5c82e0e12bc4458d62e4523749c1a6d591b2ba2d76b"
+"sha256": "41961d6736060974e3eb3b083cc467bd4c49dd7f93024bdc2256f1fc8af48f30"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 97.1,
+"pct_exact": 97.09770114942529,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 107091.33005132448,
 "code": "041510",
 "hold": false,
@@ -517,9 +1661,31 @@
 "market": "KOSDAQ",
 "name": "에스엠",
 "path": "sotp",
-"sha256": "2140bf279591ca2e20395a53d6724802c3a29d4ebe69326c47a752a779a84a83"
+"sha256": "80b112bfeaeb1bd7990afa0fc44d9eb0437f0411138d04b821ca9dfdd486cc6f"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09101083824668232,
+"q50": 0.06299544595372453,
+"q75": 0.3368944917272969
+},
+"pct": 69.0,
+"pct_exact": 68.99425287356321,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09103418064035607,
+"q50": 0.06295744506389994,
+"q75": 0.33683133539176024
+}
+},
 "check_ps": 12936.846690792674,
 "code": "041520",
 "hold": false,
@@ -527,9 +1693,31 @@
 "market": "KOSDAQ",
 "name": "이엘씨",
 "path": "loss",
-"sha256": "97103a815dd681a56eca800ae398daabf080441781a88aa8efcf9aa970a268d0"
+"sha256": "d30a16cd3c1984f1cc7656f721077e1553bad21bd1bf3cee2a1e280fe9379c21"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+},
+"pct": 47.7,
+"pct_exact": 47.69900497512438,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.7688086466694185
+}
+},
 "check_ps": 106800.98410393347,
 "code": "044820",
 "hold": false,
@@ -537,9 +1725,31 @@
 "market": "KOSPI",
 "name": "코스맥스비티아이",
 "path": "nci",
-"sha256": "1ce6aaa081cfdd06fff1d4eba272985c1147083516f2e5b32aca7500102ec336"
+"sha256": "e3a127a7023f768ef8b03d7e042bc34f4ef42085b10e003327b7db28b547c16e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.060665726470878145,
+"q50": 0.11239660272560126,
+"q75": 0.41899772792494827
+},
+"pct": 61.5,
+"pct_exact": 61.52298850574713,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.060572356896183344,
+"q50": 0.11254860628489938,
+"q75": 0.4192503532670949
+}
+},
 "check_ps": 14.823838065810433,
 "code": "047310",
 "hold": true,
@@ -547,9 +1757,31 @@
 "market": "KOSDAQ",
 "name": "파워로직스",
 "path": "general",
-"sha256": "0ec80eab7b2310a42731582315e8ff7a1d59c8fdfae3855a35eedea82a851ace"
+"sha256": "eafa96d3e48d673696a44b88a8c41486ddfa130aa2b27b51d36b9033c906cc2a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09778013241205408,
+"q50": 0.051975187904613473,
+"q75": 0.31857915442166695
+},
+"pct": 70.7,
+"pct_exact": 70.66091954022988,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09793886068903523,
+"q50": 0.05171678185380674,
+"q75": 0.3181496913400177
+}
+},
 "check_ps": 12843.32017548958,
 "code": "051370",
 "hold": false,
@@ -557,9 +1789,31 @@
 "market": "KOSDAQ",
 "name": "인터플렉스",
 "path": "general",
-"sha256": "6d49c1aface2a71b6dc632412e7ec3c7cfcd4ba7becc90a67d3b506865c88a65"
+"sha256": "17d2328d561dda7f435e0f8f7c6a99ea44d274aff0a8aae9cbbe7482de38df03"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 95.0,
+"pct_exact": 94.96268656716418,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 618687.1115080785,
 "code": "051910",
 "hold": true,
@@ -567,9 +1821,31 @@
 "market": "KOSPI",
 "name": "LG화학",
 "path": "sotp",
-"sha256": "89e19bcd84f6b13aea8f6a74848678b52d38e353b2ba0de9c112d1997e258472"
+"sha256": "acee6f033a697cb4a954f75219dbe3ea6f5d62da8a4eb7450c30d24a0939164c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.006234485592967076,
+"q50": 0.26551606552308105,
+"q75": 0.4523306969029984
+},
+"pct": 85.3,
+"pct_exact": 85.316091954023,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.006234485592967076,
+"q50": 0.26551606552308105,
+"q75": 0.5134027907750078
+}
+},
 "check_ps": 6806.735710535256,
 "code": "052710",
 "hold": true,
@@ -577,9 +1853,31 @@
 "market": "KOSDAQ",
 "name": "아모텍",
 "path": "loss",
-"sha256": "e3e9110f24061d1441d3208c87f6677955f4441e37999ceefc7da3145690c674"
+"sha256": "01dbdbb5ac1f3a23975baf66c9b2bbafb31146983730613cc83343d93a46f739"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.0544835761543192,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+},
+"pct": 42.1,
+"pct_exact": 42.101990049751244,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.0544835761543192,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+}
+},
 "check_ps": -5765.225532688485,
 "code": "053210",
 "hold": true,
@@ -587,9 +1885,31 @@
 "market": "KOSPI",
 "name": "스카이라이프",
 "path": "nci",
-"sha256": "5fa876adea90a9acd1f02ca7386bd7c64422902da3ab06ae025e0c0ed8639b1b"
+"sha256": "1e62819d917e9b493a5654e00dce54fc31480a12897c7677dc802eb6248c3d9c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.05432706277642904,
+"q50": 0.26551606552308105,
+"q75": 0.5858494584332685
+},
+"pct": 83.0,
+"pct_exact": 82.95977011494253,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.05432706277642904,
+"q50": 0.26551606552308105,
+"q75": 0.5858494584332685
+}
+},
 "check_ps": 41138.36159391719,
 "code": "054950",
 "hold": false,
@@ -597,9 +1917,31 @@
 "market": "KOSDAQ",
 "name": "제이브이엠",
 "path": "general",
-"sha256": "fa7a41249c70c2939424cfce4c9fb32123ac6b2c81ef1f0b9a41bd6d22c4771c"
+"sha256": "f655f7c91d8481726fb24588d61b2b45026c972878c2f0685ea1760555b37c0c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 93.8,
+"pct_exact": 93.82183908045977,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": -2780.2996503615327,
 "code": "059090",
 "hold": true,
@@ -607,9 +1949,31 @@
 "market": "KOSDAQ",
 "name": "미코",
 "path": "sotp",
-"sha256": "b40edf333f6dfe2bdffcd240a2a5d124f63cb50e49c701ca828107906d7d57d6"
+"sha256": "9add8939324da8a67de08dab344e22c2992985b05e6cdae65a895776cecae9be"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07887279353636067,
+"q50": 0.08275590866247512,
+"q75": 0.3697357862063574
+},
+"pct": 66.0,
+"pct_exact": 66.00574712643679,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07884945114268699,
+"q50": 0.0827939095522997,
+"q75": 0.36979894254189405
+}
+},
 "check_ps": 8361.209802987158,
 "code": "060150",
 "hold": false,
@@ -617,9 +1981,31 @@
 "market": "KOSDAQ",
 "name": "인선이엔티",
 "path": "general",
-"sha256": "a37c0b0007ece2a6d84b65b8e7802bc847fd61b03cef7110f6bb95bbb0d782a8"
+"sha256": "5b63c9f0427885c410edfbfcae47af97bc7f947a185d602b0b01964bf3baa8e1"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 96.8,
+"pct_exact": 96.75287356321839,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 6559.82517526425,
 "code": "060370",
 "hold": true,
@@ -627,9 +2013,31 @@
 "market": "KOSDAQ",
 "name": "LS마린솔루션",
 "path": "general",
-"sha256": "30c0c5267f3ff0068bc590acfdbffefc68f5512ceed7f3588070059a276f416c"
+"sha256": "6831bc9a29650a1ae43377e48613c8ed0ac8da547ac97ef09ab5941398657066"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 92.6,
+"pct_exact": 92.55747126436782,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 3152.454378988956,
 "code": "064290",
 "hold": false,
@@ -637,9 +2045,31 @@
 "market": "KOSDAQ",
 "name": "인텍플러스",
 "path": "loss",
-"sha256": "b865fa70a69f8cce40c507f413be34de6c7c9fdd5bd22df5101e4c164c1d0ac8"
+"sha256": "022927e3eeaf1f48f33a2476d3e1ac0201bf7280bb1dc2653624fca527618031"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+},
+"pct": 77.7,
+"pct_exact": 77.67241379310344,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+}
+},
 "check_ps": 106942.82362390563,
 "code": "064550",
 "hold": true,
@@ -647,9 +2077,31 @@
 "market": "KOSDAQ",
 "name": "바이오니아",
 "path": "general",
-"sha256": "475c5df4a2237183bd0ac2eb31b5198dbd705e244f57e14c2a12a15c90e502b9"
+"sha256": "260f63bce6ad77dd4c253f7c089822706fbf91c08bd1e49d833bcf705f5dc8c5"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11435323192037788,
+"q50": 0.02499455612920387,
+"q75": 0.2737381561906419
+},
+"pct": 74.7,
+"pct_exact": 74.74137931034483,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11418516668592732,
+"q50": 0.025268162535940386,
+"q75": 0.2741928818065058
+}
+},
 "check_ps": 137444.5146249352,
 "code": "066620",
 "hold": false,
@@ -657,9 +2109,31 @@
 "market": "KOSDAQ",
 "name": "국보디자인",
 "path": "general",
-"sha256": "04aa37cdd960d9e9b86f30ac40c5097a79e32741661cfe52647ad1b5d6568ac2"
+"sha256": "807b96dc8abc202f74648eb0f0c00c7707b345a0903b9c1f13d59b1ebc8301fe"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 74.8,
+"pct_exact": 74.81343283582089,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 129915.18905570071,
 "code": "069620",
 "hold": false,
@@ -667,9 +2141,31 @@
 "market": "KOSPI",
 "name": "대웅제약",
 "path": "sotp",
-"sha256": "3e2e5cde9a5b6f0bb61c93652d5bc35c4f94ade83ee6e62674c39ff07d3e6c61"
+"sha256": "1ea7fd95c1d5c8af50de47d4b4c45b686c9816c0e9d534b44cd08d96c325c015"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 72.0,
+"pct_exact": 71.95273631840796,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 5594.251102878807,
 "code": "071320",
 "hold": true,
@@ -677,9 +2173,31 @@
 "market": "KOSPI",
 "name": "지역난방공사",
 "path": "general",
-"sha256": "ea868320d275c2b069bdfeaf699310b14554f1eb6e974600f5d81f3214545493"
+"sha256": "a48a4f894a381ab38d1aad81e5ef81d568106236fe45230d1becefbd08f1dbab"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09474562123447361,
+"q50": 0.05691530358180119,
+"q75": 0.3267894780414321
+},
+"pct": 69.9,
+"pct_exact": 69.91379310344827,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09468959948965677,
+"q50": 0.057006505717379974,
+"q75": 0.32694105324671996
+}
+},
 "check_ps": 33232.37665552071,
 "code": "072870",
 "hold": false,
@@ -687,9 +2205,31 @@
 "market": "KOSDAQ",
 "name": "메가스터디",
 "path": "sotp",
-"sha256": "cc2e088e5cf0d633eb215303471770afd6bfe01b91f6a8aa0a451135dd050339"
+"sha256": "49cbb7da7aea7d32719d302497ea59374b60157a2ffa322778d702bbb5d925a5"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08891002281604976,
+"q50": 0.06641552603793127,
+"q75": 0.34257856192559577
+},
+"pct": 68.5,
+"pct_exact": 68.47701149425288,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08900339239074456,
+"q50": 0.06626352247863321,
+"q75": 0.34232593658344923
+}
+},
 "check_ps": 12288.247781437465,
 "code": "078070",
 "hold": false,
@@ -697,9 +2237,31 @@
 "market": "KOSDAQ",
 "name": "유비쿼스홀딩스",
 "path": "sotp",
-"sha256": "d60a957f9bf8135489dde5b47c5e67d809d19592ec5be38c2db5f40720f13597"
+"sha256": "87fa0a30302e863af0fecd44ed00c90cfdcccb4f20fae864e1be315c916d268a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 96.4,
+"pct_exact": 96.35057471264368,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": -16341.909200475417,
 "code": "078600",
 "hold": true,
@@ -707,9 +2269,31 @@
 "market": "KOSDAQ",
 "name": "대주전자재료",
 "path": "general",
-"sha256": "bc5eb3eb74e2aa3cf912a12e39528af4d60540dad2aea82ac5c7865be5c9d70d"
+"sha256": "6d59c6f31eb514fe390708dcf9a875e2683a7eec3f68321f8c1836190f90c7c8"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 90.5,
+"pct_exact": 90.54597701149426,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 1200.6963031202456,
 "code": "080580",
 "hold": true,
@@ -717,9 +2301,31 @@
 "market": "KOSDAQ",
 "name": "오킨스전자",
 "path": "general",
-"sha256": "c3efd46211c1e9e7d5c4d113f09220c88b6050e3499899425001a2f5b70500f3"
+"sha256": "e4df33d482192a3098a04de6fdd807e082d2917fe0af1c6a95b888e6af0a8bba"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 79.4,
+"pct_exact": 79.41542288557214,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 68987.66960013332,
 "code": "081660",
 "hold": false,
@@ -727,9 +2333,31 @@
 "market": "KOSPI",
 "name": "미스토홀딩스",
 "path": "nci",
-"sha256": "e7ee40f875f4078500ec23930039a95e9f69c4bf65df3a5c41f2668618ba77de"
+"sha256": "b1cb178a57378ce2b0a2eb2a732626882d633c7ab9d40248ac7b2e4c71434067"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.013718731430215625,
+"q50": 0.15354240985776646,
+"q75": 0.4271567149157336
+},
+"pct": 89.4,
+"pct_exact": 89.39655172413794,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.013718731430215625,
+"q50": 0.15354240985776646,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 2766.0508033975575,
 "code": "082270",
 "hold": false,
@@ -737,9 +2365,31 @@
 "market": "KOSDAQ",
 "name": "젬백스",
 "path": "loss",
-"sha256": "dff5213f397c1d5a99a064147cef5e6cfddc71fb8fb3471b1e2134f4d9d47012"
+"sha256": "7b32906b1a1bf61ca96dbce9aa1acbe05e0848f7a6957cae18334391331b5092"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 96.0,
+"pct_exact": 96.00574712643679,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 14830.85775535756,
 "code": "082920",
 "hold": false,
@@ -747,9 +2397,31 @@
 "market": "KOSDAQ",
 "name": "비츠로셀",
 "path": "general",
-"sha256": "585d94fc22e4d6382e4e1783b055a79f7e456b7d242b8e1187b49948d2f89bf6"
+"sha256": "b5c0853ff87c7ac8b75f424aa8dc97cab0b4d3fcc1f60a35161f21ef93247bcc"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20475691043119038,
+"q75": 0.5858494584332685
+},
+"pct": 82.3,
+"pct_exact": 82.27011494252874,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20475691043119038,
+"q75": 0.5858494584332685
+}
+},
 "check_ps": 24231.29490428237,
 "code": "084110",
 "hold": false,
@@ -757,9 +2429,31 @@
 "market": "KOSDAQ",
 "name": "휴온스글로벌",
 "path": "sotp",
-"sha256": "4c264723af91819ecbe52544efd95182e37bc5b7bac78e7611b750819ec0f8ad"
+"sha256": "f8dfea5c04c1700ead829d27bad5fa5c059661566960cd98382a18900aa378b3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.15354240985776646,
+"q75": 0.43409767467619037
+},
+"pct": 88.2,
+"pct_exact": 88.1896551724138,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.15354240985776646,
+"q75": 0.43409767467619037
+}
+},
 "check_ps": -23565.431306095234,
 "code": "089010",
 "hold": true,
@@ -767,9 +2461,31 @@
 "market": "KOSDAQ",
 "name": "켐트로닉스",
 "path": "sotp",
-"sha256": "bef7be3a3f3fefb467ecbab3e324ea31cf04c94b31a2bfcbb86de6b29fa799ab"
+"sha256": "0b00f4059e287fcbae1864d9ef62f38a2d21044801509c893813eb654046b499"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08237415258741504,
+"q50": 0.07705577518879708,
+"q75": 0.3602623358758591
+},
+"pct": 66.9,
+"pct_exact": 66.86781609195403,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0825048699919877,
+"q50": 0.07684297020577974,
+"q75": 0.3599086603968539
+}
+},
 "check_ps": 8587.097778527746,
 "code": "089600",
 "hold": false,
@@ -777,9 +2493,31 @@
 "market": "KOSDAQ",
 "name": "KT나스미디어",
 "path": "general",
-"sha256": "2853d2b1acc90dc48c3d40b68cb2be3c2dc42c821d92974191edf0deee4a0cdd"
+"sha256": "b1ab7338f2f87a8f0adf76f99cbd3442cfaab40d32a1d6723b7b927919e55287"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 90.6,
+"pct_exact": 90.6094527363184,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 75622.07525880913,
 "code": "090430",
 "hold": false,
@@ -787,9 +2525,31 @@
 "market": "KOSPI",
 "name": "아모레퍼시픽",
 "path": "general",
-"sha256": "28123a984899d65ab071586501e352b798a1a293f76bfa2ccbf8549ff5ae1a92"
+"sha256": "e8f1a6d40901c1f9cad9df240d72d2385a6567a1fb810d61336134eba1c03fdc"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09264480580384105,
+"q50": 0.06033538366600799,
+"q75": 0.33247354823973096
+},
+"pct": 69.4,
+"pct_exact": 69.39655172413794,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09265881124004527,
+"q50": 0.060312583132113295,
+"q75": 0.33243565443840895
+}
+},
 "check_ps": 15890.92222426263,
 "code": "092070",
 "hold": false,
@@ -797,9 +2557,31 @@
 "market": "KOSDAQ",
 "name": "디엔에프",
 "path": "loss",
-"sha256": "81307e4e8b7a9cfeeea0c3353a33a09a0dccd09c528f43017171bac097f4ccb7"
+"sha256": "dcb02c4980577e616354ab51c933542496f66e6de0fad03897ef7c64ad93d1a3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.006234485592967076,
+"q50": 0.20475691043119038,
+"q75": 0.4468347384464297
+},
+"pct": 86.2,
+"pct_exact": 86.17816091954023,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.006234485592967076,
+"q50": 0.20475691043119038,
+"q75": 0.4468347384464297
+}
+},
 "check_ps": 23404.756280768866,
 "code": "092730",
 "hold": false,
@@ -807,9 +2589,31 @@
 "market": "KOSDAQ",
 "name": "네오팜",
 "path": "general",
-"sha256": "f84b6419a12c0a77639e8ff14dd60d6fe1b355677cce88d6280dcc6745437b53"
+"sha256": "594621eba09b4fbadab6ee7ef1ccabd58f1b4dfb925412e5eac243c8398a5502"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 58.1,
+"pct_exact": 58.146766169154226,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 34451.8926183051,
 "code": "092790",
 "hold": false,
@@ -817,9 +2621,31 @@
 "market": "KOSPI",
 "name": "넥스틸",
 "path": "general",
-"sha256": "184aa5c2c12939bf051cda9007f377b0321facc9abc5609a92133f1f6089a281"
+"sha256": "dd450d2567cc9b79a1623e7ce0b8bce16cefa93bd100ca340640b275a72e344b"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 76.8,
+"pct_exact": 76.80348258706468,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 1194.9671866734357,
 "code": "093370",
 "hold": true,
@@ -827,9 +2653,31 @@
 "market": "KOSPI",
 "name": "후성",
 "path": "sotp",
-"sha256": "b67c40ae2fc67889c0a4ac5a92e6499a49779a075ab02979116dc899716bd97f"
+"sha256": "712260e7440659b0358393cd753f0ed0a4c3e5d475f60093525706173b999f70"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0714032275607781,
+"q50": 0.09491619340632174,
+"q75": 0.389945813578087
+},
+"pct": 64.2,
+"pct_exact": 64.16666666666667,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07153861344408552,
+"q50": 0.09469578824533953,
+"q75": 0.3895795068319744
+}
+},
 "check_ps": 28018.92222560785,
 "code": "094840",
 "hold": false,
@@ -837,9 +2685,31 @@
 "market": "KOSDAQ",
 "name": "슈프리마에이치큐",
 "path": "general",
-"sha256": "934dd1b72ce03ff91e8aade199055eee9c79f8cfba4cb2eb57c321ee62161845"
+"sha256": "08b8fb0e48bba8a3f4dc7c1af0be516841b08aba437cc05c4c66f18ba601001c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 96.6,
+"pct_exact": 96.63793103448276,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 26708.45662269521,
 "code": "096530",
 "hold": false,
@@ -847,9 +2717,31 @@
 "market": "KOSDAQ",
 "name": "씨젠",
 "path": "loss",
-"sha256": "62489977252b1b596a59c81fff8439a04f93351c1cb652bd4521ebca7398d911"
+"sha256": "d4b09fd564ccd7f89e963868951970dd192315028211ab638dbd762464eff2f9"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 96.7,
+"pct_exact": 96.70398009950249,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 248457.57706062216,
 "code": "096770",
 "hold": false,
@@ -857,9 +2749,31 @@
 "market": "KOSPI",
 "name": "SK이노베이션",
 "path": "sotp",
-"sha256": "2953d6de748ba3a22361c5559957a5315d1d1417ef50ca5150ff034c6bb24a49"
+"sha256": "e4c97ea434db71efdbfca3b021953a73973a721204b53b79b246a609a91940c0"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 70.5,
+"pct_exact": 70.46019900497512,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 53779.046732208386,
 "code": "100840",
 "hold": false,
@@ -867,9 +2781,31 @@
 "market": "KOSPI",
 "name": "SNT에너지",
 "path": "general",
-"sha256": "4d9b290dd8e308f5e1535895866c0f72492250328ebac90fb68d254078686f47"
+"sha256": "c9007dd542c0b4265ae4ef3e3cc58868188df391ae1070d67da44312f674e8b2"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+},
+"pct": 41.0,
+"pct_exact": 40.982587064676615,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+}
+},
 "check_ps": 10760.440138777618,
 "code": "102260",
 "hold": true,
@@ -877,9 +2813,31 @@
 "market": "KOSPI",
 "name": "동성케미컬",
 "path": "sotp",
-"sha256": "2e44ca62f474b0d3df18980e4b669a334faebfec8bac5926b006ef5078754761"
+"sha256": "75704e1fdf16de299a378d67b169f4f6534ceed48c64932e9a45df5038e73fa7"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+},
+"pct": 41.4,
+"pct_exact": 41.35572139303483,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.8881931538903816
+}
+},
 "check_ps": -3558.1956541691457,
 "code": "102460",
 "hold": true,
@@ -887,9 +2845,31 @@
 "market": "KOSPI",
 "name": "이연제약",
 "path": "loss",
-"sha256": "dd0718febaa69df07211174faa7ddce186409b775663b5c44ee0315a5804016c"
+"sha256": "9857a8cddc77452bf90afd909dfe6dc241d92e9f7acaf619bee01eb0b48d84b8"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+},
+"pct": 77.8,
+"pct_exact": 77.78735632183908,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+}
+},
 "check_ps": -812.3777307594966,
 "code": "114190",
 "hold": true,
@@ -897,9 +2877,31 @@
 "market": "KOSDAQ",
 "name": "강원에너지",
 "path": "nci",
-"sha256": "2db7e3eae3653ae87e5e98f7dccd2276c632ca2ee536bb6d7a73af715c06177c"
+"sha256": "a6a225f9fcb0876d864d548a517cb3ae8b218559cfb73d27f75cfbc24f8e6f1b"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08167388077720417,
+"q50": 0.07819580188353265,
+"q75": 0.36215702594195875
+},
+"pct": 66.7,
+"pct_exact": 66.69540229885058,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0816925546921431,
+"q50": 0.07816540117167309,
+"q75": 0.36210650087352947
+}
+},
 "check_ps": 22805.37639492191,
 "code": "114840",
 "hold": false,
@@ -907,9 +2909,31 @@
 "market": "KOSDAQ",
 "name": "아이패밀리에스씨",
 "path": "general",
-"sha256": "dc9d6759e15793eaff7c5c04a3b0707aaf8560f3f4bf3291441e3e3301faab6b"
+"sha256": "a75274917fdc9c8e0d527af8fce19c673cd2713acad3138542b125dc5816f877"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11085187286932358,
+"q50": 0.03069468960288191,
+"q75": 0.2832116065211402
+},
+"pct": 73.9,
+"pct_exact": 73.87931034482759,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11093590548654891,
+"q50": 0.030557886399513623,
+"q75": 0.2829842437132082
+}
+},
 "check_ps": 6969.258830400901,
 "code": "119830",
 "hold": false,
@@ -917,9 +2941,31 @@
 "market": "KOSDAQ",
 "name": "아이텍",
 "path": "loss",
-"sha256": "fc49f385cf50aebc732b2632d1a5d802077668aaa765ce0f43663868e0f029c5"
+"sha256": "d7fc399cf0b0928f6fa77898d6d8cd90d2ee84f5e09256a9cc7b1a3a14ace799"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 77.3,
+"pct_exact": 77.30099502487562,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 49945.506061168824,
 "code": "120110",
 "hold": false,
@@ -927,9 +2973,31 @@
 "market": "KOSPI",
 "name": "코오롱인더",
 "path": "general",
-"sha256": "6cbb73d12c0eae07900604dfb0cc35c616f91646b7e0fc3e458d916c0969e15e"
+"sha256": "f139e8035bf5422fc390a9e2fb3f6cb864ba8fb4a012d23a6e78b9f143cd3341"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 94.1,
+"pct_exact": 94.05172413793103,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 66348.61271953396,
 "code": "122870",
 "hold": false,
@@ -937,9 +3005,31 @@
 "market": "KOSDAQ",
 "name": "와이지엔터테인먼트",
 "path": "nci",
-"sha256": "ac4c3b13447f814e37d3cac0aa0906e86f22262c2c12bdfafa12eabd8c04ca3f"
+"sha256": "6106cd9ceced156e9dd28e6024d152a15afa497a7a0eef23f63b4508b6094345"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.12088910214901266,
+"q50": 0.01435430697833806,
+"q75": 0.2560543822403786
+},
+"pct": 76.4,
+"pct_exact": 76.35057471264368,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.12108984673460649,
+"q50": 0.014027499325847126,
+"q75": 0.25551123775476325
+}
+},
 "check_ps": 3537.933534583807,
 "code": "126730",
 "hold": true,
@@ -947,9 +3037,31 @@
 "market": "KOSDAQ",
 "name": "코칩",
 "path": "general",
-"sha256": "2173af3946fd95c15671b3458eccb7af8ec884c4e099d7491ed0614c67c4dceb"
+"sha256": "3a7961ec494e27679c2987201b5e1d117bad8ab2052b5177d594bd47e37e814d"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08774290313236499,
+"q50": 0.06831557052915732,
+"q75": 0.34573637870242857
+},
+"pct": 68.2,
+"pct_exact": 68.1896551724138,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08778491944097766,
+"q50": 0.06824716892747318,
+"q75": 0.3456226972984625
+}
+},
 "check_ps": 2762.8555640061154,
 "code": "134580",
 "hold": false,
@@ -957,9 +3069,31 @@
 "market": "KOSDAQ",
 "name": "탑코미디어",
 "path": "loss",
-"sha256": "3cb7c2e42aba99100e5692f64f34a8bb35526a3cf3e62061fbd6a0d8c2e66c2d"
+"sha256": "c14c9c75d150765042646d91c7a12b6b934c1ec8af74383af63c8899aa9e9e98"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 69.8,
+"pct_exact": 69.83830845771145,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 12087.617330281506,
 "code": "137310",
 "hold": false,
@@ -967,9 +3101,31 @@
 "market": "KOSPI",
 "name": "에스디바이오센서",
 "path": "loss",
-"sha256": "bce75c01de08d2608afe1c1c1c39e49eafef5ae7abe17c462ec4b86fd65a1a23"
+"sha256": "321fc0155eb2b1e19a2a6aa097c6de64533b115542d8e98eb80f6035d37e0057"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08144045684046719,
+"q50": 0.07857581078177789,
+"q75": 0.3627885892973254
+},
+"pct": 66.6,
+"pct_exact": 66.63793103448276,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08128639704222074,
+"q50": 0.07882661665461976,
+"q75": 0.3632054211118674
+}
+},
 "check_ps": 834.4527779284158,
 "code": "138360",
 "hold": false,
@@ -977,9 +3133,31 @@
 "market": "KOSDAQ",
 "name": "앤로보틱스",
 "path": "loss",
-"sha256": "367c5cbc5a95fac2590f46a296a4e4443c5ba6447a0910105e2e7ea2d53769ee"
+"sha256": "99660105b01af7c7f49df73dd76c45e596f70f7f83c5e06767d2b44d203a33cc"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10991817712237578,
+"q50": 0.03221472519586277,
+"q75": 0.28573785994260636
+},
+"pct": 73.6,
+"pct_exact": 73.64942528735632,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10971743253678196,
+"q50": 0.03254153284835365,
+"q75": 0.2862810044282217
+}
+},
 "check_ps": 6505.00531889548,
 "code": "138610",
 "hold": false,
@@ -987,9 +3165,31 @@
 "market": "KOSDAQ",
 "name": "나이벡",
 "path": "loss",
-"sha256": "ac90dca487ea87d070281e11fd2cb059b78bf6868e3620938c246542f2352c23"
+"sha256": "cf281885274323b4156f4c9373bb88e7cc9c693a2cd4931a8854b76a79f6d8fa"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.1043160026406888,
+"q50": 0.04133493875374772,
+"q75": 0.3008953804714035
+},
+"pct": 72.3,
+"pct_exact": 72.27011494252874,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10443738308779205,
+"q50": 0.04113733412666021,
+"q75": 0.30056696752661294
+}
+},
 "check_ps": 31519.61656624384,
 "code": "143160",
 "hold": false,
@@ -997,9 +3197,31 @@
 "market": "KOSDAQ",
 "name": "아이디스",
 "path": "nci",
-"sha256": "2a7dd63718e73753585a1101f73553fd9f37ce401bd2f617c7f7f37c0e93ca50"
+"sha256": "6d5b95d2d44854feae79b8f0c9a73f5f5418a45d85b8e1d29cde92a0563a5c51"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08260757652415196,
+"q50": 0.07667576629055184,
+"q75": 0.3596307725204926
+},
+"pct": 66.9,
+"pct_exact": 66.92528735632185,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0825048699919877,
+"q50": 0.07684297020577974,
+"q75": 0.3599086603968539
+}
+},
 "check_ps": 7228.3246601146675,
 "code": "147830",
 "hold": false,
@@ -1007,9 +3229,31 @@
 "market": "KOSDAQ",
 "name": "제룡산업",
 "path": "general",
-"sha256": "d88073243ef2e08fca69fb24cfe455dabb0caa6392d64e4c45ea1f074b0f4f5b"
+"sha256": "b34fc679c8faf2161e6d942479afa8c177d3994d17c1d1e4e49361120b7fbee7"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09894725209573885,
+"q50": 0.050075143413387424,
+"q75": 0.31542133764483415
+},
+"pct": 70.9,
+"pct_exact": 70.94827586206897,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09875117598887984,
+"q50": 0.050394350887913386,
+"q75": 0.315951850863342
+}
+},
 "check_ps": 7487.760722171199,
 "code": "149950",
 "hold": false,
@@ -1017,9 +3261,31 @@
 "market": "KOSDAQ",
 "name": "아바텍",
 "path": "general",
-"sha256": "01c76f21cd24c81b6fb7706162f17af92e26bad9883d4d70053ba216a004da55"
+"sha256": "a7c8b20b6d38a53c793180120eaa9c95ececdee7d790b178cc8fe64c0b523df0"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.20475691043119038,
+"q75": 0.4468347384464297
+},
+"pct": 86.8,
+"pct_exact": 86.8103448275862,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.20475691043119038,
+"q75": 0.4468347384464297
+}
+},
 "check_ps": 11873.029302815105,
 "code": "159010",
 "hold": false,
@@ -1027,9 +3293,31 @@
 "market": "KOSDAQ",
 "name": "아스플로",
 "path": "loss",
-"sha256": "7a1f41e0c8b60c931d03223df52607dafb857b713e0a4c03975c543297be9e26"
+"sha256": "461a949df1b1a196c78e81416b234e424ee5b2ae3ef3f40886ac7a64c0443dfb"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.05432706277642904,
+"q50": 0.20475691043119038,
+"q75": 0.5134027907750078
+},
+"pct": 83.4,
+"pct_exact": 83.41954022988506,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.05432706277642904,
+"q50": 0.20475691043119038,
+"q75": 0.5134027907750078
+}
+},
 "check_ps": 30459.317379062257,
 "code": "160980",
 "hold": false,
@@ -1037,9 +3325,31 @@
 "market": "KOSDAQ",
 "name": "싸이맥스",
 "path": "general",
-"sha256": "e9cba91cd43ba11447ca9ac14688a7abfddadbc48074df23eadb9cf29dc8ba0c"
+"sha256": "8a22f4edf7d094a0a3d57d21227a0467d0ad87873dbb312bf4ac6e01c0ea2e6c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 85.4,
+"pct_exact": 85.38557213930348,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 72586.13957724706,
 "code": "161890",
 "hold": false,
@@ -1047,9 +3357,31 @@
 "market": "KOSPI",
 "name": "한국콜마",
 "path": "sotp",
-"sha256": "9bf64d8b2f817feb168422c9c0856352d7e3de275f623083e94be2d840b9bc90"
+"sha256": "d5e9a6ea89f80fa01aa864e0edb51ff81fbafaafe0f76fd2bd11c669be8c3834"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 71.6,
+"pct_exact": 71.57960199004975,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 145134.7141919,
 "code": "185750",
 "hold": false,
@@ -1057,9 +3389,31 @@
 "market": "KOSPI",
 "name": "종근당",
 "path": "general",
-"sha256": "c5c66a08d04c909c7d35d5b1a0fd74133314d2be856bbf9959b6f34cce6530f8"
+"sha256": "09afbe9da1694c44ac800da480a8c7d1e8983254de31c034b0308ec151a25e27"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.1129526882999562,
+"q50": 0.027274609518675053,
+"q75": 0.2775275363228412
+},
+"pct": 74.4,
+"pct_exact": 74.39655172413794,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11296669373616042,
+"q50": 0.027251808984780357,
+"q75": 0.2774896425215192
+}
+},
 "check_ps": 77740.78410659383,
 "code": "192440",
 "hold": true,
@@ -1067,9 +3421,31 @@
 "market": "KOSDAQ",
 "name": "슈피겐코리아",
 "path": "general",
-"sha256": "c404ff62cdcce456ddfc92f7429a6e0cf118db7738eded24067a3ed9d03d3c92"
+"sha256": "d459b18a6d750d53c7d0348915e1e95a5e5e10421b9092466dd5fa7b44686595"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+},
+"pct": 78.7,
+"pct_exact": 78.70689655172414,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.20020011095404144,
+"q75": 0.6039854248032701
+}
+},
 "check_ps": 14376.81791420348,
 "code": "200130",
 "hold": false,
@@ -1077,9 +3453,31 @@
 "market": "KOSDAQ",
 "name": "콜마비앤에이치",
 "path": "general",
-"sha256": "b03f54d3a4395534031c223e17e8124dcb9870dad4407553e8766f3e245cdfdf"
+"sha256": "773fbaeb00cee98253712e458dac4f758293339a9600c434f6408ddfdced46d3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07613854354133265,
+"q50": 0.15354240985776646,
+"q75": 0.5134027907750078
+},
+"pct": 82.4,
+"pct_exact": 82.44252873563218,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07613854354133265,
+"q50": 0.15354240985776646,
+"q75": 0.5134027907750078
+}
+},
 "check_ps": 1175.910278126232,
 "code": "203650",
 "hold": false,
@@ -1087,9 +3485,31 @@
 "market": "KOSDAQ",
 "name": "드림시큐리티",
 "path": "sotp",
-"sha256": "c9c086272d836d5eb12934c00e4abfadc609478c8dfbbe59ddd1980b3eb58f9a"
+"sha256": "86a43969ff73cf7b315eb2039cefad710f2fc4a87704c1b5644d4a22e8037679"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 96.1,
+"pct_exact": 96.0632183908046,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": -4262.970296900041,
 "code": "204270",
 "hold": false,
@@ -1097,9 +3517,31 @@
 "market": "KOSDAQ",
 "name": "제이앤티씨",
 "path": "loss",
-"sha256": "ccfc0f5208b2b0bdea8740383ab399f3e145e15ca9296340489e8f140dd4beb5"
+"sha256": "b6ced0a2a2950f66906aece5f77e0aea7162a06960131528a8e1d8e3487a3921"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 93.0,
+"pct_exact": 92.95977011494253,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 30920.6007421403,
 "code": "213420",
 "hold": false,
@@ -1107,9 +3549,31 @@
 "market": "KOSDAQ",
 "name": "덕산네오룩스",
 "path": "general",
-"sha256": "878b46942e06bda7214868519178c9a85b855eda3b4c78b7ffb978c8fd584d08"
+"sha256": "8548184a56dbcc5c181d14bf46274e05f0cbe9c89b02f5d79b0443812c4ddd4c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.9343456709875422
+},
+"pct": 39.1,
+"pct_exact": 39.11691542288557,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.07611961391746513,
+"q50": 0.32173979156551513,
+"q75": 0.9343456709875422
+}
+},
 "check_ps": 18607.555021951226,
 "code": "213500",
 "hold": false,
@@ -1117,9 +3581,31 @@
 "market": "KOSPI",
 "name": "한솔제지",
 "path": "general",
-"sha256": "c17be7788e02a16129febf770c0a00bf7e23fa7d6b6cd3131d92e92540e3fd47"
+"sha256": "e372f90d694b478cb378e086b3f32f0578f67538aa77856811dbf4417b2ffbb5"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 97.8,
+"pct_exact": 97.84482758620689,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 3866.963576822696,
 "code": "214370",
 "hold": false,
@@ -1127,9 +3613,31 @@
 "market": "KOSDAQ",
 "name": "케어젠",
 "path": "general",
-"sha256": "d4db27f016b7ca384bbbfbafbf00e3e96ec5b5de146773dac04fb7bdd733026b"
+"sha256": "8cfd4944105227908c6b125772f2f8e4283af5eeb3e4cd6e55bdc3932d06630d"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 90.0,
+"pct_exact": 90.02873563218391,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 10187.612160317956,
 "code": "214430",
 "hold": true,
@@ -1137,9 +3645,31 @@
 "market": "KOSDAQ",
 "name": "아이쓰리시스템",
 "path": "general",
-"sha256": "c59438f052247d0542d1f01fb4439bbf465e9eb6bbbbc63c11752967cc20acd3"
+"sha256": "341df1cfcd9529da920d411f1fe94a8f7645b2aca07938e7be051b089150ff85"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.20475691043119038,
+"q75": 0.4468347384464297
+},
+"pct": 86.5,
+"pct_exact": 86.52298850574712,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.20475691043119038,
+"q75": 0.4468347384464297
+}
+},
 "check_ps": 145980.95685617556,
 "code": "215200",
 "hold": true,
@@ -1147,9 +3677,31 @@
 "market": "KOSDAQ",
 "name": "메가스터디교육",
 "path": "sotp",
-"sha256": "c17b8a8e00e0ca80a26b40e954456037878176f133a47802e61d9b86dc66146f"
+"sha256": "5fcbb7214f472ea49f4aecf0df3dd2d069689d15a31252a1152faa891e3b0863"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 91.3,
+"pct_exact": 91.29310344827586,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 15546.323505052193,
 "code": "219130",
 "hold": false,
@@ -1157,9 +3709,31 @@
 "market": "KOSDAQ",
 "name": "타이거일렉",
 "path": "general",
-"sha256": "29aededbfbe430cf0aea6ec9e5f692cd9c16898043c6689e61e618fac951c4c8"
+"sha256": "4902a9b915e57f47ca52c6503c74670c1206f8e0093a014521fde5cf5a51d1ee"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10758393775500619,
+"q50": 0.03601481417831487,
+"q75": 0.29205349349627197
+},
+"pct": 73.1,
+"pct_exact": 73.07471264367815,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10768664428717045,
+"q50": 0.03584761026308697,
+"q75": 0.29177560561991067
+}
+},
 "check_ps": 1510.2046397211116,
 "code": "220100",
 "hold": false,
@@ -1167,9 +3741,31 @@
 "market": "KOSDAQ",
 "name": "퓨쳐켐",
 "path": "loss",
-"sha256": "9ea602f18f24afe2619979e96788e1fd61a41afadd173ee84cf5d1d75f68951e"
+"sha256": "4fc5508f856ad9b2bc53919949143df93a0fdbe8a7c4eb442df38c1992c858fb"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 91.6,
+"pct_exact": 91.63793103448276,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 5785.1926749747445,
 "code": "222080",
 "hold": false,
@@ -1177,9 +3773,31 @@
 "market": "KOSDAQ",
 "name": "SFA넥셀",
 "path": "general",
-"sha256": "e615634a345aa19d7a00bab23a2edfbeabf7fcd9550304de85e731b3da8f9c2f"
+"sha256": "677ff76f1f3c47229b5b8a891a9799223349388c92d6dffaa1ba330536fd1063"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.0050676985368532
+},
+"pct": 31.4,
+"pct_exact": 31.40547263681592,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.42318740836222535,
+"q75": 1.0050676985368532
+}
+},
 "check_ps": 36416.380414203064,
 "code": "227840",
 "hold": false,
@@ -1187,9 +3805,31 @@
 "market": "KOSPI",
 "name": "현대코퍼레이션홀딩스",
 "path": "general",
-"sha256": "cab3d1d8f1bd58b73d37a0255b977366c8b53021510c17921911758ab7aa0c83"
+"sha256": "54e2eae57336c1f3a5596ef031643f25a39ee193c008fedb0ec6a97d7ebb1730"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.08214072865067806,
+"q50": 0.07743578408704233,
+"q75": 0.3608938992312257
+},
+"pct": 66.8,
+"pct_exact": 66.8103448275862,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0820987123420654,
+"q50": 0.07750418568872647,
+"q75": 0.3610075806351918
+}
+},
 "check_ps": 18198.827274975753,
 "code": "228850",
 "hold": false,
@@ -1197,9 +3837,31 @@
 "market": "KOSDAQ",
 "name": "레이언스",
 "path": "general",
-"sha256": "21cb80c4ccceaa4e4d8a3fe999c709c087fb17ef709b555baf2b21a24df7841f"
+"sha256": "b612013563dae707d312e7090fd44b0bf51e401a17438705e2ec10d9b5ed9895"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.0826176609592662,
+"q50": 0.13955923259771708,
+"q75": 0.5858494584332685
+},
+"pct": 77.3,
+"pct_exact": 77.32758620689656,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.0826176609592662,
+"q50": 0.13955923259771708,
+"q75": 0.5858494584332685
+}
+},
 "check_ps": 32659.760862586212,
 "code": "237880",
 "hold": false,
@@ -1207,9 +3869,31 @@
 "market": "KOSDAQ",
 "name": "클리오",
 "path": "general",
-"sha256": "afb9adfb97effb055e5ccd494bd878133cad0590be47b3abf881c0cc03e99d90"
+"sha256": "d48e60ee183a59e599abd44ff7f0a4bab1356c45c1a86bab03fe0df677e53ef2"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 95.9,
+"pct_exact": 95.94827586206897,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 10160.916864858327,
 "code": "241710",
 "hold": true,
@@ -1217,9 +3901,31 @@
 "market": "KOSDAQ",
 "name": "코스메카코리아",
 "path": "sotp",
-"sha256": "32ba755521cf7ef2cbe1984d04ebb7ab72fabe24043e96daad1b22f0df85038f"
+"sha256": "e42a49251dd69eb4f5a02fb947784dd2dfb5e8ead61de27f1dd07f1dd00e5ec1"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 104,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.04946137750750426,
+"q50": 0.13063702984137116,
+"q75": 0.4493127689825426
+},
+"pct": 58.8,
+"pct_exact": 58.764367816091955,
+"rounded": {
+"band": "P40-60",
+"band_n": 104,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.04960610034828117,
+"q50": 0.13040142432445917,
+"q75": 0.44892119970221545
+}
+},
 "check_ps": -3174.246191930255,
 "code": "246710",
 "hold": false,
@@ -1227,9 +3933,31 @@
 "market": "KOSDAQ",
 "name": "티앤알바이오팹",
 "path": "loss",
-"sha256": "7013c067e7e248ec07fe252633bb8caa2aef5f07d08e21a1d25d12593b2b9887"
+"sha256": "46f20fd19c4b3cda01ccb17fc24922e0e8055290941c26e7b8dd78a7a25bcf8e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 68.1,
+"pct_exact": 68.09701492537313,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 12278.334367978354,
 "code": "248070",
 "hold": false,
@@ -1237,9 +3965,31 @@
 "market": "KOSPI",
 "name": "솔루엠",
 "path": "general",
-"sha256": "3d2166620f33bae763b42cb81e70fbf4bbb11dd26160297080d5c3313ed41d63"
+"sha256": "e5f61f786012c62fa3b86e7aa11b4546ac4c6e50b2fbb247908e532d82b4204b"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0786393695996237,
+"q50": 0.08313591756072036,
+"q75": 0.3703673495617239
+},
+"pct": 65.9,
+"pct_exact": 65.94827586206897,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07844329349276469,
+"q50": 0.08345512503524632,
+"q75": 0.37089786278023185
+}
+},
 "check_ps": 3527.9365265866313,
 "code": "265740",
 "hold": false,
@@ -1247,9 +3997,31 @@
 "market": "KOSDAQ",
 "name": "엔에프씨",
 "path": "general",
-"sha256": "22452c4bc8a8ffbecccb0c6455fbaf2de0273e6eec98678f7a59a25c75d1f65c"
+"sha256": "ad336e7d6cda38c02da62990b5a81281cbed5f61b87f1918e38ee1c020ae86e3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.39813429783035414,
+"q75": 0.99853214303146
+},
+"pct": 34.0,
+"pct_exact": 34.017412935323385,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.10255766898433383,
+"q50": 0.39813429783035414,
+"q75": 0.99853214303146
+}
+},
 "check_ps": 203768.59987287922,
 "code": "267290",
 "hold": false,
@@ -1257,9 +4029,31 @@
 "market": "KOSPI",
 "name": "경동도시가스",
 "path": "general",
-"sha256": "569760405f0523efb19428a30d561eb2263cac989b3a9dd584edf614b1c5e712"
+"sha256": "4982d8212398cef196891c407bd3971d86a36301ac9a3e474b1f867e27003d1a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09824698028552797,
+"q50": 0.05121517010812304,
+"q75": 0.3173160277109338
+},
+"pct": 70.8,
+"pct_exact": 70.77586206896552,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09834501833895748,
+"q50": 0.05105556637086012,
+"q75": 0.3170507711016799
+}
+},
 "check_ps": 1573.410015502739,
 "code": "267320",
 "hold": false,
@@ -1267,9 +4061,31 @@
 "market": "KOSDAQ",
 "name": "나인테크",
 "path": "loss",
-"sha256": "5efc693ec971c98e25508d57fd038d3c0167c947e08eee020590b0758592b781"
+"sha256": "b840b707b42eb18956a1d95371719a4223b119472e18f3cf0a431364a5967a21"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 68.3,
+"pct_exact": 68.3457711442786,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 173574.1463254036,
 "code": "268280",
 "hold": false,
@@ -1277,9 +4093,31 @@
 "market": "KOSPI",
 "name": "미원에스씨",
 "path": "general",
-"sha256": "bb8525b464c9d89044a5ebc6fc65611904420a413990d9510f76c696f70e6fdf"
+"sha256": "aaec9958e206686a79e5816ddf51687dbe019cafdc8c50fb9e160586b37e3918"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 59.8,
+"pct_exact": 59.7636815920398,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 10941.139492130831,
 "code": "271940",
 "hold": false,
@@ -1287,9 +4125,31 @@
 "market": "KOSPI",
 "name": "일진하이솔루스",
 "path": "loss",
-"sha256": "09442ef85787465e055acb91507414fbe92ec864c6a8824dc6acb5c5b384f388"
+"sha256": "4a5b3e557b044e7ae1baf9482b05db9d58ba9217bd2ef8f945410b76ba0a758a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 93.6,
+"pct_exact": 93.59452736318408,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 22970.053817856537,
 "code": "272210",
 "hold": false,
@@ -1297,9 +4157,31 @@
 "market": "KOSPI",
 "name": "한화시스템",
 "path": "general",
-"sha256": "aac4a2c8fd3ae725b40d6d19ef4956530fe0c18fdc7c50dd5b770d52bef2358b"
+"sha256": "9f0b7012aa06ae918b545639c09efc83b4f96fbe68629f1a8a1852fadf3c806f"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.15354240985776646,
+"q75": 0.43409767467619037
+},
+"pct": 88.0,
+"pct_exact": 88.01724137931035,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.012196625962385577,
+"q50": 0.15354240985776646,
+"q75": 0.43409767467619037
+}
+},
 "check_ps": -64731.70981119139,
 "code": "278280",
 "hold": true,
@@ -1307,9 +4189,31 @@
 "market": "KOSDAQ",
 "name": "천보",
 "path": "loss",
-"sha256": "13bd6d41c4d94ae558421e6b945629ddb86e6a4c4725d7040bb8b6e65a6a8943"
+"sha256": "9047de4ec1b47444cde3b1e2a940b47ff02b70c094b0b3d0dd9b744ef20e83d0"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 71.7,
+"pct_exact": 71.70398009950249,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 149947.68599631064,
 "code": "285130",
 "hold": true,
@@ -1317,9 +4221,31 @@
 "market": "KOSPI",
 "name": "SK케미칼",
 "path": "sotp",
-"sha256": "327572330c3dc672d1544c10200939e57ce2b884429db383f0338e9bae697db6"
+"sha256": "28cf1b7294298014b77207f5531704054e990e14474bc506e3710ef65938cde8"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07350404299141067,
+"q50": 0.09149611332211494,
+"q75": 0.38426174337978813
+},
+"pct": 64.7,
+"pct_exact": 64.683908045977,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07356940169369702,
+"q50": 0.09138971083060626,
+"q75": 0.3840849056402854
+}
+},
 "check_ps": 17856.30042269596,
 "code": "285490",
 "hold": false,
@@ -1327,9 +4253,31 @@
 "market": "KOSDAQ",
 "name": "노바텍",
 "path": "general",
-"sha256": "a9d6a25f194f65ad1fcd0181ad948975d31b320d35bb3c40b2ee8239e07ab6a1"
+"sha256": "988bd8ead5ef1bde915327f2c29e5ccbd04df9d89729301d9c6320fc84ea9626"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11178556861627142,
+"q50": 0.029174654009901102,
+"q75": 0.2806853530996739
+},
+"pct": 74.1,
+"pct_exact": 74.10919540229885,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11174822078639346,
+"q50": 0.029235455433620383,
+"q75": 0.2807864032365327
+}
+},
 "check_ps": 1094.581990532475,
 "code": "290690",
 "hold": false,
@@ -1337,9 +4285,31 @@
 "market": "KOSDAQ",
 "name": "아리바이오홀딩스",
 "path": "loss",
-"sha256": "267fee9bf5a91a085ec189cb2f9b2dffe335c2a8c6027b7d8a8bd2b9f52cd685"
+"sha256": "73bb124c6a00333c05290d453f51f7acbcde28eaf1f992c10a15ae147d4a40d2"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.0728037711811998,
+"q50": 0.09263614001685055,
+"q75": 0.3861564334458877
+},
+"pct": 64.5,
+"pct_exact": 64.51149425287356,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07275708639385242,
+"q50": 0.09271214179649956,
+"q75": 0.386282746116961
+}
+},
 "check_ps": 341.488641936808,
 "code": "297090",
 "hold": true,
@@ -1347,9 +4317,31 @@
 "market": "KOSDAQ",
 "name": "씨에스베어링",
 "path": "general",
-"sha256": "9196ed89487eff7a8b27bffb5ebe0c4c80abdb21725d2b96e4dbb4a5dd0d8e7c"
+"sha256": "eaf2a0e681fae087acf2a4617f1af7b82e55dd2c4e64f53f795d36e89a739528"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 74.6,
+"pct_exact": 74.56467661691542,
+"rounded": {
+"band": "P60-80",
+"band_n": 11,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 355195.92903099436,
 "code": "298020",
 "hold": false,
@@ -1357,9 +4349,31 @@
 "market": "KOSPI",
 "name": "효성티앤씨",
 "path": "nci",
-"sha256": "6d5c01a93ba916e37b63ef34e17bab18fe7c5a0eebbcf1ee78c5844843ebac8e"
+"sha256": "9cbe7e13f30db7fb5b412674b87a3ed59ce81904b5148f2e1ff71d628ae6c641"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+},
+"pct": 48.7,
+"pct_exact": 48.69402985074627,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.03685091891344239,
+"q50": 0.28273162874907154,
+"q75": 0.807657633383903
+}
+},
 "check_ps": 1883.5310632247003,
 "code": "298690",
 "hold": false,
@@ -1367,9 +4381,31 @@
 "market": "KOSPI",
 "name": "에어부산",
 "path": "general",
-"sha256": "f6fdb8f87fdb5f24ffd75a573988eabe2418844beb8459191c57c8aae6aed393"
+"sha256": "26ab807e6e5485d2b2ba1bb8c3d7be8ba74a9cfb8b3a08729dc2306ac8889ec7"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 83.0,
+"pct_exact": 83.0223880597015,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 1054.945270962726,
 "code": "302440",
 "hold": false,
@@ -1377,9 +4413,31 @@
 "market": "KOSPI",
 "name": "SK바이오사이언스",
 "path": "loss",
-"sha256": "a2a8bd076c4b0764d15337f97b232632bd951a57fb138feb9114acc037aa613b"
+"sha256": "e94cf1ae57862697129076e6d41859d651900e802f2a1e3fd7a4d0186a61f3e1"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 92.4,
+"pct_exact": 92.35074626865672,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 220617.7010830304,
 "code": "307950",
 "hold": false,
@@ -1387,9 +4445,31 @@
 "market": "KOSPI",
 "name": "현대오토에버",
 "path": "general",
-"sha256": "f15b57f4d1097ec0f7e62752a910c068fb637468c91db0783ace1127e8983983"
+"sha256": "23a74156f8ff2d9e20f6a2e2412bd18571f2533b495387a67210a82bdae2782b"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.23587701672195083,
+"q75": 0.5858494584332685
+},
+"pct": 81.9,
+"pct_exact": 81.86781609195403,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.23587701672195083,
+"q75": 0.5858494584332685
+}
+},
 "check_ps": -1032.3648018100123,
 "code": "314130",
 "hold": false,
@@ -1397,9 +4477,31 @@
 "market": "KOSDAQ",
 "name": "지놈앤컴퍼니",
 "path": "loss",
-"sha256": "62fb47547bf151cea3a5cc31b14788755394f9e79779a3ee255a943a0cfe1e0e"
+"sha256": "a981ada6c9e1205f0b6253dd4008b3c3eb66d6e7267f59dbd35de2ed943d404e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 94.8,
+"pct_exact": 94.79885057471265,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 6473.242824497109,
 "code": "327260",
 "hold": true,
@@ -1407,9 +4509,31 @@
 "market": "KOSDAQ",
 "name": "RF머트리얼즈",
 "path": "sotp",
-"sha256": "3f836f2a9f8b686aa9b21eedc2acf1d4406869a5c5f212296cbf0f9a270850ba"
+"sha256": "a5dac00948f79b27132ae212071e29fbcbf152c6fa007bb287f7c3c12dca073a"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.03587410722501863,
+"q50": 0.22072822245369028,
+"q75": 0.3895323013899256
+},
+"pct": 61.1,
+"pct_exact": 61.0632183908046,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.03587410722501863,
+"q50": 0.22072822245369028,
+"q75": 0.3895323013899256
+}
+},
 "check_ps": 1921.0369767701638,
 "code": "338220",
 "hold": false,
@@ -1417,9 +4541,31 @@
 "market": "KOSDAQ",
 "name": "뷰노",
 "path": "loss",
-"sha256": "925c34d7a4a25b7c410a8bea1487302ad85f1a070511ce1bbb447b8ffa3f15a1"
+"sha256": "e2f4b247c2e8e47263cf4f432bb959809314330897f1861476506c698d509c25"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 58.5,
+"pct_exact": 58.51990049751244,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 121673.72320499511,
 "code": "344820",
 "hold": false,
@@ -1427,9 +4573,31 @@
 "market": "KOSPI",
 "name": "KCC글라스",
 "path": "general",
-"sha256": "a1f113df1f05da2d2f0949cb531c5b458481250eed9096292a6f3fb37917ee19"
+"sha256": "164357daeb2fc914c2be96a1db4c51d97845f50f4d89fabe09a06ca9f530d86d"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11995540640206481,
+"q50": 0.015874342571318922,
+"q75": 0.25858063566184475
+},
+"pct": 76.1,
+"pct_exact": 76.12068965517241,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11987137378483953,
+"q50": 0.016011145774687208,
+"q75": 0.25880799846977676
+}
+},
 "check_ps": 25012.0596572734,
 "code": "353810",
 "hold": true,
@@ -1437,9 +4605,31 @@
 "market": "KOSDAQ",
 "name": "이지바이오",
 "path": "general",
-"sha256": "91b4b26122b45fe860904b701a34d2f2a508cc4ab8c4f9d73a1044b09ef581b2"
+"sha256": "b845867051bc95f0c9c76dff9c88953c8b3954fea97713098e12e42f1cf3ae9c"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+},
+"pct": 90.4,
+"pct_exact": 90.43103448275862,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.009522229441004226,
+"q50": 0.15199855520096806,
+"q75": 0.4271567149157336
+}
+},
 "check_ps": 1531.149996875304,
 "code": "356680",
 "hold": false,
@@ -1447,9 +4637,31 @@
 "market": "KOSDAQ",
 "name": "엑스게이트",
 "path": "general",
-"sha256": "c77de2e0ff5be35caad00e76977c7d224e8a2f3f2b63cb98f3728652110401a8"
+"sha256": "720675dc71dfb9dfa8fb669f4179e346d3557113de713a5c6cf1a958ed46c7cb"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 84.3,
+"pct_exact": 84.26616915422886,
+"rounded": {
+"band": "P80-100",
+"band_n": 4,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 252788.12364905595,
 "code": "375500",
 "hold": true,
@@ -1457,9 +4669,31 @@
 "market": "KOSPI",
 "name": "DL이앤씨",
 "path": "general",
-"sha256": "5b473f0ae6ec966be0488157b7d50c3aec441bac0030dffe92b1504448e64d9b"
+"sha256": "37cf1c8850bde0dca4916736f9fd0e9f51c47786daa989ff955574cf1fadfce3"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11715431916122138,
+"q50": 0.020434449350261397,
+"q75": 0.2661593959262434
+},
+"pct": 75.4,
+"pct_exact": 75.43103448275862,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11702827023538342,
+"q50": 0.02063965415531377,
+"q75": 0.2665004401381412
+}
+},
 "check_ps": 2984.5687202922704,
 "code": "382800",
 "hold": true,
@@ -1467,9 +4701,31 @@
 "market": "KOSDAQ",
 "name": "지앤비에스 에코",
 "path": "general",
-"sha256": "6ccd87508d46ca27bcd186479e5ee91875de88246e7a52e767ccb507ca3f8bd1"
+"sha256": "94b5524f16cf663e798c999a4879cc61d94cb4f2788dbebc860bb006f0a95986"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.027199440978080358,
+"q50": 0.20475691043119038,
+"q75": 0.43409767467619037
+},
+"pct": 88.9,
+"pct_exact": 88.9367816091954,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.027199440978080358,
+"q50": 0.20475691043119038,
+"q75": 0.43409767467619037
+}
+},
 "check_ps": 4150.30475483492,
 "code": "383310",
 "hold": true,
@@ -1477,9 +4733,31 @@
 "market": "KOSDAQ",
 "name": "에코프로에이치엔",
 "path": "general",
-"sha256": "3b254d078f71c6050432c983397647ac52c1c3127799b337bda03ae6e3ede1a7"
+"sha256": "2cc91f57ec84ce86b7543186c5f6e76935ea43f6ddf8b5b9fae00b8391a38100"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09427877336099971,
+"q50": 0.057675321378291566,
+"q75": 0.32805260475216513
+},
+"pct": 69.8,
+"pct_exact": 69.79885057471265,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09428344183973447,
+"q50": 0.057667721200326705,
+"q75": 0.32803997348505787
+}
+},
 "check_ps": 674.38915301034,
 "code": "388790",
 "hold": false,
@@ -1487,9 +4765,31 @@
 "market": "KOSDAQ",
 "name": "라이콤",
 "path": "loss",
-"sha256": "562902313d7d9e2743a58f4cfb0837415ecc51633c0427dcdd91e26f1a9a7705"
+"sha256": "1e1dea72c2fc6f70318d0291c7a0511d1cefcf4f5fae9d7fa215f4c7ac82ad75"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.23587701672195083,
+"q75": 0.5858494584332685
+},
+"pct": 81.6,
+"pct_exact": 81.63793103448276,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07312615978782289,
+"q50": 0.23587701672195083,
+"q75": 0.5858494584332685
+}
+},
 "check_ps": -2874.362243717304,
 "code": "394280",
 "hold": false,
@@ -1497,9 +4797,31 @@
 "market": "KOSDAQ",
 "name": "오픈엣지테크놀로지",
 "path": "loss",
-"sha256": "fb7beef7c1f4d23348d7ec11fce346271b85d1b1ac7465df08efae48f98da796"
+"sha256": "c15c4fdd58747e874aada78bbdb6f681d82c33e67c03010ab00dcf08a82a5800"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+},
+"pct": 59.9,
+"pct_exact": 59.88805970149254,
+"rounded": {
+"band": "P40-60",
+"band_n": 12,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.02106284507148809,
+"q50": 0.2715280861175836,
+"q75": 0.7586985629076208
+}
+},
 "check_ps": 34189.10254898038,
 "code": "403550",
 "hold": true,
@@ -1507,9 +4829,31 @@
 "market": "KOSPI",
 "name": "쏘카",
 "path": "general",
-"sha256": "99f5a562063f87fdce02711dd785b72b19eaf1ae13dc8bff1108ba97a8cc36a4"
+"sha256": "d24bde47d55664371fd837171f29af4c360efb822d0a7107b1ee687e313a7b7e"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10665024200805834,
+"q50": 0.037534849771295675,
+"q75": 0.29457974691773814
+},
+"pct": 72.8,
+"pct_exact": 72.84482758620689,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10646817133740355,
+"q50": 0.03783125671192694,
+"q75": 0.29507236633492395
+}
+},
 "check_ps": -1592.013922351549,
 "code": "405100",
 "hold": true,
@@ -1517,9 +4861,31 @@
 "market": "KOSDAQ",
 "name": "큐알티",
 "path": "general",
-"sha256": "be1bc5413b552f062dcfb72b846537bffa41e9f37b3dfdefad7d30a4e50c239b"
+"sha256": "64c21557537808b14288de14cd12de5cd3ad93bc6a556e80fa735394a99e75cb"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07747224991593893,
+"q50": 0.08503596205194641,
+"q75": 0.3735251663385567
+},
+"pct": 65.7,
+"pct_exact": 65.66091954022988,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.07763097819292009,
+"q50": 0.08477755600113968,
+"q75": 0.37309570325690744
+}
+},
 "check_ps": -1101.3782912120387,
 "code": "417500",
 "hold": true,
@@ -1527,9 +4893,31 @@
 "market": "KOSDAQ",
 "name": "제이아이테크",
 "path": "general",
-"sha256": "4f00a85318902014dc0713d2496c0de76c7ddb04b596f3d28bdcede9ac3cb7b7"
+"sha256": "cda40344cb97b2d52cac3d923b0058e35e382d11c525bdb4d686b9a4bcbf4ebe"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09381192548752582,
+"q50": 0.058435339174782,
+"q75": 0.3293157314628983
+},
+"pct": 69.7,
+"pct_exact": 69.683908045977,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.09387728418981217,
+"q50": 0.058328936683273325,
+"q75": 0.32913889372339555
+}
+},
 "check_ps": -1331.9195669684173,
 "code": "418550",
 "hold": true,
@@ -1537,9 +4925,31 @@
 "market": "KOSDAQ",
 "name": "제이오",
 "path": "general",
-"sha256": "6cb9c8b471cc775feb344e5a87e66b343a473adde8a8a8fcb2ac62d952de3437"
+"sha256": "413f2471011335ab46f6ce07067ed0c378fbab431c05760d0550befb8576af22"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11411980798364091,
+"q50": 0.02537456502744906,
+"q75": 0.27436971954600853
+},
+"pct": 74.7,
+"pct_exact": 74.683908045977,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.11418516668592732,
+"q50": 0.025268162535940386,
+"q75": 0.2741928818065058
+}
+},
 "check_ps": 24632.103908051646,
 "code": "419530",
 "hold": false,
@@ -1547,9 +4957,31 @@
 "market": "KOSDAQ",
 "name": "SAMG엔터",
 "path": "general",
-"sha256": "fc838533e5fab7ee04d4a1c1c639455933bbaa0517ed5e1f5ccc141f22b3ff6d"
+"sha256": "b8260266b68581805e5f27a6e5a09ef42cc99303da276608840681de490a62c2"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10058121965289751,
+"q50": 0.047415081125671,
+"q75": 0.3110003941572683
+},
+"pct": 71.4,
+"pct_exact": 71.35057471264368,
+"rounded": {
+"band": "P60-80",
+"band_n": 77,
+"method": "regression",
+"n_neighbour": 50,
+"q25": -0.10078196423849134,
+"q50": 0.04708827347318012,
+"q75": 0.310457249671653
+}
+},
 "check_ps": 7542.57158408424,
 "code": "445180",
 "hold": false,
@@ -1557,9 +4989,31 @@
 "market": "KOSDAQ",
 "name": "퓨릿",
 "path": "general",
-"sha256": "d775582706449dec5896d2625fbd853415cdb00a966e7f0eb868cbd726ed2982"
+"sha256": "58f766fbbd99a9bc48c946c494aac945dcb7752c6a617fbf75a678d7dd749995"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.105368479199622,
+"q50": 0.39813429783035414,
+"q75": 0.9793043164940216
+},
+"pct": 37.3,
+"pct_exact": 37.25124378109453,
+"rounded": {
+"band": "P20-40",
+"band_n": 18,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": 0.105368479199622,
+"q50": 0.39813429783035414,
+"q75": 0.9793043164940216
+}
+},
 "check_ps": 43350.135766479994,
 "code": "462520",
 "hold": true,
@@ -1567,9 +5021,31 @@
 "market": "KOSPI",
 "name": "조선내화",
 "path": "general",
-"sha256": "a2975bb52583e78c9e41465ea17292178ee39c4ddc2365d551378bb90f8b00df"
+"sha256": "f26181871841b54c63290e3c86e54634b33641ffc1578895dd5c2cc398ec4d03"
 },
 {
+"check_prem": {
+"exact": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07613854354133265,
+"q50": 0.15354240985776646,
+"q75": 0.5134027907750078
+},
+"pct": 82.4,
+"pct_exact": 82.38505747126437,
+"rounded": {
+"band": "P80-100",
+"band_n": 52,
+"method": "neighbours",
+"n_neighbour": 50,
+"q25": -0.07613854354133265,
+"q50": 0.15354240985776646,
+"q75": 0.5134027907750078
+}
+},
 "check_ps": -213884.95771752315,
 "code": "472850",
 "hold": true,
@@ -1577,9 +5053,10 @@
 "market": "KOSDAQ",
 "name": "폰드그룹",
 "path": "nci",
-"sha256": "f9365ce1d1d8494020f3fe5df04f3c60009095f7a9af27b7b51c9773dc2caca5"
+"sha256": "373f396b76f325f6413f56f53d32e5f0493a931499fc51e7a306f9fc547dd109"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "000370",
 "hold": null,
@@ -1590,6 +5067,7 @@
 "sha256": "2bbd0a152b5c3f77885d42cf84e0c838d32f0d582f19336ac8fceec7df467880"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "000720",
 "hold": null,
@@ -1600,6 +5078,7 @@
 "sha256": "e98703ae6df91275a1fa0184ae0cdb4f29e1dc29776ce99c67792084fcb36267"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "000810",
 "hold": null,
@@ -1610,6 +5089,7 @@
 "sha256": "bec416a548cd3b6d14f0b39406b2044aad6f97d582f0dc1511ab3f9649ee890c"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "001450",
 "hold": null,
@@ -1620,6 +5100,7 @@
 "sha256": "170117568a0cae7dfa492ab2d3901defb2c9e34a2302c3188c8db9b5e6a30938"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "001500",
 "hold": null,
@@ -1630,6 +5111,7 @@
 "sha256": "1dfa1e8af201b36e59332544361e52a3575f7b3a400a44a10785b006c5e6eadd"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "007700",
 "hold": null,
@@ -1640,6 +5122,7 @@
 "sha256": "5e94830f62799f438f294291f6f8df7bbd4945544cc11ab28cf2e40805cd86ec"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "012450",
 "hold": null,
@@ -1650,6 +5133,7 @@
 "sha256": "13f27a203e3f1a5bdb748cce9c50ff4e9842d70e770319165a9dd1a7b5609df6"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "016360",
 "hold": null,
@@ -1660,6 +5144,7 @@
 "sha256": "afdc9351df9db311f1a2456478674d9c67cc48990b8180501126bc31117a9b63"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "026890",
 "hold": null,
@@ -1670,6 +5155,7 @@
 "sha256": "73138dcfcaad76ceba5225c8db797bbf1775947ac86ab353e3ee132836ec4b96"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "028300",
 "hold": null,
@@ -1680,6 +5166,7 @@
 "sha256": "9d3d091353223fecd348c653e59e09218cf8d29acbed9ee72467fa2788a1665e"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "032190",
 "hold": null,
@@ -1690,6 +5177,7 @@
 "sha256": "0b71ee54695d1d824dfa61c1c69311419959ee1a9185889f920defd224ad1467"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "038540",
 "hold": null,
@@ -1700,6 +5188,7 @@
 "sha256": "122d89313d7e828e8ea6258ae0af805836760c5b0cc5c410a5bc166eabe764c1"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "041190",
 "hold": null,
@@ -1710,6 +5199,7 @@
 "sha256": "4b2baa46885648ced45b60c098e582ce8add668a7a25c7df04b1abbd5086064e"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "052020",
 "hold": null,
@@ -1720,6 +5210,7 @@
 "sha256": "b5dc11243685b9310e8939d6cc6d01346ce9a1bb220d4b86a614ba13948bd232"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "071050",
 "hold": null,
@@ -1730,6 +5221,7 @@
 "sha256": "5559a6523c065885004b1e2e0c0c473c86ed243d719e81f7d1914734969854f8"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "095700",
 "hold": null,
@@ -1740,6 +5232,7 @@
 "sha256": "5b092bdeb3cff98998b25de515b5cc940e7fb19c5ce62f00851e53b3eebfc4de"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "100790",
 "hold": null,
@@ -1750,6 +5243,7 @@
 "sha256": "ed674337045dcc836e4201dd8b319526bd76a2ed18f6f38079d80f3337a4494f"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "123890",
 "hold": null,
@@ -1760,6 +5254,7 @@
 "sha256": "c3d55bb496e49a64cda8ba77b3e1b8fee3f4b4495a586ca3852abb278ce479b1"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "125210",
 "hold": null,
@@ -1770,6 +5265,7 @@
 "sha256": "277d6146fd1c0774daf24c6fa15082faf48edfb3f92b45be5467eac8c80a8d37"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "138930",
 "hold": null,
@@ -1780,6 +5276,7 @@
 "sha256": "8b5c6625eaadd27392faf66b620ed3f0c152771a317837f88892a48e525e0225"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "175330",
 "hold": null,
@@ -1790,6 +5287,7 @@
 "sha256": "dafa987a8f9a624dbdea14dcbdbb21e4cb9ae813e1bc124fd1123f3c4721e1a5"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "199800",
 "hold": null,
@@ -1800,6 +5298,7 @@
 "sha256": "9351eac3ed87bad4c515d8812422f11cf0c6a2579a815456412e7996db74d56d"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "204620",
 "hold": null,
@@ -1810,6 +5309,7 @@
 "sha256": "c42527db14dc09282494935ac7656438e9b495cfb1ff759abf7bd8a349c01981"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "217730",
 "hold": null,
@@ -1820,6 +5320,7 @@
 "sha256": "f609bef827038e7e2423a4dd1b845f71f9ae7c81486fed539f26679ae444bf06"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "293580",
 "hold": null,
@@ -1830,6 +5331,7 @@
 "sha256": "e7e3d5416884bc29e90e8840dff36c7dcb3deb3a6ed65d30726c9b39b77d2f47"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "298380",
 "hold": null,
@@ -1840,6 +5342,7 @@
 "sha256": "a0c07433ed2827838c87ef694a04fbb5f419d3bec09225f60ea6d724e7795433"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "316140",
 "hold": null,
@@ -1850,6 +5353,7 @@
 "sha256": "b4cc53b2b34587097e1e670452fd908575b0fbf284c7a8862becaf5f581cc477"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "348340",
 "hold": null,
@@ -1860,6 +5364,7 @@
 "sha256": "3d060c58b3e19be7ddb1dd4d6c225c816da550d6274abe43516496843fc60b08"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "377300",
 "hold": null,
@@ -1870,6 +5375,7 @@
 "sha256": "678487c9d98a5f7060f7b9f9c91924b83cd09bf73dc99e494befee0bd177b109"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "443670",
 "hold": null,
@@ -1880,6 +5386,7 @@
 "sha256": "7f5dfa3fad4b45c210afbd1768ecdbbe461f4e48bf4a16171558860c3e7d53ee"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "454910",
 "hold": null,
@@ -1890,6 +5397,7 @@
 "sha256": "b52986a6ac75f01f31dbe33be4f0c4ee8fd832456950451e4ecbf807e08001e7"
 },
 {
+"check_prem": null,
 "check_ps": null,
 "code": "455900",
 "hold": null,

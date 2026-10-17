@@ -102,35 +102,23 @@ def _premium(c: nav.Ctx) -> None:
                 "<p class='wb-ref-lead'>최대주주 지분 거래 가격이 공시 전(문서 신호 직전 20거래일 VWAP) 시장가보다 얼마나 높았는지 집계했습니다. "
                 "음(−)의 프리미엄도 포함합니다. 결과 화면의 블록 가격은 아래 규칙으로 고른 범위를 씁니다.</p>", unsafe_allow_html=True)
     with ui.card("prem_ref", None, plain=True):
-        if M.public_deploy():                     # P7-C3 decisions.premium_public = false
+        from src.workbench.public_deploy import premium_public, premium_ref_table
+        if M.public_deploy() and not premium_public():     # P7-C3 record; P7-C3b publishes the aggregates
             raise M.PublicDataUnavailable(M.PREMIUM_WITHHELD)
-        M.need_db("경영권 프리미엄 표본 집계")
-        from src.premium.predict import _db_frame, quintile_band
-        d = _db_frame()
-        d = d.assign(band=d.mktcap_pct.map(quintile_band))
-
-        def agg(g):
-            v = g.prem_bu20_doc
-            return {"n": len(v), "median": v.median(), "q1": v.quantile(0.25), "q3": v.quantile(0.75), "neg": (v < 0).mean()}
-        allr = agg(d)
+        if not M.public_deploy():
+            M.need_db("경영권 프리미엄 표본 집계")
+        t = premium_ref_table()
+        allr = t["all"]
         st.markdown(f"<div class='wb-find'><div><b>{F.pct(allr['median'], 1)}</b><span>주 표본 중앙값(n={allr['n']})</span></div>"
-                    f"<div><b>{F.pct(allr['q1'], 1)}~{F.pct(allr['q3'], 1)}</b><span>사분위 범위</span></div>"
+                    f"<div><b>{F.pct(allr['q25'], 1)}~{F.pct(allr['q75'], 1)}</b><span>사분위 범위</span></div>"
                     f"<div><b>{F.pct(allr['neg'], 0)}</b><span>음(−)의 프리미엄 비율</span></div></div>", unsafe_allow_html=True)
         lab = {"lt25": "지분 25% 미만", "25to50": "25~50%", "gt50": "50% 초과", "strategic": "전략적", "financial": "재무적", "other": "기타"}
-        rows = []
-        for name, col, order in (("시장", "market", ["KOSDAQ", "KOSPI"]), ("지분 구간", "stake_band", ["lt25", "25to50", "gt50"]),
-                                 ("인수자 유형", "buyer_group", ["strategic", "financial", "other"]),
-                                 ("시총 백분위 구간", "band", sorted(d.band.dropna().unique()))):
-            for k in order:
-                g = d[d[col] == k]
-                if len(g):
-                    a = agg(g)
-                    rows.append([name, lab.get(k, k), a["n"], F.pct(a["median"], 1), F.pct(a["q1"], 1), F.pct(a["q3"], 1),
-                                 "n<10 주의" if a["n"] < 10 else ""])
-        ui.table(["층", "구간", "n", "중앙값", "하위 25%", "상위 25%", ""], rows, num_cols=(2, 3, 4, 5), min_width=560,
-                 caption="대표값 = 문서 신호 직전 20거래일 VWAP 기준 프리미엄(bu20_doc). 개별 거래는 표시하지 않습니다. "
-                         "공개 배포에서 이 집계를 보이는 것은 한국거래소 서면 확인 뒤입니다")
-        bd = pd.DataFrame([{"구간": r[1], "중앙값": d[d.band == r[1]].prem_bu20_doc.median()} for r in rows if r[0] == "시총 백분위 구간"])
+        rows = [[r["layer"], lab.get(r["key"], r["key"]), r["n"], F.pct(r["median"], 1), F.pct(r["q25"], 1), F.pct(r["q75"], 1),
+                 F.pct(r["neg"], 0), "n<10 주의" if r["warn_n10"] else ""] for r in t["rows"]]
+        ui.table(["층", "구간", "n", "중앙값", "하위 25%", "상위 25%", "음(−) 비율", ""], rows, num_cols=(2, 3, 4, 5, 6), min_width=600,
+                 caption="대표값 = 문서 신호 직전 20거래일 VWAP 기준 프리미엄(bu20_doc). 집계(건수·분위수)만 보이고 거래별 값·거래 이름은 "
+                         "표시하지 않습니다. 출처: 프로젝트 DB(KIND 서식 71207·71209) · 한국거래소 통계정보")
+        bd = pd.DataFrame([{"구간": r["key"], "중앙값": r["median"]} for r in t["rows"] if r["layer"] == "시총 백분위 구간"])
         if len(bd):
             st.altair_chart(ch.hbars(bd, "구간", "중앙값", title="시총 백분위 구간별 중앙값"), width="stretch")
     st.markdown("<h2 class='wb-ref-h2'>결과 화면의 범위 고르는 규칙</h2><div class='wb-method'><ul>"
@@ -155,7 +143,8 @@ def _guide(c: nav.Ctx) -> None:
         ("직접 넣은 시세", ["넣은 값의 정확성과 출처 확인은 입력한 사람의 책임입니다",
                          "넣은 값은 이 브라우저 작업 공간과 내려받은 파일에만 남습니다"]),
         ("공개 범위", ["회사 목록은 개발·검증에 이미 쓴 회사로 한정합니다(평가 가능 회사와 자동 평가 범위 밖 회사). 새 회사의 초안은 PC 모드에서 만듭니다",
-                     "경영권 프리미엄 집계와 블록 1주당 가격은 한국거래소 서면 확인 뒤 공개합니다",
+                     "경영권 프리미엄은 집계(건수·분위수·구간 표)만 보여 주고 거래별 값·거래 이름은 보이지 않습니다. 시총 백분위는 기준일 값으로 "
+                     "고정되고(입력한 주가로 바뀌지 않음), 블록 1주당 가격은 20일 VWAP을 넣을 때만 계산합니다",
                      "피어 구성을 바꾸는 계산(피어 빼기)은 피어별 시세가 있어야 해서 PC 모드에서만 합니다. 무부채 베타·D/E는 직접 넣을 수 있습니다"]),
         ("저장", ["세션은 이 브라우저 창의 임시 작업 공간에만 있고, 새로 고치거나 6시간 동안 쓰지 않으면 지워집니다",
                  "1단계의 세션 파일 내려받기·불러오기로 이어서 작업합니다(파일에 서명이 있어 바뀐 파일은 불러오지 않습니다)"]),

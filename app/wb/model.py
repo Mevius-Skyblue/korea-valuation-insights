@@ -46,8 +46,12 @@ _CACHE: dict = {}            # small per-process result caches (keys include ses
 _JOBS: dict = {}             # (sid, mode) -> background confirmation job
 
 
-PREMIUM_WITHHELD = ("경영권 프리미엄 집계는 한국거래소 서면 확인 뒤 공개합니다(공개 배포에서는 블록 1주당 가격을 계산하지 않음, "
-                    "PC 모드에서 계산)")
+PREMIUM_WITHHELD = ("경영권 프리미엄 집계는 이 배포에서 공개하지 않습니다(블록 1주당 가격을 계산하지 않음, PC 모드에서 계산)")
+
+
+def _premium_on() -> bool:
+    from src.workbench.public_deploy import premium_public
+    return premium_public()
 
 
 def _submit(fn, *a):
@@ -426,23 +430,31 @@ def signals(o: Opened, s: dict, mode: str) -> dict:
 
 def premium(o: Opened, s: dict, mode: str) -> dict:
     """Conditional premium range (predict.premium_range, D6 rule) for the session's premium inputs and the target's
-    market-cap percentile; block per-share prices only when a market price exists (PC or user input)."""
-    if public_deploy():
-        raise PublicDataUnavailable(PREMIUM_WITHHELD)
-    need_db("경영권 프리미엄 표본")
+    market-cap percentile; block per-share prices only when a market price exists (PC or user input).
+    P7-C3b (config/p7c3b.yaml): public mode uses the as-of percentile, fixed (the typed price does not move it); the public
+    deployment replays it (0.1 point) and the 36 premium-input results from the snapshot."""
     from src.market.provider import get
-    from src.premium.predict import premium_range
+    from src.workbench.public_deploy import premium_range, premium_withheld, public_percentile
+    if premium_withheld() or (public_deploy() and not _premium_on()):
+        raise PublicDataUnavailable(PREMIUM_WITHHELD)
+    if not public_deploy():
+        need_db("경영권 프리미엄 표본")
     ver = version(s)
     pm = {**o.cfg["params"]["premium"], **(ver["overrides"].get("premium") or {})}
     mk = market(o, s, mode)
-    if mode == "public" and not mk.get("mktcap_won"):
-        raise NeedInput("공개 모드: 대상 종가를 입력하면 시가총액 백분위와 블록 가격을 계산합니다")
-    k = ("prem", o.code, json.dumps(pm, sort_keys=True), round(float(mk["mktcap_won"])))
+    mkt = o.cfg["target"]["market"]
+    if mode == "public":
+        k = ("prem", o.code, json.dumps(pm, sort_keys=True), "fixed")
+    else:
+        k = ("prem", o.code, json.dumps(pm, sort_keys=True), round(float(mk["mktcap_won"])))
     if k not in _CACHE:
-        pct = get().mktcap_percentile(AS_OF, o.cfg["target"]["market"], mk["mktcap_won"])
-        prr = premium_range(pct["mktcap_pct"], market=o.cfg["target"]["market"], **pm)
-        _CACHE[k] = {"pct": pct["mktcap_pct"], "method": prr.method, "reason": prr.reason, "q25": prr.q25, "q50": prr.q50,
-                     "q75": prr.q75, "n_neighbour": prr.neighbour.get("n"), "warnings": list(prr.warnings), **pm}
+        pct = (public_percentile(o.code, AS_OF, mkt) if mode == "public"
+               else get().mktcap_percentile(AS_OF, mkt, mk["mktcap_won"]))
+        prr = premium_range(pct["mktcap_pct"], market=mkt, **pm)
+        _CACHE[k] = {"pct": pct["mktcap_pct"], "pct_fixed": mode == "public", "method": prr.method, "reason": prr.reason,
+                     "q25": prr.q25, "q50": prr.q50, "q75": prr.q75, "n_neighbour": prr.neighbour.get("n"),
+                     "neighbour": dict(prr.neighbour), "band": dict(prr.band), "regression": dict(prr.regression),
+                     "cv_improvement": prr.cv_improvement_q50, "warnings": list(prr.warnings), **pm}
     out = dict(_CACHE[k])
     base = mk.get("vwap")
     out["block"] = {q: base * (1 + out[q]) for q in ("q25", "q50", "q75")} if base else None

@@ -1,12 +1,12 @@
 {
  "format": "kvi-public-bundle/1",
- "source_commit": "0814deb",
- "snapshot_set": "7f08e108f187090f965be5ef3542793dbf7835e399b121dc62e3ce7e29f52e95",
+ "source_commit": "883a032",
+ "snapshot_set": "3c31e69f19f2617b3e6d3491be7d44faffff4d1e604ae2aa1c4288338f5d3acc",
  "companies": {
   "evaluable": 158,
   "out_of_scope": 32
  },
- "premium_public": false,
+ "premium_public": true,
  "diag_page": "f5dca89fd40d",
  "note": "diag_page는 비밀이 아님: 숨김 진단 화면(메모리·작업 공간 수 숫자만)을 여는 주소 값"
 }

@@ -1,0 +1,16 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7c3b.yaml에서 공개 앱이 읽는 최상위 키만 (decisions)
+decisions:
+  premium_public:
+    value: true
+    decided_by: user 2026-10-18
+    basis: 'Cowork 07 compliance document section 9 ''public scope standard (confirmed 2026-10-16)''. KRX reply (2026-10-16): commercial use is not allowed in principle; for paid products, processed / combined
+      results from which the raw data cannot be extracted as it is or restored / recomputed automatically are partly allowed; no item-by-item answer. The ''cannot be restored'' test is applied conservatively
+      (🔸). Publishable (source ''한국거래소 통계정보''): betas, DCF per-share values and sensitivities, peer multiple quartiles (aggregates only), control-premium aggregate quantiles and counts. Not publishable:
+      price / market cap / VWAP raw values, series and charts, the per-deal premium (%) list (the base price can be backed out from the disclosed deal price), peer-level market caps and multiples. Combination
+      caution: premium quantiles + block per-share prices would let a reader back out the VWAP, so in the public mode the block per-share price and the DCF / market ratio appear only from a user''s price
+      input. User decision A (2026-10-16): same code and functions as the PC, only KRX raw values typed by the user; no re-query.'
+    status: 🔸
+  claude_md_rule:
+    before: 원본 DB는 비공개. 집계 통계 공개는 KRX 서면 확인 후
+    after: 원본 DB·거래별 프리미엄은 비공개. 집계(분위수·건수·구간 표)는 공개(2026-10-16 공개 범위 기준, 사용자 결정 2026-10-18). 블록 주당 가격은 공개 모드에서 사용자 주가 입력 시만
+    why: the P2 sentence predates the KRX reply (2026-10-16) and the user's decision (2026-10-18)

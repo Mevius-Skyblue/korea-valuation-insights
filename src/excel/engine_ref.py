@@ -156,6 +156,7 @@ def mechanical_reference(cfg_path: str) -> dict:
     from src.market.provider import get as market_provider
     from src.workbench import pubagg
     from src.workbench import snapdata as SD
+    from src.workbench.public_deploy import premium_range as premium_range_pub
     from src.workbench.public_deploy import premium_withheld, srp_cite_value
     replay = SD.replaying()                                # P7-C3 public snapshot: aggregates instead of the peer tables
     tiers = cfg["beta"]["peer_tiers"]
@@ -163,7 +164,7 @@ def mechanical_reference(cfg_path: str) -> dict:
         agg = pubagg.get("engine", cfg_path, cfg)
         bt = p3 = p2 = None
         vw = market_provider().vwap20(cfg["target"]["stock_code"], cfg["meta"]["as_of"])
-        pct = None
+        pct = None if premium_withheld() else market_provider().mktcap_percentile(cfg["meta"]["as_of"], cfg["target"]["market"])
         srp_cite = srp_cite_value(None)
     else:
         con = _duck.connect(str(DB_PATH), read_only=True)
@@ -299,7 +300,7 @@ def mechanical_reference(cfg_path: str) -> dict:
     if premium_withheld():                               # P7-C3 decisions.premium_public = false (public deployment)
         prr, block = None, {"q25": None, "q50": None, "q75": None}
     else:
-        prr = premium_range(pct["mktcap_pct"], market=cfg["target"]["market"], **cfg["params"]["premium"])
+        prr = premium_range_pub(pct["mktcap_pct"], market=cfg["target"]["market"], **cfg["params"]["premium"])
         block = block_range(vw["vwap"], {"q25": prr.q25, "q50": prr.q50, "q75": prr.q75})
     # P7-B2 diagnostics (values unchanged: candidates and sensitivities only) and the ranked human-review list
     from src.pipeline.diagnose import mechanical as diagnose, peer_inputs, rank_review

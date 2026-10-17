@@ -313,8 +313,15 @@ def inputs(c: Ctx):
     else:
         w.sec("9. 블록 프리미엄 (프리미엄 DB 집계값만, 거래 목록 없음)")
         src_db = "predict.premium_range (주 표본 n=510, bu20_doc), 결정 D1·D6"
-        w.item("prem_pct", f"시총 백분위({pr['market']} 보통주 {pr['n_universe']:,}종목 중)", pr["pct"], "days", "백분위",
-               KRX + " → predict.mktcap_percentile", asof, "🔸", "중간 순위 백분위(0~100)", name="Prem_Pct", krx="market-cap percentile (derived)")
+        if pr.get("pct_fixed"):                 # P7-C3b public mode: the as-of percentile, fixed (config/p7c3b.yaml percentile)
+            w.item("prem_pct", f"기준일 시총 백분위(고정, {pr['market']} 보통주 {pr['n_universe']:,}종목 중)", pr["pct"], "days", "백분위",
+                   KRX + " → predict.mktcap_percentile, 기준일 값 고정(공개 모드: 입력한 주가로 바뀌지 않음)", asof, "🔸",
+                   "중간 순위 백분위(0~100). 공개 배포 스냅샷은 소수 첫째 자리", name="Prem_Pct", krx="market-cap percentile (derived)")
+            w.item("prem_pct_fixed", "시총 백분위 고정 여부(공개 모드)", 1, "int", "", "config/p7c3b.yaml percentile", "", "🔸",
+                   "1 = 기준일 값 고정", name="PremPctFixed")
+        else:
+            w.item("prem_pct", f"시총 백분위({pr['market']} 보통주 {pr['n_universe']:,}종목 중)", pr["pct"], "days", "백분위",
+                   KRX + " → predict.mktcap_percentile", asof, "🔸", "중간 순위 백분위(0~100)", name="Prem_Pct", krx="market-cap percentile (derived)")
         w.item("prem_market", "시장", pr["market"], "gen", "", f"{cfgp} meta.target.market", "", "✅", "", name="Prem_Market")
         w.item("prem_cv", "C3 판정: CV q50 손실 개선", pr["cv_improvement"], "pct", "%", "predict.adoption (사전 등록 5-fold CV)", "", "🔸",
                "5.15% ≥ 5% → 회귀 채택(D1, 판정 불안정 공개)", name="Prem_CV")
@@ -330,8 +337,12 @@ def inputs(c: Ctx):
         for q in ("q25", "q50", "q75"):
             w.item(f"prem_band_{q}", f"구간 표 {b['band']} {q}", b[q], "pct1", "%", src_db, "", "🔸", "", name=f"Prem_BAN_{q}")
         w.item("prem_band_n", f"구간 표 {b['band']} 표본 수", b["n"], "int", "건", src_db, "", "🔸", "", name="Prem_BAN_n")
-        w.item("vwap", f"20거래일 VWAP({pr['vwap_start']}~{pr['vwap_end']}, n={pr['vwap_n']})", pr["vwap"], "won", "원",
-               KRX + " (거래대금 합 ÷ 거래량 합, 수정 계수)", asof, "🔸", "파생 단일 값", name="VWAP20", krx="20-day VWAP (derived)")
+        if pr.get("vwap_user"):                 # public mode: the user's typed VWAP
+            w.item("vwap", "20거래일 VWAP(사용자 입력)", pr["vwap"], "won", "원", "사용자 입력 시세", asof, "🔸", "공개 모드: 사용자가 넣은 값",
+                   name="VWAP20", krx="20-day VWAP (user input)")
+        else:
+            w.item("vwap", f"20거래일 VWAP({pr['vwap_start']}~{pr['vwap_end']}, n={pr['vwap_n']})", pr["vwap"], "won", "원",
+                   KRX + " (거래대금 합 ÷ 거래량 합, 수정 계수)", asof, "🔸", "파생 단일 값", name="VWAP20", krx="20-day VWAP (derived)")
         w.item("tax_prem", "상증법 최대주주 할증률(비교용)", pr["tax_premium"], "pct", "%", "상증법 제63조 제3항(원문 미확인)", "", "⚠️",
                "중소기업·일정 중견기업은 제외 → 해당 여부 미확인", name="TaxPrem")
         w.item("peer_nwarn", "피어 배수 표본 수 경고 기준(미만)", d["relative"]["n_warn"], "int", "곳", f"{cfgp} relative.n_warn", "", "🔸",

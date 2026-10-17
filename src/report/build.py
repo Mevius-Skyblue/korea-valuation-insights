@@ -430,7 +430,10 @@ def build_report(cfg_path: str, xlsx: Path | None = None, out: Path | None = Non
     D.h(L("5.3 블록 프리미엄(참고, 지배 블록 1주당)"), 2)
     if "Block_q1" in m.names:
         D.p(L("경영권 프리미엄 DB(주 표본 n=510, 집계값만) 적용 규칙 D6: method ") + L(m.val("PremMethod")) + L(", 이유 ")
-            + L(m.val("PremReason")) + L(". 시총 백분위 ") + n("Prem_Pct", "days") + L(", 20거래일 VWAP ") + n("VWAP20", "won"))
+            + L(m.val("PremReason"))
+            + L(". 기준일 시총 백분위(고정, 입력한 주가로 바뀌지 않음) " if "PremPctFixed" in m.names else ". 시총 백분위 ")
+            + n("Prem_Pct", "days")
+            + L(", 20거래일 VWAP(사용자 입력) " if "PremPctFixed" in m.names else ", 20거래일 VWAP ") + n("VWAP20", "won"))
         D.table(["분위", "프리미엄", "블록 1주당(원)"], [[L(q), n(f"PremQ{i + 1}", "pct1"), n(f"Block_q{i + 1}", "num0")]
                                                     for i, q in enumerate(("q25", "q50", "q75"))])
     else:                                       # P7-C3 public deployment

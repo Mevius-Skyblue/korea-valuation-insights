@@ -111,7 +111,10 @@ class UserOverlayProvider:
         return self.base.vwap20(code, as_of, con=con)
 
     def mktcap_percentile(self, as_of: str, market: str, mktcap: float, con=None) -> dict:
-        return self.base.mktcap_percentile(as_of, market, mktcap, con=con)
+        """P7-C3b (config/p7c3b.yaml percentile): public mode uses the target's as-of KRX percentile, fixed - the typed
+        price does not move it (same as the public deployment, which holds it rounded to 0.1)."""
+        from src.workbench.public_deploy import public_percentile
+        return public_percentile(self.target, as_of, market, con=con)
 
     def beta_table(self, as_of: str, cfg_path: str, table: str):
         return self.base.beta_table(as_of, cfg_path, table)

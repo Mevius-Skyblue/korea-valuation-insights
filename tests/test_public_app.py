@@ -157,6 +157,51 @@ def test_replay_equals_recorded_per_share():
     assert not bad, bad[:5]
 
 
+def test_premium_replay_equals_recorded():
+    """P7-C3b: the control-premium range replayed from the snapshot (fixed as-of percentile, 0.1 point) = the PC value at
+    the same percentile (index check_prem, predict on the DB), float equality."""
+    import yaml
+
+    from src.workbench.public_deploy import ensure, premium_range, public_percentile
+    bad, n = [], 0
+    for x in EVAL:
+        cp = x.get("check_prem")
+        if not cp:
+            continue
+        cfgp = ensure(x["code"])
+        cfg = yaml.safe_load(Path(cfgp).read_text(encoding="utf-8"))
+        t = cfg["target"]
+        pct = public_percentile(t["stock_code"], cfg["meta"]["as_of"], t["market"])["mktcap_pct"]
+        r = premium_range(pct, market=t["market"], **cfg["params"]["premium"])
+        got = {"q25": r.q25, "q50": r.q50, "q75": r.q75, "method": r.method, "n_neighbour": r.neighbour["n"],
+               "band": r.band["band"], "band_n": r.band["n"]}
+        n += 1
+        if pct != cp["pct"] or got != cp["rounded"]:
+            bad.append((x["code"], pct, got, cp))
+    assert n and not bad, bad[:3]
+
+
+PREM_REF_KEYS = {"measure", "all", "rows", "layer", "key", "n", "median", "q25", "q75", "neg", "warn_n10"}
+PREM_RANGE_KEYS = {"q25", "q50", "q75", "method", "reason", "regression", "neighbour", "band", "warnings", "inputs",
+                   "cv_improvement_q50", "n", "n_same_market"}
+
+
+def test_premium_aggregates_only():
+    """P7-C3b publish.on / off: the reference aggregates and the recorded premium ranges hold counts and quantiles only -
+    no per-deal value, no neighbours' percentile range, no deal identity."""
+    ks = set()
+    _keys(json.loads((PUB / "premium_ref.json").read_text(encoding="utf-8")), ks)
+    assert ks <= PREM_REF_KEYS, ks - PREM_REF_KEYS
+    for x in EVAL:
+        for k, v in (_snap(x["code"]).get("seams") or {}).items():
+            if k.startswith("premium_range:"):
+                ks = set()
+                _keys(v, ks)
+                ks = {z for z in ks if not z.startswith("$")}
+                assert ks <= PREM_RANGE_KEYS | {"band"}, (x["code"], ks - PREM_RANGE_KEYS)
+                assert "pct_range" not in json.dumps(v), x["code"]
+
+
 # ---------------------------------------------------------------- 3 session file, 4 workspaces
 
 def test_session_file_round_trip_and_tamper(tmp_path):

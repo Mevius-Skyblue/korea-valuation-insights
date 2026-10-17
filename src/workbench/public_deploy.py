@@ -3,6 +3,8 @@ rules that differ from the PC.
 
     is_public()            this process serves the public deployment (env KVI_PUBLIC=1 or app/public/BUNDLE.json present)
     premium_withheld()     snapshot record / replay and decisions.premium_public is false -> no premium aggregates, no block
+    public_percentile(..)  public mode market-cap percentile (P7-C3b): the as-of date's KRX percentile, fixed (snapshot: 0.1)
+    premium_range(..)      predict.premium_range through a data seam (per-deal values never recorded)
     SnapshotUserProvider   the market provider of the public deployment: only the user's typed values (target close /
                            VWAP, listed subsidiaries, listed preferred); market cap = close × common shares outstanding
                            (DART), as UserOverlayProvider does on the PC. Everything else raises PublicDataUnavailable
@@ -30,16 +32,101 @@ def is_public() -> bool:
 
 @lru_cache(maxsize=1)
 def premium_public() -> bool:
-    f = ROOT / "config" / "p7c3.yaml"
-    try:
-        return bool(yaml.safe_load(f.read_text(encoding="utf-8"))["decisions"]["premium_public"]["value"])
-    except (OSError, KeyError, TypeError):
-        return False
+    """decisions.premium_public: config/p7c3b.yaml (user decision 2026-10-18: publish the aggregates) over the P7-C3 record."""
+    for name in ("p7c3b.yaml", "p7c3.yaml"):
+        f = ROOT / "config" / name
+        try:
+            return bool(yaml.safe_load(f.read_text(encoding="utf-8"))["decisions"]["premium_public"]["value"])
+        except (OSError, KeyError, TypeError):
+            continue
+    return False
 
 
 def premium_withheld() -> bool:
     """True in the public snapshot (record and replay) unless the premium aggregates are published."""
     return SD.mode() in ("record", "replay") and not premium_public()
+
+
+def public_percentile(code: str, as_of: str, market: str, con=None) -> dict:
+    """P7-C3b (config/p7c3b.yaml percentile): the public mode's market-cap percentile of the target = the as-of date's KRX
+    percentile (the PC mode value), fixed - the user's typed price does not move it. PC public mode: exact; the public
+    snapshot records it rounded to 0.1 point with the count of stocks (no distribution)."""
+    key = f"{code}|{as_of}|{market}"
+    if SD.replaying():
+        return SD.get("base_pct", key)
+    from src.market.provider import DbMarketProvider
+    db = DbMarketProvider()
+    mc = db.quote(code, as_of, con=con)[1]
+    p = db.mktcap_percentile(as_of, market, mc, con=con)
+    out = {"mktcap_pct": float(p["mktcap_pct"]), "n_universe": int(p["n_universe"]), "fixed": True}
+    if SD.mode() == "record":
+        out["mktcap_pct"] = round(out["mktcap_pct"], 1)
+        SD.put("base_pct", key, out)
+    return out
+
+
+def premium_range(mktcap_pct: float, stake_band: str = "lt25", buyer_group: str = "strategic", market: str = "KOSDAQ",
+                  period: str = "2015-2026"):
+    """predict.premium_range (unchanged) through a data seam: the snapshot holds the result for each premium input at the
+    target's fixed percentile - quantiles, counts, method, warnings; not the neighbours' percentile range (two deals)."""
+    from dataclasses import asdict
+
+    from src.premium import predict as P
+    if SD.mode() == "off":
+        return P.premium_range(mktcap_pct, stake_band=stake_band, buyer_group=buyer_group, market=market, period=period)
+    key = [float(mktcap_pct), stake_band, buyer_group, market, period]
+    if SD.replaying():
+        d = SD.get("premium_range", key)
+    else:
+        d = asdict(P.premium_range(mktcap_pct, stake_band=stake_band, buyer_group=buyer_group, market=market, period=period))
+        d["neighbour"] = {k: v for k, v in d["neighbour"].items() if k != "pct_range"}
+        d["inputs"] = {}
+        SD.put("premium_range", key, d)
+        d = SD.get("premium_range", key)
+    return P.PremiumRange(**d)
+
+
+PREMIUM_REF = "premium_ref.json"
+
+
+def premium_ref_table() -> dict:
+    """Reference page '경영권 프리미엄' (P7-C3b publish.on): main-sample aggregates only - overall and by market, stake
+    band, buyer group, market-cap percentile band and period: n, median, q25, q75, share of negative premiums; n<10
+    marked. PC: from the DB sample (predict._db_frame); public deployment: the file the snapshot build wrote."""
+    if SD.replaying():
+        return json.loads((snapshot_dir() / PREMIUM_REF).read_text(encoding="utf-8"))
+    from src.premium.predict import _db_frame, quintile_band
+    d = _db_frame()
+    d = d.assign(band=d.mktcap_pct.map(quintile_band),
+                 period=d.period_early.map({1: "2010-2014", 0: "2015-2026"}))
+
+    def agg(v):
+        return {"n": int(len(v)), "median": float(v.median()), "q25": float(v.quantile(0.25)), "q75": float(v.quantile(0.75)),
+                "neg": float((v < 0).mean()), "warn_n10": bool(len(v) < 10)}
+    rows = []
+    for layer, col, order in (("시장", "market", ["KOSDAQ", "KOSPI"]), ("지분 구간", "stake_band", ["lt25", "25to50", "gt50"]),
+                              ("인수자 유형", "buyer_group", ["strategic", "financial", "other"]),
+                              ("시총 백분위 구간", "band", sorted(d.band.dropna().unique())),
+                              ("기간", "period", ["2010-2014", "2015-2026"])):
+        for k in order:
+            g = d[d[col] == k].prem_bu20_doc
+            if len(g):
+                rows.append({"layer": layer, "key": str(k), **agg(g)})
+    return {"measure": "prem_bu20_doc", "all": agg(d.prem_bu20_doc), "rows": rows}
+
+
+def record_premium_inputs(cfg: dict) -> int:
+    """Snapshot build (record mode): every allowed premium input of a session at the fixed percentile (36 results)."""
+    from src.premium.predict import BUYER_GROUPS, PERIODS, STAKE_BANDS
+    t = cfg["target"]
+    pct = public_percentile(t["stock_code"], cfg["meta"]["as_of"], t["market"])["mktcap_pct"]
+    n = 0
+    for sb in STAKE_BANDS:
+        for bg in BUYER_GROUPS:
+            for per in PERIODS:
+                premium_range(pct, stake_band=sb, buyer_group=bg, market=t["market"], period=per)
+                n += 1
+    return n
 
 
 def _seam(name, key):
@@ -93,8 +180,9 @@ class SnapshotUserProvider:
             return {"vwap": float(self.u["vwap20"]), "start": None, "end": as_of, "n": None, "events": [], "source": "사용자 입력"}
         raise PublicDataUnavailable(f"{code}: VWAP 사용자 입력 없음")
 
-    def mktcap_percentile(self, *a, **k):
-        raise PublicDataUnavailable("시총 백분위: 공개 배포에서 계산하지 않음(경영권 프리미엄 집계 비공개)")
+    def mktcap_percentile(self, as_of: str, market: str, mktcap=None, con=None) -> dict:
+        """P7-C3b: the target's fixed as-of percentile from the snapshot (the typed price does not move it)."""
+        return public_percentile(self.target, as_of, market)
 
     def beta_table(self, *a, **k):
         raise PublicDataUnavailable("베타 회귀: 공개 배포에는 없음(집계 βu만)")

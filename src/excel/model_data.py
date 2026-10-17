@@ -306,6 +306,7 @@ def mechanical_data(cfg_path: str) -> dict:
     from src.valuation.company_dcf import _close, _con, dna_wide_of, draft_dna
     from src.workbench import pubagg
     from src.workbench import snapdata as SD
+    from src.workbench.public_deploy import premium_range as premium_range_pub
     from src.workbench.public_deploy import premium_withheld
     replay = SD.replaying()                              # P7-C3 public snapshot: peer aggregates instead of the rows
     con = _con()
@@ -354,7 +355,7 @@ def mechanical_data(cfg_path: str) -> dict:
         tiers = cfg["beta"]["peer_tiers"]
         beta_rows, peers = [], []
         vw = market_provider().vwap20(code, as_of)
-        pct = None
+        pct = None if premium_withheld() else market_provider().mktcap_percentile(as_of, cfg["target"]["market"])
     else:
       con = duckdb.connect(str(DB_PATH), read_only=True)
       try:
@@ -393,8 +394,9 @@ def mechanical_data(cfg_path: str) -> dict:
     if premium_withheld():                               # P7-C3 decisions.premium_public = false
         premium = withheld_premium(cfg["target"]["market"], pm_cfg, vw, led)
     else:
-      prr = premium_range(pct["mktcap_pct"], market=cfg["target"]["market"], **pm_cfg)
-      premium = {"pct": pct["mktcap_pct"], "n_universe": pct["n_universe"], "market": cfg["target"]["market"], **pm_cfg,
+      prr = premium_range_pub(pct["mktcap_pct"], market=cfg["target"]["market"], **pm_cfg)
+      premium = {"pct": pct["mktcap_pct"], "n_universe": pct["n_universe"], "pct_fixed": bool(pct.get("fixed")),
+               "vwap_user": vw.get("source") == "사용자 입력", "market": cfg["target"]["market"], **pm_cfg,
                "method": prr.method, "reason": prr.reason, "cv_improvement": prr.cv_improvement_q50,
                "adopt_threshold": ADOPT_THRESHOLD, "gap_warn": GAP_WARN, "top_band_pct": application_rule()["top_band_pct"],
                "neighbour": {k: prr.neighbour[k] for k in ("q25", "q50", "q75", "n")}, "regression": dict(prr.regression),
