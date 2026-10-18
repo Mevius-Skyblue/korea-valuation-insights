@@ -155,6 +155,27 @@ def container() -> dict:
     return out
 
 
+def processes() -> list[dict]:
+    """Live confirmation processes of this container (Linux /proc): kind (job / warm / standby), current and peak RSS (MB).
+    Numbers only. Empty where /proc is not available (this PC)."""
+    out = []
+    for d in Path("/proc").glob("[0-9]*") if Path("/proc").exists() else []:
+        try:
+            cmd = (d / "cmdline").read_bytes().replace(b"\x00", b" ").decode("utf-8", "replace")
+            if "src.workbench.job" not in cmd:
+                continue
+            kind = "warm" if "--warm" in cmd else ("standby" if "--standby" in cmd else "job")
+            st_ = {
+                k: int(v.split()[0]) / 1024
+                for k, v in (ln.split(":", 1) for ln in (d / "status").read_text().splitlines())
+                if k in ("VmRSS", "VmHWM")
+            }
+            out.append({"kind": kind, "rss_mb": round(st_.get("VmRSS", 0), 1), "peak_mb": round(st_.get("VmHWM", 0), 1)})
+        except (OSError, ValueError):
+            continue
+    return out
+
+
 def diag() -> None:
     m = rss()
     ws = [d for d in WS_ROOT.iterdir() if d.is_dir()] if WS_ROOT.exists() else []
@@ -173,6 +194,7 @@ def diag() -> None:
         "job_peak_mb_max": max((j.get("peak_mb") or 0 for j in jobs), default=None),
         "job_peak_mb_last": jobs[-1].get("peak_mb") if jobs else None,
         "job_seconds_last": jobs[-1].get("seconds") if jobs else None,
+        "processes": processes(),
         "cpu_count": os.cpu_count(),
         "time": time.strftime("%Y-%m-%dT%H:%M:%S"),
         **container(),

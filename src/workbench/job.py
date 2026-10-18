@@ -340,6 +340,9 @@ if __name__ == "__main__":
     else:
         run(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "pc", json.loads(sys.argv[3]) if len(sys.argv) > 3 else None)
     if os.environ.get("KVI_PUBLIC") == "1" and took:  # numbers only, for the hidden diagnostics
-        from app.wb.public_ui import job_log
+        try:
+            from app.wb.public_ui import job_log
 
-        job_log({"peak_mb": _peak_mb(), "seconds": round(_t.time() - t_start, 1), "kind": kind})
+            job_log({"peak_mb": _peak_mb(), "seconds": round(_t.time() - t_start, 1), "kind": kind})
+        except Exception as e:  # noqa: BLE001 - the diagnostics line must not fail the job; say why it is missing
+            print(json.dumps({"event": "job_log_failed", "error": f"{type(e).__name__}: {e}"[:300]}), flush=True)
