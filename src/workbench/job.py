@@ -281,7 +281,8 @@ def warm(base: str, idle_s: float = WARM_IDLE_S) -> dict | None:
     b = Path(base)
     b.parent.mkdir(parents=True, exist_ok=True)
     opened, claimed, ticket = b.with_suffix(".open"), b.with_suffix(".claimed"), b.with_suffix(".ticket")
-    opened.write_text(str(os.getpid()), encoding="utf-8")
+    if not claimed.exists():  # already claimed while this interpreter was starting: do not reopen
+        opened.write_text(str(os.getpid()), encoding="utf-8")
     t0 = time.time()
     preload()
     print(json.dumps({"event": "warm", "preload_s": round(time.time() - t0, 2)}), flush=True)

@@ -108,8 +108,14 @@ def take_warm() -> dict | None:
             return None
         try:
             os.replace(w["base"].with_suffix(".open"), w["base"].with_suffix(".claimed"))
-        except OSError:  # not started yet, or leaving after its idle time
-            return None
+        except OSError:
+            # no .open yet: a worker started less than a minute ago has not written it (its interpreter is still starting)
+            # and cannot be leaving (it leaves only after 30 idle minutes) -> claim it now, it reads the ticket after its
+            # imports. Otherwise it is leaving: start a new process. (P7-C4: without this a confirmation started a fresh
+            # job next to a booting warm worker - one process more than the cap)
+            if time.time() - w["started"] > 60:
+                return None
+            w["base"].with_suffix(".claimed").write_text("early", encoding="utf-8")
         _JOBS.pop(WARM_KEY, None)
         return w
 
