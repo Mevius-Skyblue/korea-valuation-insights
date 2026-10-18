@@ -330,7 +330,9 @@ def _panel(c: nav.Ctx) -> None:
                 unsafe_allow_html=True,
             )
     with ui.card("live_diff", "실무 관행과 다른 가정"):
-        d = M.differs_from_practice(s, r, o)
+        # P7-C4: read the result here too - in public mode before the prices are typed the first card stopped at
+        # NeedInput and `r` was never set (UnboundLocalError on this card); now this card shows the same input guide
+        d = M.differs_from_practice(s, M.result(o, s, c.mode), o)
         if d:
             st.markdown(
                 "<ul class='wb-list'>"

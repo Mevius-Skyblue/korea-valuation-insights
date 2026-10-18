@@ -138,13 +138,21 @@ def job_log(rec: dict) -> None:
 def container() -> dict:
     """Memory of the whole container (cgroup v2 memory.current / memory.peak, else v1), MB - the app and every job
     together, which is what the server limit applies to. None where it cannot be read (this PC)."""
-    out = {"container_mb": None, "container_peak_mb": None}
+    out = {"container_mb": None, "container_peak_mb": None, "container_anon_mb": None, "container_file_mb": None}
     for cur, peak in (
         ("/sys/fs/cgroup/memory.current", "/sys/fs/cgroup/memory.peak"),
         ("/sys/fs/cgroup/memory/memory.usage_in_bytes", "/sys/fs/cgroup/memory/memory.max_usage_in_bytes"),
     ):
         try:
             out["container_mb"] = int(Path(cur).read_text().split()[0]) / 2**20
+            try:  # cgroup v2 memory.stat: anonymous (process) memory vs page cache (reclaimable file data)
+                stat = dict(
+                    ln.split() for ln in (Path(cur).parent / "memory.stat").read_text().splitlines() if ln.count(" ") == 1
+                )
+                out["container_anon_mb"] = int(stat["anon"]) / 2**20
+                out["container_file_mb"] = int(stat["file"]) / 2**20
+            except (OSError, KeyError, ValueError):
+                pass
             try:
                 out["container_peak_mb"] = int(Path(peak).read_text().split()[0]) / 2**20
             except (OSError, ValueError):
