@@ -1,11 +1,14 @@
 """Recalculate a generated workbook without Excel (Python `formulas` package, EUPL 1.1+, development-only dependency).
 
 load(path) -> Model            parse the workbook once
-Model.calc(inputs) -> dict     values of every formula cell, keyed "Sheet!A1" (sheet names as in the workbook);
-                               inputs: {"Sheet!A1" or defined name: value} overrides input cells for this run
+Model.calc(inputs, outputs)    values of every formula cell, keyed "Sheet!A1" (sheet names as in the workbook);
+                               inputs: {"Sheet!A1" or defined name: value} overrides input cells for this run;
+                               outputs: only these cells (names or "Sheet!A1") and what they depend on are calculated
+                               (P7-C4 C4-F7: the reconciliation compares a few cells per run - same values, less work)
 Errors (#REF!, #DIV/0! ...) come back as strings starting with "#".
 If `formulas` is not installed, available() is False and callers (tests) skip.
 """
+
 from __future__ import annotations
 
 import re
@@ -17,8 +20,10 @@ KEY = re.compile(r"^'?\[(?P<book>[^\]]+)\](?P<sheet>[^']+)'?!(?P<cell>[A-Z]+\d+)
 
 
 def available() -> bool:
+    """True when the `formulas` package is installed (otherwise no cached values / reconciliation)."""
     try:
         import formulas  # noqa: F401
+
         return True
     except ImportError:
         return False
@@ -47,12 +52,14 @@ class Model:
         import formulas
 
         from src.excel.datatable import has_data_tables, strip_data_tables
+
         self.path = Path(path)
         self.names = names
         self.sheet_case = {s.upper(): s for s in sheets}
         src = self.path
-        if has_data_tables(self.path):          # formulas cannot read data tables -> a copy without them (values cached)
+        if has_data_tables(self.path):  # formulas cannot read data tables -> a copy without them (values cached)
             import tempfile
+
             src = Path(tempfile.mkdtemp()) / self.path.name
             strip_data_tables(self.path, src)
         self.xl = formulas.ExcelModel().loads(str(src)).finish()
@@ -64,9 +71,12 @@ class Model:
             sheet, cell = ref.split("!")
         return f"'[{self.path.name}]{sheet.upper()}'!{cell.replace('$', '')}"
 
-    def calc(self, inputs: dict | None = None) -> dict:
+    def calc(self, inputs: dict | None = None, outputs: list[str] | None = None) -> dict:
         ins = {self._key(k): v for k, v in (inputs or {}).items()}
-        sol = self.xl.calculate(inputs=ins)
+        if outputs:
+            sol = self.xl.calculate(inputs=ins, outputs=[self._key(o) for o in outputs])
+        else:
+            sol = self.xl.calculate(inputs=ins)
         out = {}
         for k, v in sol.items():
             m = KEY.match(k)
@@ -85,4 +95,5 @@ class Model:
 
 
 def load(path, names: dict, sheets: list[str]) -> Model:
+    """Parse a workbook into a recalculation model."""
     return Model(path, names, sheets)

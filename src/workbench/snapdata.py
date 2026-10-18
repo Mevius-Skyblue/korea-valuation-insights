@@ -15,6 +15,7 @@ The mode is process-wide (the Streamlit server and the confirmation job each run
 type tags (DataFrame, Series, tuple, non-string dict keys, NaN) so a replayed value equals the recorded one exactly
 (floats round-trip through repr). Nothing here decides a value.
 """
+
 from __future__ import annotations
 
 import json
@@ -74,7 +75,7 @@ class recording:
         set_mode("record", {})
         return _STATE["store"]
 
-    def __exit__(self, *exc):
+    def __exit__(self, *_):
         set_mode(*self._prev)
         return False
 
@@ -90,7 +91,7 @@ def canon(o):
     DataFrame / Series -> sorted by index; tuples and dict values recursively."""
     if isinstance(o, pd.DataFrame):
         positional = isinstance(o.index, pd.RangeIndex) or (o.index.nlevels == 1 and list(o.index) == list(range(len(o))))
-        if positional:                    # a plain row number (a decoded frame has an Index 0..n-1, not a RangeIndex)
+        if positional:  # a plain row number (a decoded frame has an Index 0..n-1, not a RangeIndex)
             try:
                 return o.sort_values(list(o.columns), kind="mergesort", na_position="last").reset_index(drop=True)
             except TypeError:
@@ -109,6 +110,7 @@ def canon(o):
 def seam(name: str, key, canonical: bool = False):
     """Decorator. key(*args, **kw) -> JSON-able identity of the data (never a connection or a path of this machine).
     canonical: record the value in canonical row order (canon)."""
+
     def deco(fn):
         @wraps(fn)
         def w(*a, **kw):
@@ -123,9 +125,10 @@ def seam(name: str, key, canonical: bool = False):
                 return decode(st[k])
             out = fn(*a, **kw)
             _STATE["store"][k] = encode(canon(out) if canonical else out)
-            return decode(_STATE["store"][k])          # the PC run continues with exactly what the cloud will get
-        w.__wrapped_seam__ = name
+            return decode(_STATE["store"][k])  # the PC run continues with exactly what the cloud will get
+
         return w
+
     return deco
 
 
@@ -144,6 +147,7 @@ def get(name: str, key):
 
 
 # ---------------------------------------------------------------- JSON with type tags
+
 
 def _f(x: float):
     if math.isnan(x):
@@ -176,15 +180,30 @@ def encode(o):
         return {"$m": [[encode(k), encode(v)] for k, v in o.items()]}
     if isinstance(o, pd.DataFrame):
         ix = o.index
-        return {"$df": {"columns": [encode(c) for c in o.columns], "dtypes": [str(t) for t in o.dtypes],
-                        "index": [encode(x) for x in ix.tolist()], "index_names": [encode(n) for n in ix.names],
-                        "index_dtype": str(ix.dtype) if ix.nlevels == 1 else None, "nlevels": ix.nlevels,
-                        "data": [[encode(v) for v in row] for row in o.itertuples(index=False, name=None)]}}
+        return {
+            "$df": {
+                "columns": [encode(c) for c in o.columns],
+                "dtypes": [str(t) for t in o.dtypes],
+                "index": [encode(x) for x in ix.tolist()],
+                "index_names": [encode(n) for n in ix.names],
+                "index_dtype": str(ix.dtype) if ix.nlevels == 1 else None,
+                "nlevels": ix.nlevels,
+                "data": [[encode(v) for v in row] for row in o.itertuples(index=False, name=None)],
+            }
+        }
     if isinstance(o, pd.Series):
         ix = o.index
-        return {"$s": {"name": encode(o.name), "dtype": str(o.dtype), "index": [encode(x) for x in ix.tolist()],
-                       "index_names": [encode(n) for n in ix.names], "index_dtype": str(ix.dtype) if ix.nlevels == 1 else None,
-                       "nlevels": ix.nlevels, "values": [encode(v) for v in o.tolist()]}}
+        return {
+            "$s": {
+                "name": encode(o.name),
+                "dtype": str(o.dtype),
+                "index": [encode(x) for x in ix.tolist()],
+                "index_names": [encode(n) for n in ix.names],
+                "index_dtype": str(ix.dtype) if ix.nlevels == 1 else None,
+                "nlevels": ix.nlevels,
+                "values": [encode(v) for v in o.tolist()],
+            }
+        }
     if isinstance(o, np.ndarray):
         return [encode(x) for x in o.tolist()]
     if o is pd.NA or o is pd.NaT:

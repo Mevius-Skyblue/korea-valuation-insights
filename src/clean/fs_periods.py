@@ -5,6 +5,7 @@ Flows (income, cash flow) in fs_std are year-to-date (Q1, H1, Q3) or full-year (
     LTM at (Y, P) = FY(Y-1) + YTD(Y, P) - YTD(Y-1, P);  LTM at (Y, FY) = FY(Y)
 Balance-sheet items are point-in-time: no LTM, use the period-end value.
 """
+
 from __future__ import annotations
 
 import pandas as pd

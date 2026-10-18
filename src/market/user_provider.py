@@ -12,6 +12,7 @@
 user = {"close": 원, "mktcap": 원 (default close × common shares outstanding), "vwap20": 원,
         "sub_close": {stock_code: 원}, "pref": {stock_code: {"close": 원, "listed": 주}}}
 """
+
 from __future__ import annotations
 
 
@@ -44,7 +45,14 @@ class UserInputProvider:
 
     def vwap20(self, code: str, as_of: str, con=None) -> dict:
         if code == self.target and self.u.get("vwap20"):
-            return {"vwap": float(self.u["vwap20"]), "start": None, "end": as_of, "n": None, "events": [], "source": "사용자 입력"}
+            return {
+                "vwap": float(self.u["vwap20"]),
+                "start": None,
+                "end": as_of,
+                "n": None,
+                "events": [],
+                "source": "사용자 입력",
+            }
         raise PublicDataUnavailable(f"{code}: VWAP 사용자 입력 없음")
 
     def mktcap_percentile(self, *a, **k):
@@ -62,22 +70,27 @@ class UserInputProvider:
 
 class UserOverlayProvider:
     """DB provider with the target / listed subsidiaries / preferred shares replaced by user values on the as-of date."""
+
     name = "user_overlay"
 
     def __init__(self, user: dict, cfg: dict):
         from src.market.provider import DbMarketProvider
+
         self.base = DbMarketProvider()
         self.u = dict(user or {})
         self.target = cfg["target"]["stock_code"]
         self.as_of = cfg["meta"]["as_of"]
         sh = cfg.get("shares") or {}
         self.common_out = (sh.get("common_issued") or 0) - (sh.get("common_treasury") or 0)
-        self.subs = {x["stock_code"] for x in (cfg.get("structure") or {}).get("subsidiaries") or []
-                     if x.get("listed") and x.get("direct") and x.get("stock_code")}
+        self.subs = {
+            x["stock_code"]
+            for x in (cfg.get("structure") or {}).get("subsidiaries") or []
+            if x.get("listed") and x.get("direct") and x.get("stock_code")
+        }
         self.prefs = set(sh.get("listed_pref_codes") or [])
         if not self.u.get("close"):
             raise PublicDataUnavailable("공개 모드 내보내기: 대상 종가(사용자 입력)가 필요하다")
-        if not self.u.get("vwap20"):         # block per-share prices are shown only from a user price input
+        if not self.u.get("vwap20"):  # block per-share prices are shown only from a user price input
             raise PublicDataUnavailable("공개 모드 내보내기: 대상 20일 VWAP(사용자 입력)가 필요하다(블록 1주당 가격)")
         miss = sorted(self.subs - set(self.u.get("sub_close") or {}))
         if miss:
@@ -92,7 +105,7 @@ class UserOverlayProvider:
     def quote(self, code: str, date: str, con=None):
         if date == self.as_of:
             if code == self.target:
-                return (float(self.u["close"]), self._mc(), None)        # listed shares: DART counts are used (not KRX)
+                return (float(self.u["close"]), self._mc(), None)  # listed shares: DART counts are used (not KRX)
             if code in self.subs:
                 return (float(self.u["sub_close"][code]), None, None)
             if code in self.prefs:
@@ -107,13 +120,21 @@ class UserOverlayProvider:
 
     def vwap20(self, code: str, as_of: str, con=None) -> dict:
         if code == self.target:
-            return {"vwap": float(self.u["vwap20"]), "start": None, "end": as_of, "n": None, "events": [], "source": "사용자 입력"}
+            return {
+                "vwap": float(self.u["vwap20"]),
+                "start": None,
+                "end": as_of,
+                "n": None,
+                "events": [],
+                "source": "사용자 입력",
+            }
         return self.base.vwap20(code, as_of, con=con)
 
     def mktcap_percentile(self, as_of: str, market: str, mktcap: float, con=None) -> dict:
         """P7-C3b (config/p7c3b.yaml percentile): public mode uses the target's as-of KRX percentile, fixed - the typed
         price does not move it (same as the public deployment, which holds it rounded to 0.1)."""
         from src.workbench.public_deploy import public_percentile
+
         return public_percentile(self.target, as_of, market, con=con)
 
     def beta_table(self, as_of: str, cfg_path: str, table: str):

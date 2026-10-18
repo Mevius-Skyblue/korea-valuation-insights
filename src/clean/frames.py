@@ -5,6 +5,7 @@ expected columns and the next `df.col` access fails (P7-B4 crash: a peer without
     ensure(df, cols)                       add missing columns (empty) to a DataFrame from a query
     pivot(df, index, columns, values)      pivot_table that returns an empty frame with the index names when df is empty
 """
+
 from __future__ import annotations
 
 import pandas as pd

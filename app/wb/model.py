@@ -13,26 +13,23 @@ Modes (config/p7c2.yaml display_rules / public_mode):
 Thread safety: recalc mutates the in-memory company, so every recalculation runs under LOCK (one browser session at a
 time; a single-user tool).
 """
+
 from __future__ import annotations
 
-import copy
 import hashlib
 import json
-import math
 import os
 import re
-import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pandas as pd
-import yaml
 
+from src import yamlio
 from src.collect.core import ROOT
 from src.market.user_provider import PublicDataUnavailable
-from src.workbench import confirm as C
 from src.workbench import judge as J
 from src.workbench import recalc as R
 from src.workbench import session as S
@@ -42,21 +39,22 @@ LOCK = threading.RLock()
 AS_OF = "2026-09-30"
 APP_DATA = ROOT / "app" / "data"
 _POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="wb")
-_CACHE: dict = {}            # small per-process result caches (keys include session id and version)
-_JOBS: dict = {}             # (sid, mode) -> background confirmation job
+_CACHE: dict = {}  # small per-process result caches (keys include session id and version)
 
 
-PREMIUM_WITHHELD = ("경영권 프리미엄 집계는 이 배포에서 공개하지 않습니다(블록 1주당 가격을 계산하지 않음, PC 모드에서 계산)")
+PREMIUM_WITHHELD = "경영권 프리미엄 집계는 이 배포에서 공개하지 않습니다(블록 1주당 가격을 계산하지 않음, PC 모드에서 계산)"
 
 
 def _premium_on() -> bool:
     from src.workbench.public_deploy import premium_public
+
     return premium_public()
 
 
 def _submit(fn, *a):
     """Background task with this run's context (P7-C3: the browser session's workspace)."""
     import contextvars
+
     return _POOL.submit(contextvars.copy_context().run, fn, *a)
 
 
@@ -68,12 +66,14 @@ def no_db() -> bool:
     """Simulation of a deployment without the DB and without a snapshot (P7-C2 test): env WB_NO_DB=1. The real public
     deployment (P7-C3) replays the public snapshot instead (snapdata replay) and needs no DB."""
     from src.workbench.snapdata import replaying
+
     return os.environ.get("WB_NO_DB") == "1" and not replaying()
 
 
 def public_deploy() -> bool:
     """The public deployment (P7-C3): snapshot replay, public mode only."""
     from src.workbench.snapdata import replaying
+
     return replaying()
 
 
@@ -83,22 +83,27 @@ def need_db(what: str) -> None:
 
 
 def _load_yaml(p) -> dict:
-    return yaml.safe_load((ROOT / p).read_text(encoding="utf-8"))
+    return yamlio.load((ROOT / p).read_text(encoding="utf-8"))
 
 
 # ---------------------------------------------------------------- companies, drafts, gate
 
+
 def universe() -> list[dict]:
     """Search list: KOSPI·KOSDAQ common stocks on the as-of date (names only) + every company with an auto draft."""
-    if public_deploy():                           # P7-C3: the public range only (config/p7c3.yaml companies)
+    if public_deploy():  # P7-C3: the public range only (config/p7c3.yaml companies)
         from src.workbench.public_deploy import index
-        return sorted(({"code": x["code"], "name": x["name"], "market": x["market"]} for x in index().values()), key=lambda x: x["name"])
+
+        return sorted(
+            ({"code": x["code"], "name": x["name"], "market": x["market"]} for x in index().values()), key=lambda x: x["name"]
+        )
     k = ("universe", no_db(), len(list((ROOT / "config" / "drafts").glob("valuation_*.yaml"))))
     if k in _CACHE:
         return _CACHE[k]
     out = {}
     if not no_db():
         from src.market.provider import get
+
         u = get().universe(AS_OF, ["KOSPI", "KOSDAQ"])
         u = u[u.eligible]
         for r in u.itertuples():
@@ -107,9 +112,9 @@ def universe() -> list[dict]:
         code = p.stem.replace("valuation_", "")
         if code not in out and code.isdigit():
             try:
-                t = yaml.safe_load(p.read_text(encoding="utf-8"))["target"]
+                t = yamlio.load(p.read_text(encoding="utf-8"))["target"]
                 out[code] = {"code": code, "name": t["name"], "market": t.get("market", "")}
-            except Exception:                     # noqa: BLE001 - a broken draft file is skipped in the search list
+            except Exception:  # noqa: BLE001 - a broken draft file is skipped in the search list
                 continue
     _CACHE[k] = sorted(out.values(), key=lambda x: x["name"])
     return _CACHE[k]
@@ -119,19 +124,28 @@ def draft_state(code: str) -> dict:
     """{'has_draft', 'summary', 'cfg_path'} for a code (summary.json of the last pipeline run, if any)."""
     cfg_path = f"config/drafts/valuation_{code}.yaml"
     summ = S.draft_summary(code)
-    if public_deploy():                           # P7-C3: the snapshot holds the draft (evaluable) or the gate table only
-        return {"has_draft": summ is not None, "summary": summ, "cfg_path": None,
-                "in_public": summ is not None}
+    if public_deploy():  # P7-C3: the snapshot holds the draft (evaluable) or the gate table only
+        return {"has_draft": summ is not None, "summary": summ, "cfg_path": None, "in_public": summ is not None}
     ok = (ROOT / cfg_path).exists() and summ is not None and bool((summ.get("steps") or {}).get("first_draft", {}).get("ok"))
     return {"has_draft": ok, "summary": summ, "cfg_path": cfg_path}
 
 
-GATES = [("G1", "업종(금융업 아님)", ("G1_finance",)), ("G1b", "재무구조(금융회사형 아님)", ("G1b_finance_structure",)),
-         ("G2", "최근 3년 중 영업이익 흑자 연도", ("G2_all_loss",)), ("G3", "3년 영업이익 합계 > 0", ("G3_negative_margin",)),
-         ("G4", "FY2025 매출 100억원 이상", ("G4_tiny_revenue",)), ("G5", "12월 결산", ("G5_fiscal_year",)),
-         ("G6", "지배구조(일반 경로·SOTP로 평가 가능)", ("G6_structure", "G6_sotp_unsupported")),
-         ("G7", "필수 재무 자료(FY2022~2025·반기)", ("G7_data",)), ("G8", "쓸 수 있는 피어 3곳 이상", ("G8_peers",))]
-NOTE_RULES = {"G6_sotp_path": ("G6", "SOTP 경로"), "G23_loss_path": ("G2", "적자 경로"), "G8_peer_relax": ("G8", "피어 부족 → 판단 1순위")}
+GATES = [
+    ("G1", "업종(금융업 아님)", ("G1_finance",)),
+    ("G1b", "재무구조(금융회사형 아님)", ("G1b_finance_structure",)),
+    ("G2", "최근 3년 중 영업이익 흑자 연도", ("G2_all_loss",)),
+    ("G3", "3년 영업이익 합계 > 0", ("G3_negative_margin",)),
+    ("G4", "FY2025 매출 100억원 이상", ("G4_tiny_revenue",)),
+    ("G5", "12월 결산", ("G5_fiscal_year",)),
+    ("G6", "지배구조(일반 경로·SOTP로 평가 가능)", ("G6_structure", "G6_sotp_unsupported")),
+    ("G7", "필수 재무 자료(FY2022~2025·반기)", ("G7_data",)),
+    ("G8", "쓸 수 있는 피어 3곳 이상", ("G8_peers",)),
+]
+NOTE_RULES = {
+    "G6_sotp_path": ("G6", "SOTP 경로"),
+    "G23_loss_path": ("G2", "적자 경로"),
+    "G8_peer_relax": ("G8", "피어 부족 → 판단 1순위"),
+}
 OUT_WHY = {
     "G1": "금융회사는 예금·대출 같은 영업과 재무 활동이 섞여 있어 현금흐름 할인(FCFF)과 EV 배수가 맞지 않습니다. 금융업 전용 방법이 필요합니다.",
     "G1b": "재무상태표가 금융회사형(영업자산 비중 5% 미만, 부채 비중 30% 이상)이라 같은 이유로 자동 평가 범위 밖입니다.",
@@ -156,12 +170,18 @@ def gate_view(summ: dict | None) -> dict:
     rows = []
     for gid, label, rules in GATES:
         bad = [f for f in fails if f.get("rule") in rules]
-        nt = [n for n in notes if NOTE_RULES.get(n.get("rule"), ("",))[0] == gid
-              or (gid == "G3" and n.get("rule") == "G23_loss_path")]
+        nt = [
+            n
+            for n in notes
+            if NOTE_RULES.get(n.get("rule"), ("",))[0] == gid or (gid == "G3" and n.get("rule") == "G23_loss_path")
+        ]
         if bad:
             st_, val = "✗", "; ".join(str(f.get("value") or "") for f in bad)
         elif nt:
-            st_, val = "→", NOTE_RULES.get(nt[0]["rule"], ("", "경로"))[1] + (f" ({nt[0].get('value')})" if nt[0].get("value") else "")
+            st_, val = (
+                "→",
+                NOTE_RULES.get(nt[0]["rule"], ("", "경로"))[1] + (f" ({nt[0].get('value')})" if nt[0].get("value") else ""),
+            )
         elif gid in ("G7", "G8") and not b_run:
             st_, val = "확인 전", "앞 게이트에서 멈춤"
         else:
@@ -179,11 +199,16 @@ def gate_view(summ: dict | None) -> dict:
         path = "연결 DCF − 비지배지분(장부)"
     else:
         path = "일반(" + ("별도 DCF" if facts.get("fs_div") == "OFS" else "연결 DCF − 비지배지분") + ")"
-    why = [{"id": r["id"], "label": r["label"], "value": r["value"], "why": OUT_WHY.get(r["id"], "")} for r in rows if r["status"] == "✗"]
+    why = [
+        {"id": r["id"], "label": r["label"], "value": r["value"], "why": OUT_WHY.get(r["id"], "")}
+        for r in rows
+        if r["status"] == "✗"
+    ]
     return {"rows": rows, "path": path, "passed": passed, "fails": why, "result": summ.get("result")}
 
 
 # ---------------------------------------------------------------- sessions
+
 
 def sessions() -> list[dict]:
     """Saved sessions: company, as-of, version, status (초안/확정), pending judgements, last change."""
@@ -195,10 +220,19 @@ def sessions() -> list[dict]:
             continue
         v = s["versions"][-1]["v"]
         conf = (s.get("confirmed") or {}).get("v")
-        out.append({"sid": s["session_id"], "code": s["code"], "name": s["name"], "as_of": s["as_of"], "version": v,
-                    "status": "확정" if conf is not None and conf == v else ("확정 뒤 수정" if conf is not None else "초안"),
-                    "pending": S.pending(s), "modified": time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime)),
-                    "auto": ((s.get("auto_headline") or {}).get("status") or "")})
+        out.append(
+            {
+                "sid": s["session_id"],
+                "code": s["code"],
+                "name": s["name"],
+                "as_of": s["as_of"],
+                "version": v,
+                "status": "확정" if conf is not None and conf == v else ("확정 뒤 수정" if conf is not None else "초안"),
+                "pending": S.pending(s),
+                "modified": time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime)),
+                "auto": ((s.get("auto_headline") or {}).get("status") or ""),
+            }
+        )
     return sorted(out, key=lambda x: x["modified"], reverse=True)
 
 
@@ -212,10 +246,10 @@ class Opened:
 
     def __init__(self, sid: str):
         need_db("세션 열기(재무·피어·베타 표)")
-        t0 = time.time()
         s = S.load(sid)
-        if public_deploy():                       # P7-C3: the company's public snapshot in this process's replay store
+        if public_deploy():  # P7-C3: the company's public snapshot in this process's replay store
             from src.workbench.public_deploy import ensure
+
             ensure(s["code"])
         self.sid, self.code, self.name = sid, s["code"], s["name"]
         self.cfg_path = s["draft_config"]
@@ -225,50 +259,56 @@ class Opened:
         with LOCK:
             self.ctx = R.context(self.cfg_path)
         name = Path(self.cfg_path).stem.replace("valuation_", "")
-        if public_deploy():                       # P7-C3: multiple quartiles of the draft peers as aggregates (no rows)
+        if public_deploy():  # P7-C3: multiple quartiles of the draft peers as aggregates (no rows)
             self.p3 = None
         else:
             import duckdb
 
             from src.db.build import DB_PATH
+
             con = duckdb.connect(str(DB_PATH), read_only=True)
             try:
                 self.p3 = con.execute(f"SELECT * FROM peer_{name}_c3").df()
             finally:
                 con.close()
             from src.workbench import snapdata as SD
+
             if SD.mode() == "record":
                 from src.valuation.p3c1 import multiple_stats
                 from src.workbench import pubagg
+
                 tiers = self.cfg["beta"]["peer_tiers"]
                 names = [p["name"] for p in self.cfg.get("peers", [])]
                 pr = self.p3[self.p3.tier.isin(tiers) & self.p3.name.isin(names)]
-                pubagg.record("screen", self.cfg_path, self.cfg,
-                              {"stats": {c_: multiple_stats(pr[c_]) for c_ in ("ev_sales", "ev_ebitda", "per", "pbr")}, "n_peers": int(len(pr))})
+                pubagg.record(
+                    "screen",
+                    self.cfg_path,
+                    self.cfg,
+                    {
+                        "stats": {c_: multiple_stats(pr[c_]) for c_ in ("ev_sales", "ev_ebitda", "per", "pbr")},
+                        "n_peers": int(len(pr)),
+                    },
+                )
         st_ = self.cfg.get("structure") or {}
         self.subs = [x for x in st_.get("subsidiaries") or [] if x.get("listed") and x.get("direct") and x.get("stock_code")]
         self.prefs = list((self.cfg.get("shares") or {}).get("listed_pref_codes") or [])
         self.sotp = st_.get("method") == "sotp_general"
-        self.open_seconds = round(time.time() - t0, 2)
         self._warm = _submit(_warm, self, s)
-
-    def warm_done(self) -> bool:
-        return self._warm.done()
 
     def snapshot_warnings(self, timeout: float = 10.0) -> list[str]:
         try:
             return self._snap.result(timeout=timeout)
-        except Exception as e:                    # noqa: BLE001 - shown as a warning, never stops the screen
+        except Exception as e:  # noqa: BLE001 - shown as a warning, never stops the screen
             return [f"자료 확인 실패({type(e).__name__})"]
 
 
-def _warm(o: "Opened", s: dict) -> None:
+def _warm(o: Opened, s: dict) -> None:
     """Background warm-up after opening (PC values of the result page: market, premium, peer multiples), so the first
     visit of steps 3~4 does not wait for them. Errors are left for the cards to show."""
-    for fn in (market, premium):                  # cheap, mostly DB time (peer multiples are left for the first visit)
+    for fn in (market, premium):  # cheap, mostly DB time (peer multiples are left for the first visit)
         try:
             fn(o, s, "pc")
-        except Exception:                         # noqa: BLE001 - the card shows the error when it asks again
+        except Exception:  # noqa: BLE001 - the card shows the error when it asks again
             pass
 
 
@@ -278,12 +318,16 @@ def _snapshot_check(s: dict) -> list[str]:
 
 def open_key(s: dict) -> str:
     snap = s.get("snapshot") or {}
-    raw = json.dumps([s["session_id"], s.get("draft_sha"), snap.get("market_hash"), snap.get("statements"), snap.get("loader_code")],
-                     sort_keys=True, default=str)
+    raw = json.dumps(
+        [s["session_id"], s.get("draft_sha"), snap.get("market_hash"), snap.get("statements"), snap.get("loader_code")],
+        sort_keys=True,
+        default=str,
+    )
     return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
 # ---------------------------------------------------------------- results per mode
+
 
 def ukey(s: dict) -> str:
     return json.dumps(s.get("public_inputs") or {}, sort_keys=True)
@@ -358,18 +402,20 @@ def relative(o: Opened, s: dict, mode: str) -> dict:
     from src.pipeline.diagnose import load_rules, peer_range
     from src.valuation.company_dcf import EOK, bridge, ltm, ltm_dna, val
     from src.valuation.p3c1 import multiple_stats
+
     ver = version(s)
     k = ("rel", s["session_id"], ver["v"], mode, ukey(s) if mode == "public" else "")
     if k in _CACHE:
         return _CACHE[k]
     ctx = o.ctx if mode == "pc" else public_ctx(o, s)
     with LOCK:
-        R.recalc(o.cfg_path, ver["overrides"], ctx=ctx)          # puts the company in this version's state
+        R.recalc(o.cfg_path, ver["overrides"], ctx=ctx)  # puts the company in this version's state
         c = ctx.c
         tiers = c.cfg["beta"]["peer_tiers"]
         names = [p["name"] for p in c.cfg.get("peers", [])]
-        if o.p3 is None:                          # P7-C3 public deployment: the draft peers' aggregates only
+        if o.p3 is None:  # P7-C3 public deployment: the draft peers' aggregates only
             from src.workbench import pubagg
+
             agg = pubagg.get("screen", o.cfg_path, o.cfg, names)
             pr = None
         else:
@@ -382,8 +428,12 @@ def relative(o: Opened, s: dict, mode: str) -> dict:
         m_ni = ltm(c, "net_income_parent") or ltm(c, "net_income")
         m_eq = val(c, "equity_parent", c.Y, c.P) or (val(c, "total_equity", c.Y, c.P) - val(c, "nci", c.Y, c.P))
     mult = {}
-    for nm, col, kind, metric in (("EV/Sales", "ev_sales", "ev", m_rev), ("EV/EBITDA", "ev_ebitda", "ev", m_ebitda),
-                                  ("PER", "per", "eq", m_ni), ("PBR", "pbr", "eq", m_eq)):
+    for nm, col, kind, metric in (
+        ("EV/Sales", "ev_sales", "ev", m_rev),
+        ("EV/EBITDA", "ev_ebitda", "ev", m_ebitda),
+        ("PER", "per", "eq", m_ni),
+        ("PBR", "pbr", "eq", m_eq),
+    ):
         st_ = dict(agg["stats"][col]) if pr is None else multiple_stats(pr[col])
 
         def ps(mu, kind=kind, metric=metric):
@@ -391,10 +441,21 @@ def relative(o: Opened, s: dict, mode: str) -> dict:
                 return float("nan")
             eq = (mu * metric - br["net_debt"] + br["non_operating"] - br["nci"]) if kind == "ev" else mu * metric
             return eq * EOK / shares
-        mult[nm] = {**st_, "metric": (metric or float("nan")) * 100, "ps_q25": ps(st_["q25"]), "ps_median": ps(st_["median"]),
-                    "ps_q75": ps(st_["q75"])}
-    out = {"multiples": mult, "range": peer_range(mult, load_rules()["diagnostics"]),
-           "n_peers": agg["n_peers"] if pr is None else len(pr), "bridge": dict(br), "shares": shares}
+
+        mult[nm] = {
+            **st_,
+            "metric": (metric or float("nan")) * 100,
+            "ps_q25": ps(st_["q25"]),
+            "ps_median": ps(st_["median"]),
+            "ps_q75": ps(st_["q75"]),
+        }
+    out = {
+        "multiples": mult,
+        "range": peer_range(mult, load_rules()["diagnostics"]),
+        "n_peers": agg["n_peers"] if pr is None else len(pr),
+        "bridge": dict(br),
+        "shares": shares,
+    }
     _CACHE[k] = out
     return out
 
@@ -408,15 +469,22 @@ def market(o: Opened, s: dict, mode: str) -> dict:
     k = ("mkt", o.code)
     if k not in _CACHE:
         from src.market.provider import get
+
         vw = get().vwap20(o.code, AS_OF)
-        _CACHE[k] = {"close": o.ctx.c.market["close"], "vwap": vw["vwap"], "mktcap_won": o.ctx.c.market["mktcap_common"] * 1e8,
-                     "vwap_n": vw.get("n"), "source": "한국거래소 통계정보"}
+        _CACHE[k] = {
+            "close": o.ctx.c.market["close"],
+            "vwap": vw["vwap"],
+            "mktcap_won": o.ctx.c.market["mktcap_common"] * 1e8,
+            "vwap_n": vw.get("n"),
+            "source": "한국거래소 통계정보",
+        }
     return _CACHE[k]
 
 
 def signals(o: Opened, s: dict, mode: str) -> dict:
     from src.pipeline.diagnose import load_rules
     from src.pipeline.diagnose import signals as sig
+
     r = result(o, s, mode)
     rel = relative(o, s, mode)
     price = market(o, s, mode)["close"]
@@ -435,6 +503,7 @@ def premium(o: Opened, s: dict, mode: str) -> dict:
     deployment replays it (0.1 point) and the 36 premium-input results from the snapshot."""
     from src.market.provider import get
     from src.workbench.public_deploy import premium_range, premium_withheld, public_percentile
+
     if premium_withheld() or (public_deploy() and not _premium_on()):
         raise PublicDataUnavailable(PREMIUM_WITHHELD)
     if not public_deploy():
@@ -448,13 +517,24 @@ def premium(o: Opened, s: dict, mode: str) -> dict:
     else:
         k = ("prem", o.code, json.dumps(pm, sort_keys=True), round(float(mk["mktcap_won"])))
     if k not in _CACHE:
-        pct = (public_percentile(o.code, AS_OF, mkt) if mode == "public"
-               else get().mktcap_percentile(AS_OF, mkt, mk["mktcap_won"]))
+        pct = public_percentile(o.code, AS_OF, mkt) if mode == "public" else get().mktcap_percentile(AS_OF, mkt, mk["mktcap_won"])
         prr = premium_range(pct["mktcap_pct"], market=mkt, **pm)
-        _CACHE[k] = {"pct": pct["mktcap_pct"], "pct_fixed": mode == "public", "method": prr.method, "reason": prr.reason,
-                     "q25": prr.q25, "q50": prr.q50, "q75": prr.q75, "n_neighbour": prr.neighbour.get("n"),
-                     "neighbour": dict(prr.neighbour), "band": dict(prr.band), "regression": dict(prr.regression),
-                     "cv_improvement": prr.cv_improvement_q50, "warnings": list(prr.warnings), **pm}
+        _CACHE[k] = {
+            "pct": pct["mktcap_pct"],
+            "pct_fixed": mode == "public",
+            "method": prr.method,
+            "reason": prr.reason,
+            "q25": prr.q25,
+            "q50": prr.q50,
+            "q75": prr.q75,
+            "n_neighbour": prr.neighbour.get("n"),
+            "neighbour": dict(prr.neighbour),
+            "band": dict(prr.band),
+            "regression": dict(prr.regression),
+            "cv_improvement": prr.cv_improvement_q50,
+            "warnings": list(prr.warnings),
+            **pm,
+        }
     out = dict(_CACHE[k])
     base = mk.get("vwap")
     out["block"] = {q: base * (1 + out[q]) for q in ("q25", "q50", "q75")} if base else None
@@ -466,6 +546,7 @@ def plan_check(o: Opened, s: dict, mode: str) -> dict:
     """Forecast revenue CAGR FY2026 → FY2030 of the current version (base scenario) and its band in the P5-B table
     (app/data/cagr_bands.csv; display only, same definition as the Excel 'PlanFcCAGR5')."""
     from src.valuation.company_dcf import forecast
+
     ver = version(s)
     ctx = o.ctx if mode == "pc" else public_ctx(o, s)
     with LOCK:
@@ -489,6 +570,7 @@ def plan_check(o: Opened, s: dict, mode: str) -> dict:
 
 # ---------------------------------------------------------------- practice references (app/data aggregates, P5-B)
 
+
 def practice() -> dict:
     """Quartiles of the external valuation opinions (all years, all deals) and 2023~ medians."""
     k = ("practice",)
@@ -499,9 +581,13 @@ def practice() -> dict:
         late = ar[(ar.year_from == 2023) & (ar.year_to == y1) & (ar.group == "전체")].set_index("metric")
         rt = pd.read_csv(APP_DATA / "rf_tenor.csv")
         rt = rt[rt.group == "전체"].groupby("tenor")["count"].sum()
-        _CACHE[k] = {"years": (y0, y1), "full": {m: full.loc[m].to_dict() for m in full.index},
-                     "late": {m: late.loc[m].to_dict() for m in late.index},
-                     "rf10": int(rt.get("10년", 0)), "rf_marked": int(rt.get("10년", 0) + rt.get("5년", 0) + rt.get("기타", 0))}
+        _CACHE[k] = {
+            "years": (y0, y1),
+            "full": {m: full.loc[m].to_dict() for m in full.index},
+            "late": {m: late.loc[m].to_dict() for m in late.index},
+            "rf10": int(rt.get("10년", 0)),
+            "rf_marked": int(rt.get("10년", 0) + rt.get("5년", 0) + rt.get("기타", 0)),
+        }
     return _CACHE[k]
 
 
@@ -519,28 +605,38 @@ def differs_from_practice(s: dict, r: dict, o: Opened) -> list[dict]:
         out.append({"item": "MRP", "ours": f"{mrp:.2%}", "practice": f"2023~ 중앙값 {p['late']['mrp']['median']:.2%}"})
     srp = float(ov.get("srp", led["decisions"]["srp_columns"][0]))
     if srp < p["full"]["srp"]["q1"]:
-        out.append({"item": "SRP", "ours": f"{srp:.2%}", "practice": f"중앙값 {p['full']['srp']['median']:.2%}(n={int(p['full']['srp']['n'])})"})
+        out.append(
+            {
+                "item": "SRP",
+                "ours": f"{srp:.2%}",
+                "practice": f"중앙값 {p['full']['srp']['median']:.2%}(n={int(p['full']['srp']['n'])})",
+            }
+        )
     g = float(ov.get("g_terminal", o.ctx.base_cfg["forecast"]["human"]["g_terminal"]))
     if abs(g - p["full"]["g"]["median"]) > 0.0005:
         out.append({"item": "영구성장률", "ours": f"{g:.2%}", "practice": f"중앙값 {p['full']['g']['median']:.2%}"})
     w = r.get("wacc")
     if w is not None and not (p["full"]["wacc"]["q1"] <= w <= p["full"]["wacc"]["q3"]):
-        out.append({"item": "WACC", "ours": f"{w:.2%}",
-                    "practice": f"사분위 {p['full']['wacc']['q1']:.2%}~{p['full']['wacc']['q3']:.2%}"})
+        out.append(
+            {
+                "item": "WACC",
+                "ours": f"{w:.2%}",
+                "practice": f"사분위 {p['full']['wacc']['q1']:.2%}~{p['full']['wacc']['q3']:.2%}",
+            }
+        )
     tv = r.get("tv_share")
     if tv is not None and not (p["full"]["tv_share"]["q1"] <= tv <= p["full"]["tv_share"]["q3"]):
-        out.append({"item": "영구가치 비중", "ours": f"{tv:.1%}",
-                    "practice": f"사분위 {p['full']['tv_share']['q1']:.1%}~{p['full']['tv_share']['q3']:.1%}"})
+        out.append(
+            {
+                "item": "영구가치 비중",
+                "ours": f"{tv:.1%}",
+                "practice": f"사분위 {p['full']['tv_share']['q1']:.1%}~{p['full']['tv_share']['q3']:.1%}",
+            }
+        )
     return out
 
 
 # ---------------------------------------------------------------- assumptions (inputs)
-
-GROUPS = [("할인율", ["rf_tenor", "mrp", "beta_u", "de", "kd", "srp"]),
-          ("예측", ["g_start", "normal_margin", "g_terminal", "scenario_width"]),
-          ("피어", ["peers"]),
-          ("경로별", ["sotp_discount", "cash_adjust_mn", "nci_mn", "premium"])]
-PCT_FIELDS = {"mrp", "srp", "kd", "g_start", "normal_margin", "g_terminal", "scenario_width", "sotp_discount"}
 
 
 def auto_value(o: Opened, s: dict, field: str):
@@ -551,49 +647,6 @@ def auto_value(o: Opened, s: dict, field: str):
 def current_value(o: Opened, s: dict, field: str):
     ov = version(s)["overrides"]
     return ov[field] if field in ov else auto_value(o, s, field)
-
-
-def to_text(field: str, v) -> str:
-    """Value -> text in the input box (% fields in percent)."""
-    if v is None:
-        return ""
-    if field in PCT_FIELDS:
-        return f"{float(v) * 100:.2f}"
-    if field in ("beta_u", "de"):
-        return f"{float(v):.3f}"
-    if field in ("cash_adjust_mn", "nci_mn"):
-        return f"{float(v):,.0f}"
-    if field == "rf_tenor":
-        return str(int(v))
-    return str(v)
-
-
-def parse(field: str, text: str):
-    """Text typed by the user -> value for set_assumption. A text that is not a number is passed through unchanged so the
-    range check gives its own message (spec.check: '숫자가 아님')."""
-    t = str(text).strip().replace(",", "").replace("%", "").replace("배", "")
-    try:
-        v = float(t)
-    except ValueError:
-        return text
-    if field in PCT_FIELDS:
-        return v / 100
-    if field == "rf_tenor":
-        return int(v) if v.is_integer() else v
-    return v
-
-
-def rng_text(field: str) -> str:
-    r = spec.rules().get(field) or {}
-    if field == "rf_tenor":
-        return "5년 또는 10년"
-    if "min" in r:
-        if field in PCT_FIELDS:
-            return f"{r['min'] * 100:g}% ~ {r['max'] * 100:g}%"
-        return f"{r['min']:g} ~ {r['max']:g}"
-    if field in ("cash_adjust_mn", "nci_mn"):
-        return "0 이상(백만원)"
-    return ""
 
 
 def applicable(o: Opened, field: str) -> bool:
@@ -623,13 +676,20 @@ def revert(s: dict, v: int, reason: str | None = None) -> dict:
 
 # ---------------------------------------------------------------- judgements, versions, audit
 
+
 def judgement_rows(s: dict) -> list[dict]:
     out = []
     for jid, j in (s.get("judgements") or {}).items():
         aud = [a for a in s["audit"] if a.get("judgement") == jid and a.get("field")]
-        out.append({**j, "id": jid, "before": aud[0].get("per_share_before") if aud else None,
-                    "after": aud[-1].get("per_share_after") if aud else None,
-                    "changed_v": aud[-1]["v"] if aud else None})
+        out.append(
+            {
+                **j,
+                "id": jid,
+                "before": aud[0].get("per_share_before") if aud else None,
+                "after": aud[-1].get("per_share_after") if aud else None,
+                "changed_v": aud[-1]["v"] if aud else None,
+            }
+        )
     return out
 
 
@@ -641,10 +701,16 @@ def versions_table(o: Opened, s: dict, mode: str) -> list[dict]:
             ps = result(o, s, mode, ver["v"]).get("per_share")
         except NeedInput:
             ps = None
-        rows.append({"v": ver["v"], "created": ver["created"].replace("T", " "), "per_share": ps,
-                     "change": ", ".join(f"{a['label']} {a['before_text']} → {a['after_text']}" for a in ch) or (
-                         "자동 초안" if ver["v"] == 0 else ""),
-                     "reverted_to": ver.get("reverted_to")})
+        rows.append(
+            {
+                "v": ver["v"],
+                "created": ver["created"].replace("T", " "),
+                "per_share": ps,
+                "change": ", ".join(f"{a['label']} {a['before_text']} → {a['after_text']}" for a in ch)
+                or ("자동 초안" if ver["v"] == 0 else ""),
+                "reverted_to": ver.get("reverted_to"),
+            }
+        )
     return rows
 
 
@@ -653,12 +719,18 @@ def compare(s: dict, a: int, b: int) -> list[dict]:
     out = []
     for f in spec.NATIVE + spec.HOOK:
         if va.get(f) != vb.get(f):
-            out.append({"field": spec.LABEL[f], "a": spec.fmt(f, va[f]) if f in va else "자동값",
-                        "b": spec.fmt(f, vb[f]) if f in vb else "자동값"})
+            out.append(
+                {
+                    "field": spec.LABEL[f],
+                    "a": spec.fmt(f, va[f]) if f in va else "자동값",
+                    "b": spec.fmt(f, vb[f]) if f in vb else "자동값",
+                }
+            )
     return out
 
 
 # ---------------------------------------------------------------- data screen
+
 
 def rcepts(text: str) -> list[str]:
     return re.findall(r"(?<!\d)(\d{14})(?!\d)", str(text or ""))
@@ -667,17 +739,29 @@ def rcepts(text: str) -> list[str]:
 def data_facts(o: Opened) -> dict:
     """KPI facts of the data screen (DART-derived; market values come from market())."""
     from src.valuation.company_dcf import ltm
+
     c = o.ctx.c
     facts = o.summ.get("facts") or (o.cfg.get("draft_meta") or {}).get("facts") or {}
     with LOCK:
         ltm_rev = ltm(c, "revenue")
     sh = o.cfg["shares"]
     rec = (o.summ.get("checks") or {}).get("S4_recon") or {}
-    return {"fs_div": o.cfg["meta"]["fs_div"], "revenue_2025_eok": (facts.get("revenue_2025") or float("nan")) / 1e8,
-            "ltm_rev_eok": ltm_rev, "ltm": o.cfg["meta"]["ltm"], "shares": sh, "common_out": c.market["common_out"],
-            "pref_out": c.market["pref_out"], "shares_out": c.market["shares_out"], "shares_note": c.market.get("shares_note"),
-            "kd": o.cfg.get("kd") or {}, "recon": rec, "structure_source": facts.get("structure_source", ""),
-            "bs_date": o.cfg["meta"]["bs_date"], "basis": o.cfg["meta"].get("basis", "")}
+    return {
+        "fs_div": o.cfg["meta"]["fs_div"],
+        "revenue_2025_eok": (facts.get("revenue_2025") or float("nan")) / 1e8,
+        "ltm_rev_eok": ltm_rev,
+        "ltm": o.cfg["meta"]["ltm"],
+        "shares": sh,
+        "common_out": c.market["common_out"],
+        "pref_out": c.market["pref_out"],
+        "shares_out": c.market["shares_out"],
+        "shares_note": c.market.get("shares_note"),
+        "kd": o.cfg.get("kd") or {},
+        "recon": rec,
+        "structure_source": facts.get("structure_source", ""),
+        "bs_date": o.cfg["meta"]["bs_date"],
+        "basis": o.cfg["meta"].get("basis", ""),
+    }
 
 
 def peer_rows(o: Opened, s: dict, mode: str) -> list[dict]:
@@ -687,15 +771,28 @@ def peer_rows(o: Opened, s: dict, mode: str) -> list[dict]:
     idx = o.cfg["beta"]["index"]
     out = []
     for p in o.ctx.base_cfg.get("peers", []):
-        row = {"name": p["name"], "code": p["stock_code"], "tier": p["tier"], "include": p["name"] in names,
-               "reason": p.get("reason", ""), "overview": p.get("overview", "")}
+        row = {
+            "name": p["name"],
+            "code": p["stock_code"],
+            "tier": p["tier"],
+            "include": p["name"] in names,
+            "reason": p.get("reason", ""),
+            "overview": p.get("overview", ""),
+        }
         if mode == "pc" and o.p3 is not None:
             q = o.p3[o.p3.name == p["name"]]
             b = bt[(bt.name == p["name"]) & (bt["index"] == idx)] if len(bt) else bt
             if len(q):
                 q = q.iloc[0]
-                row.update({"mktcap_eok": q.mktcap / 1e8 if pd.notna(q.mktcap) else None, "ev_ebitda": q.ev_ebitda,
-                            "ev_sales": q.ev_sales, "per": q.per, "pbr": q.pbr})
+                row.update(
+                    {
+                        "mktcap_eok": q.mktcap / 1e8 if pd.notna(q.mktcap) else None,
+                        "ev_ebitda": q.ev_ebitda,
+                        "ev_sales": q.ev_sales,
+                        "per": q.per,
+                        "pbr": q.pbr,
+                    }
+                )
             if len(b):
                 row.update({"beta_raw": float(b.iloc[0].raw), "r2": float(b.iloc[0].r2)})
         out.append(row)
@@ -706,7 +803,7 @@ def beta_info(o: Opened, s: dict, mode: str) -> dict:
     r = result(o, s, mode)
     names = set(current_value(o, s, "peers") or [])
     bt = o.ctx.bt
-    if bt is None:                                # P7-C3 public deployment: R² median (2 decimals) of the draft peers
+    if bt is None:  # P7-C3 public deployment: R² median (2 decimals) of the draft peers
         same = names == set(o.ctx.peers_all())
         r2 = o.ctx.beta_pub["r2_median"] if same else None
         n = o.ctx.beta_pub["n"] if same else None
@@ -714,35 +811,69 @@ def beta_info(o: Opened, s: dict, mode: str) -> dict:
         sel = bt[bt.name.isin(names) & (bt["index"] == o.cfg["beta"]["index"])] if len(bt) else bt
         r2 = float(sel.r2.median()) if len(sel) else None
         n = int(len(sel))
-    return {"beta_u": r.get("beta_u"), "src": r.get("beta_src"), "r2_median": r2, "n": n, "index": o.cfg["beta"]["index"],
-            "warn": r2 is not None and r2 < 0.10, "de": r.get("de"), "kd": r.get("kd")}
+    return {
+        "beta_u": r.get("beta_u"),
+        "src": r.get("beta_src"),
+        "r2_median": r2,
+        "n": n,
+        "index": o.cfg["beta"]["index"],
+        "warn": r2 is not None and r2 < 0.10,
+        "de": r.get("de"),
+        "kd": r.get("kd"),
+    }
 
 
 def bridge_info(o: Opened) -> dict:
     d = o.summ.get("diagnostics") or {}
     comp = d.get("composition") or {}
     sens = d.get("sensitivities") or {}
-    items = [j for j in (o.summ.get("review_ranked") or {}).get("computed") or [] if str(j.get("category", "")).startswith("비영업")]
-    return {"composition": comp, "customer_funds": sens.get("customer_funds"), "nci": sens.get("nci"),
-            "affiliate_loans": (o.cfg.get("excel") or {}).get("affiliate_loans"), "items": items}
+    items = [
+        j for j in (o.summ.get("review_ranked") or {}).get("computed") or [] if str(j.get("category", "")).startswith("비영업")
+    ]
+    return {
+        "composition": comp,
+        "customer_funds": sens.get("customer_funds"),
+        "nci": sens.get("nci"),
+        "affiliate_loans": (o.cfg.get("excel") or {}).get("affiliate_loans"),
+        "items": items,
+    }
 
 
 def history_info(o: Opened) -> dict:
     h = o.ctx.h
     v2 = o.ctx.base_v2 or {}
-    return {"cagr": h["cagr"], "margin": h["margin"], "cogs_ratio": h["cogs_ratio"], "dso": h["dso"], "dio": h["dio"], "dpo": h["dpo"],
-            "dna_ratio": h["dna_ratio"], "capex_ratio": h["capex_ratio"], "m0": v2.get("m0"), "m0_src": v2.get("m0_src"),
-            "g0": v2.get("g0"), "own_cagr": v2.get("own_cagr"), "peer_margin": v2.get("peer_margin"), "peer_growth": v2.get("peer_growth"),
-            "years": o.cfg["params"].get("avg_years"), "cagr_years": o.cfg["params"].get("cagr_years")}
+    return {
+        "cagr": h["cagr"],
+        "margin": h["margin"],
+        "cogs_ratio": h["cogs_ratio"],
+        "dso": h["dso"],
+        "dio": h["dio"],
+        "dpo": h["dpo"],
+        "dna_ratio": h["dna_ratio"],
+        "capex_ratio": h["capex_ratio"],
+        "m0": v2.get("m0"),
+        "m0_src": v2.get("m0_src"),
+        "g0": v2.get("g0"),
+        "own_cagr": v2.get("own_cagr"),
+        "peer_margin": v2.get("peer_margin"),
+        "peer_growth": v2.get("peer_growth"),
+        "years": o.cfg["params"].get("avg_years"),
+        "cagr_years": o.cfg["params"].get("cagr_years"),
+    }
 
 
 def corrections(o: Opened) -> dict:
     d = o.summ.get("diagnostics") or {}
-    return {"debt_reclass": o.summ.get("debt_reclass") or [], "dna": d.get("dna") or [],
-            "basis_fill": o.cfg["meta"].get("basis_fill") or [], "shares_note": o.ctx.c.market.get("shares_note")}
+    return {
+        "debt_reclass": o.summ.get("debt_reclass") or [],
+        "dna": d.get("dna") or [],
+        "basis_fill": o.cfg["meta"].get("basis_fill") or [],
+        "shares_note": o.ctx.c.market.get("shares_note"),
+    }
 
 
 # ---------------------------------------------------------------- status
+
 
 def status(o: Opened, s: dict) -> dict:
     """Badge: 확정 (confirmed at the current version) / 보류 (auto hold) / 초안."""
@@ -757,217 +888,10 @@ def status(o: Opened, s: dict) -> dict:
     return {"label": "초안", "cls": "", "hold": False, "headline": hl, "confirmed": conf or None}
 
 
-# ---------------------------------------------------------------- export jobs
-
-def _k(sid: str, kind: str) -> tuple:
-    """Job key: this browser session's workspace + session id (P7-C3: ids repeat across public workspaces)."""
-    return (str(S.workspace() or ""), sid, kind)
-
-
-def _spawn(args: list[str], log) -> "subprocess.Popen":
-    import subprocess
-    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
-    ws = S.workspace()
-    if ws:                                        # P7-C3: the job works in this browser session's workspace
-        env["KVI_WORKSPACE"] = str(ws)
-    if public_deploy():
-        env["KVI_PUBLIC"] = "1"
-    with open(log, "w", encoding="utf-8") as f:
-        return subprocess.Popen([sys.executable, "-m", "src.workbench.job"] + args, cwd=str(ROOT), stdout=f, stderr=subprocess.STDOUT,
-                                env=env, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
-
-
-def prepare_on() -> bool:
-    """Prepared confirmation (C2-F3). PC: on unless WB_PREPARE=0. Public deployment: only with KVI_PREPARE=1 (decided from
-    the server memory measurement, config/p7c3.yaml public_app.confirm)."""
-    if public_deploy():
-        return os.environ.get("KVI_PREPARE") == "1"
-    return os.environ.get("WB_PREPARE", "1") != "0" and not no_db()
-
-
-def standby(sid: str, mode: str = "pc") -> None:
-    """Start the prepared-confirmation worker of this session (fix C2-F3) if none runs; workers of other sessions of this
-    workspace stop (one browser session works on one session at a time). Nothing is recorded before 확정."""
-    ws = str(S.workspace() or "")
-    for (k_ws, k_sid, kind), j in list(_JOBS.items()):
-        if kind == "standby" and k_ws == ws and k_sid != sid and j["proc"].poll() is None:
-            j["proc"].terminate()
-            _JOBS.pop((k_ws, k_sid, kind), None)
-    j = _JOBS.get(_k(sid, "standby"))
-    if j and j["proc"].poll() is None:
-        return
-    run = _JOBS.get(_k(sid, mode))
-    if run and run["proc"].poll() is None:        # a confirmation is running for this session
-        return
-    d = S.jobs_dir()
-    d.mkdir(parents=True, exist_ok=True)
-    trig = d / f"{sid}.trigger"
-    trig.unlink(missing_ok=True)
-    trig.with_suffix(".status").unlink(missing_ok=True)
-    _JOBS[_k(sid, "standby")] = {"proc": _spawn(["--standby", str(trig), sid, mode], d / f"{sid}_standby.log"), "trigger": trig,
-                                  "started": time.time(), "mode": mode}
-
-
-def prepared_state(sid: str) -> dict | None:
-    j = _JOBS.get(_k(sid, "standby"))
-    if not j or j["proc"].poll() is not None:
-        return None
-    f = j["trigger"].with_suffix(".status")
-    try:
-        return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {"state": "starting"}
-    except (OSError, json.JSONDecodeError):
-        return {"state": "starting"}
-
-
-def start_confirm(s: dict, mode: str = "pc", user: dict | None = None) -> dict:
-    """Confirm the current version in its own process (src/workbench/job.py, fixes C2-F2·F3): the Excel model, then the
-    reconciliation and the report (public mode: and the KRX scan on the PC). The screen does not wait; it polls the output
-    folder (job). A prepared worker takes the click (its model is used when the session has not changed since it started);
-    otherwise a new process starts."""
-    from src.workbench.job import ACK, fingerprint, out_dir
-    sid = s["session_id"]
-    v = version(s)["v"]
-    log_dir = S.jobs_dir()
-    log_dir.mkdir(parents=True, exist_ok=True)
-    d = out_dir(sid, v, mode)
-    (d / ACK).unlink(missing_ok=True)             # an earlier confirmation of this version must not be read as this one
-    sb = _JOBS.get(_k(sid, "standby"))
-    ps = prepared_state(sid)
-    t0 = time.time()
-    # the worker takes the job when it prepares this state, or is still loading its modules (it reads the session after
-    # that, so it builds this state; a change in between makes it run a fresh job itself)
-    use_sb = bool(ps and sb and sb.get("mode", "pc") == mode and (ps.get("state") == "starting" or ps.get("fp") == fingerprint(s)))
-    _JOBS.pop(_k(sid, "standby"), None)
-    if sb and not use_sb and sb["proc"].poll() is None:
-        sb["proc"].terminate()                    # prepared for another state (or still starting): a fresh job is sooner
-    if use_sb:
-        sb["trigger"].write_text(json.dumps({"sid": sid, "mode": mode, "user": user, "fp": fingerprint(s), "clicked": t0},
-                                            ensure_ascii=False), encoding="utf-8")
-        proc, log = sb["proc"], log_dir / f"{sid}_standby.log"
-    else:
-        log = log_dir / f"{sid}_v{v}_{mode}.log"
-        proc = _spawn([sid, mode] + ([json.dumps(user, ensure_ascii=False)] if mode == "public" else []), log)
-    j = {"proc": proc, "started": t0, "v": v, "dir": d, "mode": mode, "log": log}
-    _JOBS[_k(sid, mode)] = j
-    return j
-
-
-def job(sid: str, mode: str) -> dict | None:
-    """The job's live status: alive, Excel path once written, reconciliation status, report, seconds since start."""
-    j = _JOBS.get(_k(sid, mode))
-    if not j:
-        return None
-    from src.workbench.job import ACK
-    summ = {}
-    f = j["dir"] / "summary.json"
-    if (j["dir"] / ACK).exists() and f.exists():  # accepted by the worker: its folder is this confirmation's
-        try:
-            summ = json.loads(f.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):  # being written: next poll
-            summ = {}
-    outs = summ.get("outputs") or {}
-
-    def rel(p):
-        return S.rel(p) if p else None
-    alive = j["proc"].poll() is None
-    if not alive and "excel_at" not in j and outs.get("xlsx"):
-        j["excel_at"] = time.time()
-    if alive and outs.get("xlsx") and "excel_at" not in j:
-        j["excel_at"] = time.time()
-    return {**j, "alive": alive, "returncode": j["proc"].poll(), "xlsx": rel(outs.get("xlsx")), "docx": rel(outs.get("docx")),
-            "reconcile": (summ.get("reconcile") or {}).get("status", "대조 대기"), "result": summ.get("result"),
-            "excel_seconds": round(j["excel_at"] - j["started"], 1) if "excel_at" in j else None,
-            "elapsed": round(time.time() - j["started"], 1)}
-
-
-def confirmations(s: dict) -> list[dict]:
-    return list(s.get("confirmations") or [])
-
-
-def safe_name(p: str | None) -> str:
-    return Path(p).name if p else ""
-
-
-def file_bytes(rel: str | None) -> bytes | None:
-    """Bytes of an output file of this workspace (or the project on the PC); any other path -> None (P7-C3 isolation)."""
-    if not rel:
-        return None
-    p = (ROOT / rel).resolve()
-    ws = S.workspace()
-    allowed = [ws.resolve()] if ws else [ROOT.resolve()]
-    if not any(p.is_relative_to(a) for a in allowed):
-        return None
-    return p.read_bytes() if p.exists() else None
-
-
-# ---------------------------------------------------------------- public screen: KRX values and allowed aggregates
-
-def krx_list(o: Opened, s: dict) -> list[dict]:
-    if public_deploy():                           # P7-C3: no KRX value exists in the public deployment (bundle checked)
-        return []
-    from src.workbench import public as P
-    k = ("krx", o.code, ukey(s))
-    if k not in _CACHE:
-        u = s.get("public_inputs") or {}
-        out = P.krx_values(o.cfg_path, u)
-        typed = [float(x) for x in [u.get("close"), u.get("vwap20"), *((u.get("sub_close") or {}).values())] if x]
-        # screen scan only (stricter than the export scan): market values derived from one KRX close
-        for cd, (close, _mc, listed) in zip(o.prefs, o.ctx.c.market.get("listed_pref") or []):
-            if listed and close and not any(abs(close - x) < 0.5 for x in typed):
-                out.append({"what": f"우선주 시가총액 {cd}(원)", "v": float(close) * float(listed), "unit": "won"})
-        _CACHE[k] = out
-    return _CACHE[k]
-
-
-def shown_aggregates(o: Opened, s: dict, mode: str) -> list[float]:
-    """Aggregates the public screen shows (allowed even when one equals a peer's own value, e.g. an odd-count median)."""
-    out = []
-    try:
-        b = beta_info(o, s, mode)
-        out += [b["beta_u"], b["r2_median"], b["de"]]
-        for m in relative(o, s, mode)["multiples"].values():
-            out += [m["q25"], m["median"], m["q75"]]
-    except (NeedInput, PublicDataUnavailable):
-        pass
-    return [float(x) for x in out if x is not None and math.isfinite(float(x))]
-
-
-def evaluator_names() -> list[str]:
-    """All evaluator names of the external-opinion DB (must not appear on a public screen)."""
-    k = ("evaluators",)
-    if k not in _CACHE:
-        if no_db() or public_deploy():
-            return []
-        import duckdb
-
-        from src.db.build import DB_PATH
-        con = duckdb.connect(str(DB_PATH), read_only=True)
-        try:
-            v = con.execute("""SELECT DISTINCT evaluator FROM p5b_deals WHERE evaluator IS NOT NULL
-                               UNION SELECT DISTINCT evaluator FROM p5b_assumptions WHERE evaluator IS NOT NULL""").fetchall()
-        finally:
-            con.close()
-        names = set()
-        for (e,) in v:
-            for part in re.split(r"[,/·;]|\s{2,}", str(e)):
-                part = part.strip()
-                if len(part) >= 2:
-                    names.add(part)
-        _CACHE[k] = sorted(names)
-    return _CACHE[k]
-
-
-def company_names(o: Opened) -> list[str]:
-    return [o.name] + [p["name"] for p in o.ctx.base_cfg.get("peers", [])] + [x.get("name", "") for x in o.subs]
-
-
-def deep(x):
-    return copy.deepcopy(x)
-
-
 # ---------------------------------------------------------------- P7-C3 polish: candidate previews
 
-def candidate_preview(o: "Opened", s: dict, mode: str, field: str, value) -> dict:
+
+def candidate_preview(o: Opened, s: dict, mode: str, field: str, value) -> dict:
     """Per share now -> after this candidate (current version's assumptions + the candidate value), in the mode's context
     (public: the user's inputs). The same recalc the adoption runs, so the preview equals the value after adoption.
     Returns {'before', 'after'} or {'error'} (input needed / PC only / out of range)."""
@@ -975,8 +899,16 @@ def candidate_preview(o: "Opened", s: dict, mode: str, field: str, value) -> dic
     ok, why, v = spec.check(field, value, o.ctx.peers_all())
     if not ok:
         return {"error": why}
-    k = ("cand", str(S.workspace() or ""), s["session_id"], ver["v"], mode, ukey(s) if mode == "public" else "", field,
-         json.dumps(v, sort_keys=True, default=str))
+    k = (
+        "cand",
+        str(S.workspace() or ""),
+        s["session_id"],
+        ver["v"],
+        mode,
+        ukey(s) if mode == "public" else "",
+        field,
+        json.dumps(v, sort_keys=True, default=str),
+    )
     if k not in _CACHE:
         try:
             ctx = public_ctx(o, s) if mode == "public" else o.ctx

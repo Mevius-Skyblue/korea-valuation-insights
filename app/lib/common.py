@@ -2,6 +2,7 @@
 
 Every page ends with footer() -> disclaimer + data source + as-of date (public-screen rule).
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -14,8 +15,10 @@ import streamlit as st
 APP = Path(__file__).resolve().parents[1]
 DATA = APP / "data"
 SMALL_N = 10
-DISCLAIMER = ("투자 권유가 아닙니다. 모든 수치는 공개 공시를 집계한 예시이며 특정 종목의 가치·가격에 대한 의견이 아닙니다. "
-              "금융투자업(투자자문·투자일임) 등록·신고를 하지 않은 개인 학습·포트폴리오 프로젝트입니다.")
+DISCLAIMER = (
+    "투자 권유가 아닙니다. 모든 수치는 공개 공시를 집계한 예시이며 특정 종목의 가치·가격에 대한 의견이 아닙니다. "
+    "금융투자업(투자자문·투자일임) 등록·신고를 하지 않은 개인 학습·포트폴리오 프로젝트입니다."
+)
 DART = "https://dart.fss.or.kr"
 
 
@@ -45,8 +48,10 @@ def pct(v, d: int = 1) -> str:
 
 def grey_small(df: pd.DataFrame, n_col: str = "n"):
     """Styler: rows with n < 10 in grey (shown, but flagged)."""
+
     def row(r):
         return ["color: #9e9e9e; background-color: #f2f2f2" if r[n_col] < SMALL_N else "" for _ in r]
+
     return df.style.apply(row, axis=1)
 
 
@@ -65,7 +70,9 @@ def footer() -> None:
     m = meta()
     st.divider()
     st.caption(f"**면책** — {DISCLAIMER}")
-    st.caption(f"**출처** — DART 전자공시({DART}): {md(m['data_scope'])}. 집계 기준일 {m['as_of']}. "
-               f"정의·검증: [METHODOLOGY.md]({m['methodology_url']}) · [DATA_NOTICE.md]({m['data_notice_url']})"
-               f"(내부 검증 커밋 {m['internal_commit']}). "
-               "개별 거래·회사·평가기관은 표시하지 않고 집계만 보여 준다. 🔸 = 단일 출처·2차 인용, ⚠️ = 원문 미확인")
+    st.caption(
+        f"**출처** — DART 전자공시({DART}): {md(m['data_scope'])}. 집계 기준일 {m['as_of']}. "
+        f"정의·검증: [METHODOLOGY.md]({m['methodology_url']}) · [DATA_NOTICE.md]({m['data_notice_url']})"
+        f"(내부 검증 커밋 {m['internal_commit']}). "
+        "개별 거래·회사·평가기관은 표시하지 않고 집계만 보여 준다. 🔸 = 단일 출처·2차 인용, ⚠️ = 원문 미확인"
+    )

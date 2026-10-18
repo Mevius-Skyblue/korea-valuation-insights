@@ -12,13 +12,13 @@ Rule (thresholds in config/valuation_rules.yaml, project assumptions)
     otherwise consolidated DCF − NCI.
 decide() returns the decision and the reasons (each test with its value and threshold).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import yaml
-
+from src import yamlio
 from src.collect.core import ROOT
 
 RULES = ROOT / "config" / "valuation_rules.yaml"
@@ -26,17 +26,18 @@ RULES = ROOT / "config" / "valuation_rules.yaml"
 
 @dataclass
 class StructureDecision:
-    method: str                      # sotp / consolidated
+    method: str  # sotp / consolidated
     reasons: list[str] = field(default_factory=list)
     checks: dict = field(default_factory=dict)
 
 
 def load_rules(path: Path = RULES) -> dict:
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8"))["structure"]
+    return yamlio.load(Path(path).read_text(encoding="utf-8"))["structure"]
 
 
-def decide(nci_value: float, equity_value: float, listed_subsidiary: bool, segments: list[dict],
-           rules: dict | None = None) -> StructureDecision:
+def decide(
+    nci_value: float, equity_value: float, listed_subsidiary: bool, segments: list[dict], rules: dict | None = None
+) -> StructureDecision:
     r = rules or load_rules()
     share = nci_value / equity_value if equity_value else 0.0
     margins = [s["margin"] for s in segments if s.get("margin") is not None]
@@ -58,5 +59,6 @@ def decide(nci_value: float, equity_value: float, listed_subsidiary: bool, segme
         reasons.append(f"상장 종속회사 + 부문 매출 성장률 차이 {ggap:.1f}%p ≥ {r['listed_sub_growth_gap_pp']}%p")
     if reasons:
         return StructureDecision("sotp", reasons, checks)
-    return StructureDecision("consolidated", [f"비지배지분/주식가치 {share:.1%} < {r['nci_share_min']:.0%}, "
-                                              f"상장 종속회사 조건 해당 없음"], checks)
+    return StructureDecision(
+        "consolidated", [f"비지배지분/주식가치 {share:.1%} < {r['nci_share_min']:.0%}, 상장 종속회사 조건 해당 없음"], checks
+    )

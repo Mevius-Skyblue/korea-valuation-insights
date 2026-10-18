@@ -6,6 +6,7 @@ returns a cursor of one shared connection (a cursor has its own result state; cl
 open). Data and results are the same as with separate connections. A read-write connection asked for inside the block
 closes the shared one first (DuckDB does not allow both configurations in one process).
 """
+
 from __future__ import annotations
 
 from contextlib import contextmanager
@@ -17,7 +18,8 @@ def shared_readonly():
     import duckdb
 
     from src.db.build import DB_PATH
-    if getattr(duckdb.connect, "_shared_ro", False):          # nested: the outer block already shares
+
+    if getattr(duckdb.connect, "_shared_ro", False):  # nested: the outer block already shares
         yield
         return
     real = duckdb.connect
@@ -35,7 +37,7 @@ def shared_readonly():
             if state["base"] is None:
                 state["base"] = real(str(DB_PATH), read_only=True)
             return state["base"].cursor()
-        if _is_db(database) and state["base"] is not None:     # a writer: release the shared read-only connection
+        if _is_db(database) and state["base"] is not None:  # a writer: release the shared read-only connection
             state["base"].close()
             state["base"] = None
         return real(database, read_only, *args, **kwargs)

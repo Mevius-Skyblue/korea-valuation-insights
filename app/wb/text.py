@@ -3,25 +3,31 @@ forbidden-expression check used on rendered screens and export texts.
 
     term(key)            <abbr> with a one-line explanation (first use of a technical term)
     dart_link(rcept)     DART viewer link of a filing (link only: no filing text is copied)
-    src_note(text)       small 'source' line; every 14-digit filing number in it becomes a DART link
     quote(text)          DART text shown as a quotation (excluded from the forbidden-expression check, not from the
                          evaluator-name check)
     check(text, names, evaluators)  -> list of hits (empty = clean)
 """
+
 from __future__ import annotations
 
 import html
 import re
 
-APP_NAME = "KVI 밸류에이션 워크벤치"
-DISCLAIMER = ("투자 권유가 아닙니다. 공개 자료와 정한 규칙으로 계산한 가정 하의 추정 내재가치(예시)이며, 특정 종목의 가치·가격에 대한 "
-              "의견이 아닙니다. 자동 생성 초안이므로 평가방법 선택 근거·주요 가정의 합리성·평가상 한계는 사람이 작성합니다.")
+DISCLAIMER = (
+    "투자 권유가 아닙니다. 공개 자료와 정한 규칙으로 계산한 가정 하의 추정 내재가치(예시)이며, 특정 종목의 가치·가격에 대한 "
+    "의견이 아닙니다. 자동 생성 초안이므로 평가방법 선택 근거·주요 가정의 합리성·평가상 한계는 사람이 작성합니다."
+)
 SOURCES_PC = "출처: DART 전자공시(접수번호 링크), 한국거래소 통계정보, 한국은행 ECOS"
 SOURCES_PUBLIC = "출처: DART 전자공시(접수번호 링크), 한국은행 ECOS, 시세는 사용자 입력"
-MODE_LABEL = {"pc": ("PC 모드", "한국거래소 통계정보 포함"), "public": ("공개 모드", "시세 직접 입력"),
-              "deploy": ("공개 배포", "시세 직접 입력 · 공개 스냅샷")}
-PUBLIC_NOTICE = ("가정 하의 추정 내재가치(예시)입니다. 투자 권유가 아닙니다. 출처: DART 전자공시·한국은행 ECOS·사용자가 입력한 시세. "
-                 "한국거래소 시세는 이 화면에 없으며, 주가·VWAP은 직접 넣습니다(넣은 값의 정확성은 입력한 사람 책임).")
+MODE_LABEL = {
+    "pc": ("PC 모드", "한국거래소 통계정보 포함"),
+    "public": ("공개 모드", "시세 직접 입력"),
+    "deploy": ("공개 배포", "시세 직접 입력 · 공개 스냅샷"),
+}
+PUBLIC_NOTICE = (
+    "가정 하의 추정 내재가치(예시)입니다. 투자 권유가 아닙니다. 출처: DART 전자공시·한국은행 ECOS·사용자가 입력한 시세. "
+    "한국거래소 시세는 이 화면에 없으며, 주가·VWAP은 직접 넣습니다(넣은 값의 정확성은 입력한 사람 책임)."
+)
 DART_VIEW = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo="
 
 GLOSSARY = {
@@ -50,8 +56,16 @@ GLOSSARY = {
 }
 
 # forbidden expressions (config/p7c2.yaml wording.forbidden / brands / name_flags)
-FORBIDDEN = [r"목표\s?주가", r"(?<![가-힣])매수(?![가-힣])", r"(?<![가-힣])매도(?![가-힣])", r"저평가", r"고평가", r"추천",
-             r"투자\s?의견", "영국" + "공인회계사"]       # P7-C3: built so the literal title never appears in the public code
+FORBIDDEN = [
+    r"목표\s?주가",
+    r"(?<![가-힣])매수(?![가-힣])",
+    r"(?<![가-힣])매도(?![가-힣])",
+    r"저평가",
+    r"고평가",
+    r"추천",
+    r"투자\s?의견",
+    "영국" + "공인회계사",
+]  # P7-C3: built so the literal title never appears in the public code
 BRANDS = ["Bloomberg", "블룸버그", "FactSet", "팩트셋", "Capital IQ", "Refinitiv", "리피니티브", "Morningstar", "모닝스타"]
 QUOTE_RE = re.compile(r'<span class="wb-quote"[^>]*>.*?</span>', re.S)
 TAG_RE = re.compile(r"<[^>]+>")
@@ -59,18 +73,15 @@ TAG_RE = re.compile(r"<[^>]+>")
 
 def term(key: str, label: str | None = None) -> str:
     tip = GLOSSARY.get(key, "")
-    return f'<abbr class="wb-term" title="{html.escape(tip)}">{html.escape(label or key)}</abbr>' if tip else html.escape(label or key)
+    return (
+        f'<abbr class="wb-term" title="{html.escape(tip)}">{html.escape(label or key)}</abbr>'
+        if tip
+        else html.escape(label or key)
+    )
 
 
 def dart_link(rcept: str, label: str | None = None) -> str:
     return f'<a href="{DART_VIEW}{rcept}" target="_blank" rel="noopener">{html.escape(label or rcept)}</a>'
-
-
-def src_note(text: str) -> str:
-    """'출처 …' line; 14-digit filing numbers become DART viewer links."""
-    t = html.escape(str(text))
-    t = re.sub(r"(?<!\d)(\d{14})(?!\d)", lambda m: dart_link(m.group(1)), t)
-    return f'<span class="wb-src">출처: {t}</span>'
 
 
 def quote(text: str, n: int = 160) -> str:
@@ -94,18 +105,18 @@ def check(text: str, names: list[str] = (), evaluators: list[str] = (), quotes_r
     own = full if quotes_removed else plain(text, keep_quotes=False)
     for pat in FORBIDDEN:
         for m in re.finditer(pat, own):
-            hits.append({"kind": "forbidden", "term": m.group(0), "context": own[max(0, m.start() - 25):m.end() + 25]})
+            hits.append({"kind": "forbidden", "term": m.group(0), "context": own[max(0, m.start() - 25) : m.end() + 25]})
     for b in BRANDS:
         if b.lower() in own.lower():
             i = own.lower().index(b.lower())
-            hits.append({"kind": "brand", "term": b, "context": own[max(0, i - 25):i + len(b) + 25]})
+            hits.append({"kind": "brand", "term": b, "context": own[max(0, i - 25) : i + len(b) + 25]})
     for nm in [n for n in names if n and len(n) >= 2]:
         for m in re.finditer(re.escape(nm) + r".{0,20}?(누락|위반)", own):
             hits.append({"kind": "name_flag", "term": m.group(0), "context": m.group(0)})
     for ev in [e for e in evaluators if e and len(e) >= 2]:
         if ev in full:
             i = full.index(ev)
-            hits.append({"kind": "evaluator", "term": ev, "context": full[max(0, i - 25):i + len(ev) + 25]})
+            hits.append({"kind": "evaluator", "term": ev, "context": full[max(0, i - 25) : i + len(ev) + 25]})
     return hits
 
 
@@ -136,10 +147,15 @@ PLAIN = [
     (re.compile(r"\b[A-Z]\d?[a-z]?-F\d+\b"), "(수정 규칙)"),
     (re.compile(r"\bP\d-[A-Z]\d?[a-z]?\b"), "(개발 단계)"),
     (re.compile(r"\bG\d+[a-z]?_[a-z_]+\b"), "(게이트 규칙)"),
-    (re.compile(r"\b(ranking|review_ranked|peer_relax|short_history|basis_fill|exception_policy|mistag\.text_rule)\b"), "자동 진단"),
+    (
+        re.compile(r"\b(ranking|review_ranked|peer_relax|short_history|basis_fill|exception_policy|mistag\.text_rule)\b"),
+        "자동 진단",
+    ),
 ]
-CODE_RE = re.compile(r"config/[\w/.\-]+\.yaml|\bD6\b|\bN/M\b|\bv1\b|\bv2\b|mechanical_v2|\b[A-Z]\d?[a-z]?-F\d+\b|\bP\d-[A-Z]\d?[a-z]?\b"
-                     r"|\bG\d+[a-z]?_[a-z_]+\b|\bpremium_range\b|\breview_ranked\b")
+CODE_RE = re.compile(
+    r"config/[\w/.\-]+\.yaml|\bD6\b|\bN/M\b|\bv1\b|\bv2\b|mechanical_v2|\b[A-Z]\d?[a-z]?-F\d+\b|\bP\d-[A-Z]\d?[a-z]?\b"
+    r"|\bG\d+[a-z]?_[a-z_]+\b|\bpremium_range\b|\breview_ranked\b"
+)
 
 
 def plain_words(s):

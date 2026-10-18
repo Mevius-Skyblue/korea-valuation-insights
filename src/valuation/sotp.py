@@ -16,6 +16,7 @@ at its DCF value and removes (1 − stake) at market, so
     SOTP − consolidated = (subsidiary market cap − subsidiary intrinsic equity)        [100%, not x stake]
                           + other (consolidation eliminations, separate vs consolidated BS detail)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -27,9 +28,14 @@ class SotpResult:
     parts: dict = field(default_factory=dict)
 
 
-def sotp_equity(segment_ev: dict[str, float], listed_stakes: dict[str, tuple[float, float]], parent_net_cash: float,
-                parent_non_operating: float, investment_in_subs_book: float = 0.0,
-                unallocated_hq_pv: float = 0.0) -> SotpResult:
+def sotp_equity(
+    segment_ev: dict[str, float],
+    listed_stakes: dict[str, tuple[float, float]],
+    parent_net_cash: float,
+    parent_non_operating: float,
+    investment_in_subs_book: float = 0.0,
+    unallocated_hq_pv: float = 0.0,
+) -> SotpResult:
     """listed_stakes: name -> (stake 0..1, market cap). parent_non_operating may include the subsidiary investment;
     it is removed here so the subsidiary is counted once (at market)."""
     parts = {f"EV {k}": v for k, v in segment_ev.items()}
@@ -45,8 +51,7 @@ def consolidated_equity(ev_consolidated: float, net_debt: float, non_operating: 
     return ev_consolidated - net_debt + non_operating - nci
 
 
-def reconcile(sotp: SotpResult, cons_equity: float, stake: float, sub_market_cap: float,
-              sub_intrinsic_equity: float) -> dict:
+def reconcile(sotp: SotpResult, cons_equity: float, stake: float, sub_market_cap: float, sub_intrinsic_equity: float) -> dict:
     """Difference SOTP − consolidated (NCI at market), split into the subsidiary gap (market cap − intrinsic equity,
     whole company: stake x gap from the SOTP side + (1 − stake) x gap from the NCI side) and the remainder."""
     total = sotp.equity - cons_equity

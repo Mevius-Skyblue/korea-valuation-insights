@@ -1,11 +1,12 @@
 """Discount rate (P3-A preview; the valuation judgement is P3-B).
 
-    levered beta  βL = βu × (1 + (1 − t) × D/E)                  (Hamada; same D/E rule as the unlever step)
-    cost of equity Ke = Rf + βL × MRP + SRP                        (CAPM + size premium)
-    after-tax Kd       = Kd × (1 − t_marginal)
-    weights            D/V = (D/E) / (1 + D/E),  E/V = 1 / (1 + D/E)
-    WACC               = E/V × Ke + D/V × Kd × (1 − t)
+levered beta  βL = βu × (1 + (1 − t) × D/E)                  (Hamada; same D/E rule as the unlever step)
+cost of equity Ke = Rf + βL × MRP + SRP                        (CAPM + size premium)
+after-tax Kd       = Kd × (1 − t_marginal)
+weights            D/V = (D/E) / (1 + D/E),  E/V = 1 / (1 + D/E)
+WACC               = E/V × Ke + D/V × Kd × (1 − t)
 """
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -28,11 +29,13 @@ class WaccResult:
 
 
 def cost_of_equity(rf: float, beta_l: float, mrp: float, srp: float = 0.0) -> float:
+    """CAPM cost of equity Rf + βL x MRP, plus the size risk premium SRP."""
     return rf + beta_l * mrp + srp
 
 
-def wacc(rf: float, mrp: float, beta_u: float, de: float, kd: float, t_hamada: float, t_kd: float,
-         srp: float = 0.0) -> WaccResult:
+def wacc(
+    rf: float, mrp: float, beta_u: float, de: float, kd: float, t_hamada: float, t_kd: float, srp: float = 0.0
+) -> WaccResult:
     """WACC at a target D/E. t_hamada relevers the beta, t_kd is the marginal rate for the tax shield."""
     bl = relever(beta_u, t_hamada, de)
     ke = cost_of_equity(rf, bl, mrp, srp)
@@ -41,8 +44,9 @@ def wacc(rf: float, mrp: float, beta_u: float, de: float, kd: float, t_hamada: f
     return WaccResult(beta_u, de, bl, ke, kd_at, wd, (1 - wd) * ke + wd * kd_at)
 
 
-def wacc_grid(rf: float, kd: float, t_hamada: float, t_kd: float, mrps: dict, betas: dict, des: dict,
-              srp: float = 0.0) -> pd.DataFrame:
+def wacc_grid(
+    rf: float, kd: float, t_hamada: float, t_kd: float, mrps: dict, betas: dict, des: dict, srp: float = 0.0
+) -> pd.DataFrame:
     """Every combination of the labelled MRP / βu / D/E values (dicts label -> value)."""
     rows = []
     for (ml, m), (bl, b), (dl, d) in product(mrps.items(), betas.items(), des.items()):

@@ -2,6 +2,7 @@
 
 The report takes every number from here, so a report number is always an Excel cell value (or a config value, tagged).
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -50,7 +51,13 @@ class Model:
             lab = ws.cell(r, 1).value
             st = ws.cell(r, 6).value
             if lab and st in ("✅", "🔸", "⚠️"):
-                out[f"Inputs!B{r}"] = {"label": lab, "value": ws.cell(r, 2).value, "unit": ws.cell(r, 3).value or "",
-                                       "src": ws.cell(r, 4).value or "", "asof": ws.cell(r, 5).value or "", "status": st,
-                                       "basis": ws.cell(r, 7).value or ""}
+                out[f"Inputs!B{r}"] = {
+                    "label": lab,
+                    "value": ws.cell(r, 2).value,
+                    "unit": ws.cell(r, 3).value or "",
+                    "src": ws.cell(r, 4).value or "",
+                    "asof": ws.cell(r, 5).value or "",
+                    "status": st,
+                    "basis": ws.cell(r, 7).value or "",
+                }
         return out

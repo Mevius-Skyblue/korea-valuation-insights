@@ -13,6 +13,7 @@ For each company (config/peers.yaml) and spec in {weekly_2y, monthly_5y} x index
 The same D/E rule is used to relever (src/valuation/wacc.py): target D/E = peer median of de_avg (ledger).
 Short histories (listed after the window start, e.g. SPAC mergers) are flagged, not dropped.
 """
+
 from __future__ import annotations
 
 import duckdb
@@ -44,8 +45,16 @@ def de_points(con, c: dict, points: list[tuple[int, str, str]]) -> pd.DataFrame:
     for y, p, d in points:
         b, m = debt_at(con, c["corp_code"], y, p), mktcap_at(con, c["stock_code"], d)
         if b and m:
-            rows.append({"date": d, "fs_div": b["fs_div"], "debt": b["debt"], "lease": b["lease"], "mktcap": m,
-                         "de": (b["debt"] + b["lease"]) / m})
+            rows.append(
+                {
+                    "date": d,
+                    "fs_div": b["fs_div"],
+                    "debt": b["debt"],
+                    "lease": b["lease"],
+                    "mktcap": m,
+                    "de": (b["debt"] + b["lease"]) / m,
+                }
+            )
     return pd.DataFrame(rows)
 
 
@@ -84,12 +93,29 @@ def build(as_of: str | None = None, cfg_path: str | None = None, table: str = "b
                     warn.append("zero-volume>5%")
                 if listed is not None and listed > start:
                     warn.append(f"short-history(listed {listed:%Y-%m})")
-                rows.append({"name": c["name"], "tier": c["tier"], "stock_code": c["stock_code"], "spec": spec,
-                             "index": idx, "raw": res.beta, "se": res.se, "r2": res.r2, "n": res.n, "blume": blume,
-                             "de_avg": de_avg, "de_points": len(pts), "de_asof": de_asof,
-                             "bu_avg": unlever(blume, t, de_avg), "bu_asof": unlever(blume, t, de_asof),
-                             "bu_raw_avg": unlever(res.beta, t, de_avg), "tax": t, "as_of": as_of,
-                             "warn": ",".join(warn)})
+                rows.append(
+                    {
+                        "name": c["name"],
+                        "tier": c["tier"],
+                        "stock_code": c["stock_code"],
+                        "spec": spec,
+                        "index": idx,
+                        "raw": res.beta,
+                        "se": res.se,
+                        "r2": res.r2,
+                        "n": res.n,
+                        "blume": blume,
+                        "de_avg": de_avg,
+                        "de_points": len(pts),
+                        "de_asof": de_asof,
+                        "bu_avg": unlever(blume, t, de_avg),
+                        "bu_asof": unlever(blume, t, de_asof),
+                        "bu_raw_avg": unlever(res.beta, t, de_avg),
+                        "tax": t,
+                        "as_of": as_of,
+                        "warn": ",".join(warn),
+                    }
+                )
     out = pd.DataFrame(rows)
     con.execute(f"DROP TABLE IF EXISTS {table}")
     con.execute(f"CREATE TABLE {table} AS SELECT * FROM out")
@@ -101,8 +127,15 @@ def peer_stats(df: pd.DataFrame, tiers=("core", "extended"), col: str = "bu_avg"
     """Median and quartiles of the unlevered beta (and of de_avg) across peers, per spec x index."""
     p = df[df.tier.isin(tiers)]
     g = p.groupby(["spec", "index"])
-    return pd.DataFrame({"n": g[col].count(), "q25": g[col].quantile(0.25), "median": g[col].median(),
-                         "q75": g[col].quantile(0.75), "de_avg_median": g["de_avg"].median()}).reset_index()
+    return pd.DataFrame(
+        {
+            "n": g[col].count(),
+            "q25": g[col].quantile(0.25),
+            "median": g[col].median(),
+            "q75": g[col].quantile(0.75),
+            "de_avg_median": g["de_avg"].median(),
+        }
+    ).reset_index()
 
 
 if __name__ == "__main__":

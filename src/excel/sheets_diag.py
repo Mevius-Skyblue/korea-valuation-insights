@@ -7,6 +7,7 @@ G ranked human-review list (same order as summary.json and the report section '�
 Range names used by the report: DiagSignal*, DiagRevTable, DiagCompTable, DiagFlagTable, DiagCandTable, DiagSensTable,
 DiagRankTable, DiagOtherTable.
 """
+
 from __future__ import annotations
 
 from src.excel.context import Ctx
@@ -35,43 +36,77 @@ def diagnostics(c: Ctx):
     labels = d["excel"]["scenario_labels"]
     s.widths({0: 46, 1: 16, 2: 16, 3: 16, 4: 44, 5: 16, 6: 12})
     s.text(0, 0, "Diagnostics — 결과 신뢰도 진단과 사람 판단 우선순위 (값은 바꾸지 않음)", "title")
-    s.text(1, 0, f"회색 = 엔진 계산값({SRC}), 신호등은 살아 있는 수식. 대안은 후보·민감도일 뿐 기본값은 그대로(사전 고정 0dad3cc)", "note")
+    s.text(
+        1,
+        0,
+        f"회색 = 엔진 계산값({SRC}), 신호등은 살아 있는 수식. 대안은 후보·민감도일 뿐 기본값은 그대로(사전 고정 0dad3cc)",
+        "note",
+    )
 
     # ---- A signals
     r = 3
     s.text(r, 0, "A. 신호등(기본 시나리오 · SRP 열 1)", "subtitle")
-    rows = [("DCF 주당(원, Scenarios A-1 기본 · SRP 열 1)", None, "won", "", "DiagDcf",
-             f'=INDEX(ScenGridPS,MATCH("{labels["base"]}",ScenNames,0),1)'),
-            ("  엔진 기록 DCF 주당(원)", sig.get("dcf"), "won", "", "DiagDcfEngine", None),
-            ("피어 범위 기준 배수", sig.get("peer_basis") or "n/a", "gen", "EV/EBITDA n < 3이면 EV/Sales", "DiagPeerBasis", None),
-            ("피어 사분위 q25 주당(원)", sig.get("q25"), "won", "Peers 시트와 같은 정의(엔진 값)", "DiagQ25", None),
-            ("피어 중앙값 주당(원)", sig.get("peer_median"), "won", "", "DiagPeerMed", None),
-            ("피어 사분위 q75 주당(원)", sig.get("q75"), "won", "", "DiagQ75", None),
-            ("피어 n", sig.get("peer_n"), "int", "", "DiagPeerN", None),
-            ("피어 범위 유효(1 = 해석 가능, 0 = 해석 불가)", 1 if sig.get("peer_valid", True) else 0, "int",
-             "; ".join(sig.get("peer_invalid") or []) or "config/p7b3.yaml peer_validity", "DiagPeerValid", None),
-            ("기준일 종가(원)", None, "won", "한국거래소 통계정보", "DiagPrice", "=Close"),
-            ("DCF ÷ 종가", None, "ratio", "", "DiagMktRatio", "=DiagDcf/Close"),
-            ("임계값: 피어 노랑 하한 배수(× q25)", 0.67, "ratio", "사전 고정", "DiagThPLo", None),
-            ("임계값: 피어 노랑 상한 배수(× q75)", 1.5, "ratio", "사전 고정", "DiagThPHi", None),
-            ("임계값: 시장 초록 [하한, 상한]", 0.67, "ratio", "상한 1.5", "DiagThMGLo", None),
-            ("  시장 초록 상한", 1.5, "ratio", "", "DiagThMGHi", None),
-            ("임계값: 시장 노랑 [하한, 상한]", 0.5, "ratio", "상한 2.0", "DiagThMYLo", None),
-            ("  시장 노랑 상한", 2.0, "ratio", "", "DiagThMYHi", None)]
+    rows = [
+        (
+            "DCF 주당(원, Scenarios A-1 기본 · SRP 열 1)",
+            None,
+            "won",
+            "",
+            "DiagDcf",
+            f'=INDEX(ScenGridPS,MATCH("{labels["base"]}",ScenNames,0),1)',
+        ),
+        ("  엔진 기록 DCF 주당(원)", sig.get("dcf"), "won", "", "DiagDcfEngine", None),
+        ("피어 범위 기준 배수", sig.get("peer_basis") or "n/a", "gen", "EV/EBITDA n < 3이면 EV/Sales", "DiagPeerBasis", None),
+        ("피어 사분위 q25 주당(원)", sig.get("q25"), "won", "Peers 시트와 같은 정의(엔진 값)", "DiagQ25", None),
+        ("피어 중앙값 주당(원)", sig.get("peer_median"), "won", "", "DiagPeerMed", None),
+        ("피어 사분위 q75 주당(원)", sig.get("q75"), "won", "", "DiagQ75", None),
+        ("피어 n", sig.get("peer_n"), "int", "", "DiagPeerN", None),
+        (
+            "피어 범위 유효(1 = 해석 가능, 0 = 해석 불가)",
+            1 if sig.get("peer_valid", True) else 0,
+            "int",
+            "; ".join(sig.get("peer_invalid") or []) or "config/p7b3.yaml peer_validity",
+            "DiagPeerValid",
+            None,
+        ),
+        ("기준일 종가(원)", None, "won", "한국거래소 통계정보", "DiagPrice", "=Close"),
+        ("DCF ÷ 종가", None, "ratio", "", "DiagMktRatio", "=DiagDcf/Close"),
+        ("임계값: 피어 노랑 하한 배수(× q25)", 0.67, "ratio", "사전 고정", "DiagThPLo", None),
+        ("임계값: 피어 노랑 상한 배수(× q75)", 1.5, "ratio", "사전 고정", "DiagThPHi", None),
+        ("임계값: 시장 초록 [하한, 상한]", 0.67, "ratio", "상한 1.5", "DiagThMGLo", None),
+        ("  시장 초록 상한", 1.5, "ratio", "", "DiagThMGHi", None),
+        ("임계값: 시장 노랑 [하한, 상한]", 0.5, "ratio", "상한 2.0", "DiagThMYLo", None),
+        ("  시장 노랑 상한", 2.0, "ratio", "", "DiagThMYHi", None),
+    ]
     for i, (lab, v, kind, note, nm, live) in enumerate(rows):
         _row(s, r + 1 + i, lab, v, kind, note, nm, live)
     r += 1 + len(rows)
-    lp = ('=IF(OR(DiagPeerValid=0,NOT(ISNUMBER(DiagQ25)),NOT(ISNUMBER(DiagQ75)),N(DiagPeerN)<3),"회색",IF(AND(DiagDcf>=DiagQ25,DiagDcf<=DiagQ75),"초록",'
-          'IF(OR(AND(DiagDcf>=DiagThPLo*DiagQ25,DiagDcf<DiagQ25),AND(DiagDcf>DiagQ75,DiagDcf<=DiagThPHi*DiagQ75)),"노랑","빨강")))')
-    lm = ('=IF(AND(DiagMktRatio>=DiagThMGLo,DiagMktRatio<=DiagThMGHi),"초록",IF(AND(DiagMktRatio>=DiagThMYLo,DiagMktRatio<=DiagThMYHi),'
-          '"노랑","빨강"))')
-    lo = ('=IF(OR(DiagLightPeer="빨강",DiagLightMkt="빨강"),"빨강",IF(OR(DiagLightPeer="노랑",DiagLightMkt="노랑"),"노랑",'
-          'IF(AND(DiagLightPeer="회색",DiagLightMkt="회색"),"회색","초록")))')
+    lp = (
+        '=IF(OR(DiagPeerValid=0,NOT(ISNUMBER(DiagQ25)),NOT(ISNUMBER(DiagQ75)),N(DiagPeerN)<3),"회색",IF(AND(DiagDcf>=DiagQ25,DiagDcf<=DiagQ75),"초록",'
+        'IF(OR(AND(DiagDcf>=DiagThPLo*DiagQ25,DiagDcf<DiagQ25),AND(DiagDcf>DiagQ75,DiagDcf<=DiagThPHi*DiagQ75)),"노랑","빨강")))'
+    )
+    lm = (
+        '=IF(AND(DiagMktRatio>=DiagThMGLo,DiagMktRatio<=DiagThMGHi),"초록",IF(AND(DiagMktRatio>=DiagThMYLo,DiagMktRatio<=DiagThMYHi),'
+        '"노랑","빨강"))'
+    )
+    lo = (
+        '=IF(OR(DiagLightPeer="빨강",DiagLightMkt="빨강"),"빨강",IF(OR(DiagLightPeer="노랑",DiagLightMkt="노랑"),"노랑",'
+        'IF(AND(DiagLightPeer="회색",DiagLightMkt="회색"),"회색","초록")))'
+    )
     _row(s, r, "신호: DCF vs 피어 범위", None, "gen", "초록 = 사분위 안", "DiagLightPeer", lp)
     _row(s, r + 1, "신호: DCF ÷ 종가", None, "gen", "", "DiagLightMkt", lm)
     _row(s, r + 2, "종합 신호(나쁜 쪽)", None, "gen", "", "DiagLight", lo)
     _row(s, r + 3, "  엔진 판정", sig.get("light") or "n/a", "gen", "", "DiagLightEngine", None)
-    _row(s, r + 4, "  엔진 판정 = 살아 있는 판정", None, "gen", "OK / DIFF", "DiagLightCheck", '=IF(DiagLight=DiagLightEngine,"OK","DIFF")')
+    _row(
+        s,
+        r + 4,
+        "  엔진 판정 = 살아 있는 판정",
+        None,
+        "gen",
+        "OK / DIFF",
+        "DiagLightCheck",
+        '=IF(DiagLight=DiagLightEngine,"OK","DIFF")',
+    )
     r += 6
 
     # ---- B reverse
@@ -81,11 +116,13 @@ def diagnostics(c: Ctx):
         s.text(r + 1, j, h, "header")
     rr = r + 2
     if rev:
-        items = [("목표 주당(원) — " + str(rev.get("basis")), None, rev.get("target"), "won"),
-                 ("정상 영업이익률", rev.get("margin_base"), rev.get("margin"), "pct"),
-                 ("출발 성장률", rev.get("start_growth_base"), rev.get("start_growth"), "pct"),
-                 ("WACC", rev.get("wacc_base"), rev.get("wacc"), "pct"),
-                 ("역산 정확도: 다시 계산한 주당 − 목표(원, 최대 절댓값)", None, rev.get("max_abs_error"), "won")]
+        items = [
+            ("목표 주당(원) — " + str(rev.get("basis")), None, rev.get("target"), "won"),
+            ("정상 영업이익률", rev.get("margin_base"), rev.get("margin"), "pct"),
+            ("출발 성장률", rev.get("start_growth_base"), rev.get("start_growth"), "pct"),
+            ("WACC", rev.get("wacc_base"), rev.get("wacc"), "pct"),
+            ("역산 정확도: 다시 계산한 주당 − 목표(원, 최대 절댓값)", None, rev.get("max_abs_error"), "won"),
+        ]
         for i, (lab, b, v, kind) in enumerate(items):
             s.text(rr + i, 0, lab)
             s.eng(rr + i, 1, b, kind)
@@ -106,8 +143,16 @@ def diagnostics(c: Ctx):
         s.text(r + 1, j, h, "header")
     rr = r + 2
     if comp:
-        lab = {"ev": "EV", "tv": "  영구가치 현재가치(Gordon)", "explicit": "  명시·체감 기간 현재가치", "cash_like": "+ 현금성",
-               "non_operating": "+ 비영업자산", "debt": "− 총차입금(리스 포함)", "nci": "− 비지배지분", "equity": "= 주식가치"}
+        lab = {
+            "ev": "EV",
+            "tv": "  영구가치 현재가치(Gordon)",
+            "explicit": "  명시·체감 기간 현재가치",
+            "cash_like": "+ 현금성",
+            "non_operating": "+ 비영업자산",
+            "debt": "− 총차입금(리스 포함)",
+            "nci": "− 비지배지분",
+            "equity": "= 주식가치",
+        }
         keys = ["ev", "tv", "explicit", "cash_like", "non_operating", "debt", "nci", "equity"]
         for i, k in enumerate(keys):
             s.text(rr + i, 0, lab[k])
@@ -131,8 +176,7 @@ def diagnostics(c: Ctx):
         s.text(rr + i, 0, x["text"], "wrap")
         s.eng(rr + i, 1, "해당" if x["on"] else "-")
         v = x["value"]
-        s.eng(rr + i, 2, v if isinstance(v, (int, float)) or v is None else str(v),
-              "ratio" if isinstance(v, float) else "gen")
+        s.eng(rr + i, 2, v if isinstance(v, (int, float)) or v is None else str(v), "ratio" if isinstance(v, float) else "gen")
     if not fl:
         s.text(rr, 0, "RF 전용 경로: 해당 없음", "note")
     c.range_name("DiagFlagTable", "Diagnostics", a1(rr, 0), a1(rr + max(len(fl), 1) - 1, 2))
@@ -164,11 +208,19 @@ def diagnostics(c: Ctx):
     if se:
         cf, nc = se["customer_funds"], se["nci"]
         detail = "; ".join(f"{x['label']} {x['amount']:,.0f}" for x in cf["items"]) or "없음"
-        srows = [("고객 자금 성격 부채(백만원): " + detail[:120], cf["liabilities"], None, None, "mn"),
-                 ("영업용 현금 = min(현금성, 고객 자금 부채) → 브리지에서 뺌(백만원)", cf["operating_cash"], cf["per_share"], cf["diff"], "mn"),
-                 ("비지배 장부(백만원) — 기본", nc["book"], None, None, "mn"),
-                 ("(a) 비례법: 비지배 장부 ÷ 자본총계", nc["share_book"], nc["a_per_share"], nc["a_diff"], "pct"),
-                 ("(b) 비지배 장부 × 피어 P/B 중앙값", nc["peer_pbr"], nc["b_per_share"], nc["b_diff"], "ratio")]
+        srows = [
+            ("고객 자금 성격 부채(백만원): " + detail[:120], cf["liabilities"], None, None, "mn"),
+            (
+                "영업용 현금 = min(현금성, 고객 자금 부채) → 브리지에서 뺌(백만원)",
+                cf["operating_cash"],
+                cf["per_share"],
+                cf["diff"],
+                "mn",
+            ),
+            ("비지배 장부(백만원) — 기본", nc["book"], None, None, "mn"),
+            ("(a) 비례법: 비지배 장부 ÷ 자본총계", nc["share_book"], nc["a_per_share"], nc["a_diff"], "pct"),
+            ("(b) 비지배 장부 × 피어 P/B 중앙값", nc["peer_pbr"], nc["b_per_share"], nc["b_diff"], "ratio"),
+        ]
         for i, (lab, v, ps, df, kind) in enumerate(srows):
             s.text(rr + i, 0, lab, "wrap")
             s.eng(rr + i, 1, v, kind)
@@ -221,10 +273,15 @@ def diagnostics(c: Ctx):
     s.text(r, 0, "I. 기본 경로 v2 vs v1(대안) — 기본 시나리오·SRP 열 1", "subtitle")
     if v1:
         v2i = dg.get("v2") or {}
-        rows_i = [("v2 주당(원, 이 모델)", sig.get("dcf"), "won", "DiagV2PS"), ("v1 주당(원, 3년 평균 이익률·5년 CAGR)", v1["per_share"], "won", "DiagV1PS"),
-                  ("v2 출발 이익률(5년 중앙값)", v2i.get("m0"), "pct", "DiagV2M0"), ("v2 피어 이익률 중앙값", v2i.get("peer_margin"), "pct", "DiagV2PM"),
-                  ("v2 2032 이동 폭", v2i.get("conv_amt"), "pct", "DiagV2Conv"), ("v2 출발 성장률", v2i.get("g0"), "pct", "DiagV2G0"),
-                  ("v1 신호(피어/시장)", f"{v1['signals']['light_peer']}/{v1['signals']['light_market']}", "gen", "DiagV1Light")]
+        rows_i = [
+            ("v2 주당(원, 이 모델)", sig.get("dcf"), "won", "DiagV2PS"),
+            ("v1 주당(원, 3년 평균 이익률·5년 CAGR)", v1["per_share"], "won", "DiagV1PS"),
+            ("v2 출발 이익률(5년 중앙값)", v2i.get("m0"), "pct", "DiagV2M0"),
+            ("v2 피어 이익률 중앙값", v2i.get("peer_margin"), "pct", "DiagV2PM"),
+            ("v2 2032 이동 폭", v2i.get("conv_amt"), "pct", "DiagV2Conv"),
+            ("v2 출발 성장률", v2i.get("g0"), "pct", "DiagV2G0"),
+            ("v1 신호(피어/시장)", f"{v1['signals']['light_peer']}/{v1['signals']['light_market']}", "gen", "DiagV1Light"),
+        ]
         for i, (lab, v, kind, nm) in enumerate(rows_i):
             _row(s, r + 1 + i, lab, v, kind, "", nm)
         r += len(rows_i) + 2
@@ -249,15 +306,24 @@ def diagnostics(c: Ctx):
     r = r + 3 + max(len(dna), 1)
     s.text(r, 0, "K. SOTP 구성(백만원) — 모회사(별도) 영업가치 + 종속회사 지분", "subtitle")
     if st:
-        rows_k = [("모회사 영업가치(EV, 별도 기준)", st["parent_ev"], "mn", "DiagSotpParentEV"),
-                  ("상장 종속회사 지분 시가(할인 전)", st["listed"], "mn", "DiagSotpListed"),
-                  ("비상장 종속회사 장부가", st["unlisted"], "mn", "DiagSotpUnlisted"),
-                  ("'종속' 투자 줄 합계(비영업에서 뺌)", st["sub_lines"], "mn", "DiagSotpSubLines"),
-                  ("주식가치", st["equity"], "mn", "DiagSotpEquity"),
-                  ("상장 지분이 주식가치에서 차지하는 비중", st["listed_share"], "pct", "DiagSotpListedShare"),
-                  ("모회사(종속회사 제외)가 차지하는 비중", st["parent_share"], "pct", "DiagSotpParentShare")]
+        rows_k = [
+            ("모회사 영업가치(EV, 별도 기준)", st["parent_ev"], "mn", "DiagSotpParentEV"),
+            ("상장 종속회사 지분 시가(할인 전)", st["listed"], "mn", "DiagSotpListed"),
+            ("비상장 종속회사 장부가", st["unlisted"], "mn", "DiagSotpUnlisted"),
+            ("'종속' 투자 줄 합계(비영업에서 뺌)", st["sub_lines"], "mn", "DiagSotpSubLines"),
+            ("주식가치", st["equity"], "mn", "DiagSotpEquity"),
+            ("상장 지분이 주식가치에서 차지하는 비중", st["listed_share"], "pct", "DiagSotpListedShare"),
+            ("모회사(종속회사 제외)가 차지하는 비중", st["parent_share"], "pct", "DiagSotpParentShare"),
+        ]
         for x in st["sens"]:
-            rows_k.append((f"상장 지분 할인 {x['discount']:.0%}일 때 주당(원)", x["per_share"], "won", f"DiagSotpDisc{int(round(x['discount'] * 100))}"))
+            rows_k.append(
+                (
+                    f"상장 지분 할인 {x['discount']:.0%}일 때 주당(원)",
+                    x["per_share"],
+                    "won",
+                    f"DiagSotpDisc{int(round(x['discount'] * 100))}",
+                )
+            )
         for i, (lab, v, kind, nm) in enumerate(rows_k):
             _row(s, r + 1 + i, lab, v, kind, "", nm)
         c.range_name("DiagSotpTable", "Diagnostics", a1(r + 1, 0), a1(r + len(rows_k), 1))
@@ -271,21 +337,30 @@ def diagnostics(c: Ctx):
     lo = dg.get("loss")
     if lo:
         ev, fu = lo["ev_sales"], lo["funding"]
-        rows_l += [("적자 경로", lo["fixed_text"], "gen", "DiagLossText"),
-                   ("(a) 피어 EV/Sales 주당 q25(원)", ev["q25"], "won", "DiagLossQ25"),
-                   ("(a) 피어 EV/Sales 주당 q75(원)", ev["q75"], "won", "DiagLossQ75"),
-                   ("(a) 범위 해석", "가능" if ev["valid"] else "불가: " + ("; ".join(ev["invalid"]) or "피어 부족"), "gen", "DiagLossValid"),
-                   ("(b) 전환 DCF 주당(원, 기본·SRP 열 1)", lo["dcf"], "won", "DiagLossDcf"),
-                   ("(b) 출발 LTM 영업이익률", lo["ltm_margin"], "pct", "DiagLossM0"),
-                   ("(b) 2032년 도달 이익률(피어 중앙값)", lo["target_margin"], "pct", "DiagLossMT"),
-                   ("(c) 명시 기간 누적 FCF 최저(백만원)", fu["trough"], "mn", "DiagLossTrough"),
-                   ("(c) 현금성(백만원)", fu["cash_like"], "mn", "DiagLossCash"),
-                   ("(c) 추가 자금 필요(희석 위험)", "예" if fu["need"] else "아니오", "gen", "DiagLossNeed")]
+        rows_l += [
+            ("적자 경로", lo["fixed_text"], "gen", "DiagLossText"),
+            ("(a) 피어 EV/Sales 주당 q25(원)", ev["q25"], "won", "DiagLossQ25"),
+            ("(a) 피어 EV/Sales 주당 q75(원)", ev["q75"], "won", "DiagLossQ75"),
+            (
+                "(a) 범위 해석",
+                "가능" if ev["valid"] else "불가: " + ("; ".join(ev["invalid"]) or "피어 부족"),
+                "gen",
+                "DiagLossValid",
+            ),
+            ("(b) 전환 DCF 주당(원, 기본·SRP 열 1)", lo["dcf"], "won", "DiagLossDcf"),
+            ("(b) 출발 LTM 영업이익률", lo["ltm_margin"], "pct", "DiagLossM0"),
+            ("(b) 2032년 도달 이익률(피어 중앙값)", lo["target_margin"], "pct", "DiagLossMT"),
+            ("(c) 명시 기간 누적 FCF 최저(백만원)", fu["trough"], "mn", "DiagLossTrough"),
+            ("(c) 현금성(백만원)", fu["cash_like"], "mn", "DiagLossCash"),
+            ("(c) 추가 자금 필요(희석 위험)", "예" if fu["need"] else "아니오", "gen", "DiagLossNeed"),
+        ]
     tn = dg.get("turnaround")
     if tn:
-        rows_l += [("실적 전환: LTM 영업이익률", tn["ltm_margin"], "pct", "DiagTurnLtm"),
-                   ("실적 전환: 5년 중앙값(기본 출발값)", tn["m0"], "pct", "DiagTurnM0"),
-                   ("실적 전환: LTM 출발 후보 주당(원)", tn["per_share"], "won", "DiagTurnPS")]
+        rows_l += [
+            ("실적 전환: LTM 영업이익률", tn["ltm_margin"], "pct", "DiagTurnLtm"),
+            ("실적 전환: 5년 중앙값(기본 출발값)", tn["m0"], "pct", "DiagTurnM0"),
+            ("실적 전환: LTM 출발 후보 주당(원)", tn["per_share"], "won", "DiagTurnPS"),
+        ]
     if st:
         rows_l.append(("SOTP 가드", "; ".join(x["text"] for x in st.get("guard") or []) or "해당 없음", "gen", "DiagSotpGuard"))
     for i, (lab, v, kind, nm) in enumerate(rows_l):
@@ -307,7 +382,6 @@ def diagnostics(c: Ctx):
     c.range_name("DiagMistagTable", "Diagnostics", a1(r + 2, 0), a1(r + 1 + max(len(mt), 1), 3))
 
 
-
 def judgements(c: Ctx):
     """P7-C1 Judgements sheet: what a person changed in the evaluation session (item, auto value, confirmed value, reason,
     version, time). Values are the session record (text and numbers, not formulas); the model reads the confirmed values
@@ -317,7 +391,12 @@ def judgements(c: Ctx):
     s = c.sheet("Judgements")
     s.widths({0: 6, 1: 30, 2: 22, 3: 18, 4: 18, 5: 40, 6: 8, 7: 20})
     s.text(0, 0, f"Judgements — 사람 판단 반영 내역 (평가 세션 {wb.get('session_id')}, 확정 v{wb.get('version')})", "title")
-    s.text(1, 0, "자동 초안 값 → 사람 확정값. 확정값은 Inputs '사람 확정값' 또는 각 입력 칸에 들어가 계산 시트가 읽는다(살아 있는 수식)", "note")
+    s.text(
+        1,
+        0,
+        "자동 초안 값 → 사람 확정값. 확정값은 Inputs '사람 확정값' 또는 각 입력 칸에 들어가 계산 시트가 읽는다(살아 있는 수식)",
+        "note",
+    )
     for j, h in enumerate(["#", "항목", "가정", "자동값", "확정값", "이유", "버전", "시각"]):
         s.text(3, j, h, "header")
     rows = wb.get("changes") or []

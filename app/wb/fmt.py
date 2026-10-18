@@ -8,6 +8,7 @@
     beta(v)     3 decimals; times(v) multiples ("1.23배"); shares(n) share counts ("24,157,223주")
 Missing values (None, NaN, inf) show as "—" (never 0).
 """
+
 from __future__ import annotations
 
 import math

@@ -9,6 +9,7 @@ Colour rules (FAST / ICAEW Financial Modelling Code style)
 The registry (Book.reg) records every input, KRX single value, engine-value range and structural constant so the
 tests can check styles, the KRX rule and the "no hard-coded numbers in calculation sheets" rule.
 """
+
 from __future__ import annotations
 
 import re
@@ -24,32 +25,32 @@ ENGINE_FONT, ENGINE_FILL = "#7F7F7F", "#F2F2F2"
 HEADER_FILL = "#DDEBF7"
 
 NUM = {
-    "mn": '#,##0.0;[Red]-#,##0.0',          # 백만원
-    "won": '#,##0;[Red]-#,##0',             # 원 (per share, prices)
-    "int": '#,##0',
-    "pct": '0.00%',
-    "pct1": '0.0%',
-    "pct3": '0.000%',
+    "mn": "#,##0.0;[Red]-#,##0.0",  # 백만원
+    "won": "#,##0;[Red]-#,##0",  # 원 (per share, prices)
+    "int": "#,##0",
+    "pct": "0.00%",
+    "pct1": "0.0%",
+    "pct3": "0.000%",
     "x": '0.00"x"',
-    "ratio": '0.0000',
-    "beta": '0.000',
-    "days": '0.0',
-    "year": '0',
-    "date": 'yyyy-mm-dd',
-    "text": '@',
-    "gen": 'General',
+    "ratio": "0.0000",
+    "beta": "0.000",
+    "days": "0.0",
+    "year": "0",
+    "date": "yyyy-mm-dd",
+    "text": "@",
+    "gen": "General",
 }
 
 
 @dataclass
 class Registry:
-    inputs: list = field(default_factory=list)        # (sheet, cell)
-    krx: list = field(default_factory=list)           # (sheet, cell, label) single KRX-derived values
-    engine: list = field(default_factory=list)        # (sheet, first, last) engine-value ranges
-    structural: list = field(default_factory=list)    # (sheet, cell) structural constants (0/1) on calc sheets
-    names: dict = field(default_factory=dict)         # name -> (sheet, cell)
-    checks: list = field(default_factory=list)        # (sheet, status cell, label, kind)
-    datatables: list = field(default_factory=list)    # {"sheet", "first", "ref", "r1", "r2", "engine": {cell: value}}
+    inputs: list = field(default_factory=list)  # (sheet, cell)
+    krx: list = field(default_factory=list)  # (sheet, cell, label) single KRX-derived values
+    engine: list = field(default_factory=list)  # (sheet, first, last) engine-value ranges
+    structural: list = field(default_factory=list)  # (sheet, cell) structural constants (0/1) on calc sheets
+    names: dict = field(default_factory=dict)  # name -> (sheet, cell)
+    checks: list = field(default_factory=list)  # (sheet, status cell, label, kind)
+    datatables: list = field(default_factory=list)  # {"sheet", "first", "ref", "r1", "r2", "engine": {cell: value}}
 
 
 class Book:
@@ -59,7 +60,7 @@ class Book:
         self.cached = cached or {}
         self.reg = Registry()
         self._fmt = {}
-        self.sheets: dict[str, "Sheet"] = {}
+        self.sheets: dict[str, Sheet] = {}
 
     def fmt(self, role: str, kind: str = "gen", **extra):
         key = (role, kind, tuple(sorted(extra.items())))
@@ -90,7 +91,7 @@ class Book:
         self._fmt[key] = self.wb.add_format(p)
         return self._fmt[key]
 
-    def sheet(self, name: str, tab: str | None = None) -> "Sheet":
+    def sheet(self, name: str, tab: str | None = None) -> Sheet:
         ws = self.wb.add_worksheet(name)
         if tab:
             ws.set_tab_color(tab)
@@ -138,7 +139,9 @@ class Sheet:
         if value is None:
             self.ws.write_blank(r, c, None, f)
         elif isinstance(value, (date, datetime)):
-            self.ws.write_datetime(r, c, value if isinstance(value, datetime) else datetime(value.year, value.month, value.day), f)
+            self.ws.write_datetime(
+                r, c, value if isinstance(value, datetime) else datetime(value.year, value.month, value.day), f
+            )
         elif isinstance(value, str):
             self.ws.write_string(r, c, value, f)
         else:

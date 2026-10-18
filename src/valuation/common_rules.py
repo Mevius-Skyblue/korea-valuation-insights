@@ -1,36 +1,40 @@
 """P3-C3 common rules for every company (config/valuation_rules.yaml `common_rules`, pre-registered in bf5211c).
 
-    beta_reliability(r2s)          peer R² median < warn threshold -> warning text (display only, path unchanged)
-    kd_choice(rating, actual, rates, rf)
-                                   pre-tax Kd by rating band, floored at Rf:
-                                   unrated -> BBB- 3y; AA- or better -> AA- 3y; A+ ~ BBB+ -> max(actual, AA- 3y)
-                                   (sensitivities: notch-linear AA- -> BBB-, BBB- 3y); BBB or below -> BBB- 3y
-    start_nopat(fy_revenue, margin, tax_rate)
-                                   NOPAT of the start year for incremental ROIC = revenue x normal margin x (1 − t)
-    ltm_periods(meta)              (FY year, LTM year, LTM period) from a company config meta
+beta_reliability(r2s)          peer R² median < warn threshold -> warning text (display only, path unchanged)
+kd_choice(rating, actual, rates, rf)
+                               pre-tax Kd by rating band, floored at Rf:
+                               unrated -> BBB- 3y; AA- or better -> AA- 3y; A+ ~ BBB+ -> max(actual, AA- 3y)
+                               (sensitivities: notch-linear AA- -> BBB-, BBB- 3y); BBB or below -> BBB- 3y
+start_nopat(fy_revenue, margin, tax_rate)
+                               NOPAT of the start year for incremental ROIC = revenue x normal margin x (1 − t)
+ltm_periods(meta)              (FY year, LTM year, LTM period) from a company config meta
 """
+
 from __future__ import annotations
 
 from pathlib import Path
 
 import numpy as np
-import yaml
 
+from src import yamlio
 from src.collect.core import ROOT
 
 RULES = ROOT / "config" / "valuation_rules.yaml"
 
 
 def load_common(path: Path = RULES) -> dict:
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8"))["common_rules"]
+    return yamlio.load(Path(path).read_text(encoding="utf-8"))["common_rules"]
 
 
 def beta_reliability(r2s, rules: dict | None = None) -> dict:
     r = (rules or load_common())["beta"]
     med = float(np.nanmedian(list(r2s))) if len(list(r2s)) else float("nan")
     warn = med < r["warn_r2_median_below"]
-    return {"r2_median": med, "warn": bool(warn),
-            "text": f"회귀 베타 신뢰 낮음(피어 R² 중앙값 {med:.2f} < {r['warn_r2_median_below']:.2f})" if warn else ""}
+    return {
+        "r2_median": med,
+        "warn": bool(warn),
+        "text": f"회귀 베타 신뢰 낮음(피어 R² 중앙값 {med:.2f} < {r['warn_r2_median_below']:.2f})" if warn else "",
+    }
 
 
 def kd_choice(rating: str | None, actual: float | None, rates: dict, rf: float, rules: dict | None = None) -> dict:
@@ -47,7 +51,10 @@ def kd_choice(rating: str | None, actual: float | None, rates: dict, rf: float, 
             kd, lab = aa, f"{rating} (AA- 이상) → AA- 3년"
         elif i <= i_bbbp:
             base = max(actual if actual is not None else -np.inf, aa)
-            kd, lab = base, f"{rating} (A+~BBB+) → max(실제 {actual:.3%}, AA- {aa:.3%})" if actual is not None else f"{rating} → AA- 3년"
+            kd, lab = (
+                base,
+                f"{rating} (A+~BBB+) → max(실제 {actual:.3%}, AA- {aa:.3%})" if actual is not None else f"{rating} → AA- 3년",
+            )
             steps = scale.index("BBB-") - i_aa
             sens = {"등급 선형 보간": aa + (bbb - aa) * (i - i_aa) / steps, "BBB- 3년": bbb}
         else:

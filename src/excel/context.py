@@ -4,19 +4,44 @@ R[key] holds a formula-ready reference: a defined name (e.g. "Rf") or an absolut
 Ranges are stored the same way ("Inputs!$B$40:$B$43"). Sheets are created up front in display order so formulas may
 point forward; names used before their cell exists are reserved first (Book.reg.names, sheet only).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
 from src.excel.writer import Book, Sheet
 
-SHEETS = [("Cover", "#1F4E79"), ("Guide", "#1F4E79"), ("Inputs", "#FFC000"), ("FS_Hist", "#FFC000"),
-          ("Forecast", "#808080"), ("WACC", "#808080"), ("DCF", "#808080"), ("Bridge", "#808080"),
-          ("Peers", "#808080"), ("Premium", "#808080"), ("Scenarios", "#2E75B6"), ("Scen_Calc", "#808080"),
-          ("Football", "#2E75B6"), ("Convergence", "#2E75B6"), ("Checks", "#C00000"),
-          ("Diagnostics", "#7030A0")]            # P7-B2: appended last so every earlier sheet keeps its index
-CALC_SHEETS = ["Forecast", "WACC", "DCF", "Bridge", "Peers", "Premium", "Scenarios", "Scen_Calc", "Football", "Convergence", "Checks"]
-INPUT_SHEETS = ["Inputs", "FS_Hist"]
+SHEETS = [
+    ("Cover", "#1F4E79"),
+    ("Guide", "#1F4E79"),
+    ("Inputs", "#FFC000"),
+    ("FS_Hist", "#FFC000"),
+    ("Forecast", "#808080"),
+    ("WACC", "#808080"),
+    ("DCF", "#808080"),
+    ("Bridge", "#808080"),
+    ("Peers", "#808080"),
+    ("Premium", "#808080"),
+    ("Scenarios", "#2E75B6"),
+    ("Scen_Calc", "#808080"),
+    ("Football", "#2E75B6"),
+    ("Convergence", "#2E75B6"),
+    ("Checks", "#C00000"),
+    ("Diagnostics", "#7030A0"),
+]  # P7-B2: appended last so every earlier sheet keeps its index
+CALC_SHEETS = [
+    "Forecast",
+    "WACC",
+    "DCF",
+    "Bridge",
+    "Peers",
+    "Premium",
+    "Scenarios",
+    "Scen_Calc",
+    "Football",
+    "Convergence",
+    "Checks",
+]
 
 
 @dataclass
@@ -24,8 +49,8 @@ class Ctx:
     book: Book
     d: dict
     R: dict = field(default_factory=dict)
-    S: dict = field(default_factory=dict)          # sheet name -> Sheet
-    layout: dict = field(default_factory=dict)     # forecast columns, row maps
+    S: dict = field(default_factory=dict)  # sheet name -> Sheet
+    layout: dict = field(default_factory=dict)  # forecast columns, row maps
 
     def sheet(self, name: str) -> Sheet:
         return self.S[name]
@@ -44,6 +69,7 @@ class Ctx:
 
 def _abs(cell: str) -> str:
     import re
+
     m = re.fullmatch(r"\$?([A-Z]+)\$?(\d+)", cell)
     return f"${m.group(1)}${m.group(2)}"
 

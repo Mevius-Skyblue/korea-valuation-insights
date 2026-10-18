@@ -10,6 +10,7 @@ Steps
       in each formula cell, so viewers that do not recalculate still show numbers (Excel recalculates on open anyway)
 The SOTP blocks follow the structure decision (config decisions.structure, checked against the rule in Bridge).
 """
+
 from __future__ import annotations
 
 import sys
@@ -21,41 +22,53 @@ from src.excel.model_data import load_model_data, output_path
 
 
 def write(path: Path, d: dict, cached: dict | None = None):
+    """Write every sheet of the workbook with XlsxWriter (formulas live; `cached` = values to store with them)."""
     from src.excel import sheets_calc as sc
+    from src.excel import sheets_forecast as sf
     from src.excel import sheets_input as si
     from src.excel import sheets_output as so
+    from src.excel import sheets_scenarios as ss
+
     c = make_ctx(path, d, cached)
     c.reserve("RONIC", "DCF")
     c.reserve("PeerEvEbitdaMed", "Peers")
     for nm in ("WaccOvr", "GOvr", "GrowthOvr", "MarginOvr", "GrowthShiftOvr", "MarginShiftOvr", "MrpOvr", "SrpOvr", "RfOvr"):
         c.reserve(nm, "Scenarios")
-    c.reserve("Rf", "WACC")                     # P6-A: the Rf the model uses = WACC sheet (Inputs tenor choice)
+    c.reserve("Rf", "WACC")  # P6-A: the Rf the model uses = WACC sheet (Inputs tenor choice)
     si.inputs(c)
     si.fs_hist(c)
-    sc.forecast(c)
+    sf.forecast(c)
     sc.wacc_sheet(c)
     sc.dcf_sheet(c)
     sc.bridge(c)
     sc.scen_calc(c)
     so.peers(c)
     so.premium(c)
-    so.scenarios(c)
+    ss.scenarios(c)
     so.football(c)
     so.convergence(c)
     so.checks(c)
-    from src.excel.sheets_diag import diagnostics       # P7-B2 reliability diagnostics (new sheet, earlier sheets unchanged)
+    from src.excel.sheets_diag import diagnostics  # P7-B2 reliability diagnostics (new sheet, earlier sheets unchanged)
+
     diagnostics(c)
-    if d.get("workbench"):                              # P7-C1 confirmed session: people's judgements table
+    if d.get("workbench"):  # P7-C1 confirmed session: people's judgements table
         from src.excel.sheets_diag import judgements
+
         judgements(c)
     si.guide(c)
     si.cover(c)
-    c.book.wb.set_properties({"title": f"{d['meta']['name']} valuation model (draft)", "subject": "P4 generated model",
-                              "comments": "Auto-generated draft. Not investment advice."})
+    c.book.wb.set_properties(
+        {
+            "title": f"{d['meta']['name']} valuation model (draft)",
+            "subject": "P4 generated model",
+            "comments": "Auto-generated draft. Not investment advice.",
+        }
+    )
     c.S["Cover"].ws.activate()
     c.book.close()
-    if c.book.reg.datatables:                   # Excel What-If tables (XML post-processing, src/excel/datatable.py)
+    if c.book.reg.datatables:  # Excel What-If tables (XML post-processing, src/excel/datatable.py)
         from src.excel.datatable import add_data_tables
+
         idx = [n for n, _ in SHEETS].index("Scenarios") + 1
         add_data_tables(path, idx, c.book.reg.datatables)
     return c
@@ -74,8 +87,7 @@ def writable(path: Path) -> Path:
     return p
 
 
-def build(cfg_path: str = "config/valuation_rf.yaml", path: Path | None = None, d: dict | None = None,
-          cache_values: bool = True):
+def build(cfg_path: str = "config/valuation_rf.yaml", path: Path | None = None, d: dict | None = None, cache_values: bool = True):
     """Returns (path, ctx, values). values = recalculated cell values (None if `formulas` is not installed)."""
     d = d or load_model_data(cfg_path)
     path = Path(path or output_path(d))
@@ -87,7 +99,7 @@ def build(cfg_path: str = "config/valuation_rf.yaml", path: Path | None = None, 
         m = recalc.load(path, c.book.reg.names, [s for s, _ in SHEETS])
         vals = m.calc()
         c = write(path, d, cached={k: v for k, v in vals.items() if v is not None})
-        c.recalc_model = m                     # P7-B5: the reconciliation reuses the loaded model and these base values
+        c.recalc_model = m  # P7-B5: the reconciliation reuses the loaded model and these base values
     return path, c, vals
 
 

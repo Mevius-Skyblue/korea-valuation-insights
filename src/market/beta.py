@@ -13,6 +13,7 @@ Formulas
     Blume      = 0.67 * raw + 0.33
     Hamada     = beta_u = beta_L / (1 + (1 - t) * D/E)       relever: beta_L = beta_u * (1 + (1 - t) * D/E)
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -45,10 +46,10 @@ def ols_beta(x: np.ndarray, y: np.ndarray) -> BetaResult:
     b = ((x - xm) * (y - ym)).sum() / sxx
     a = ym - b * xm
     resid = y - a - b * x
-    s2 = (resid ** 2).sum() / (n - 2)
+    s2 = (resid**2).sum() / (n - 2)
     se = float(np.sqrt(s2 / sxx))
     sst = ((y - ym) ** 2).sum()
-    r2 = float(1 - (resid ** 2).sum() / sst) if sst > 0 else None
+    r2 = float(1 - (resid**2).sum() / sst) if sst > 0 else None
     return BetaResult(float(b), se, r2, n, float(a))
 
 
@@ -85,12 +86,16 @@ def window_start(as_of: str, years: int) -> pd.Timestamp:
 
 def stock_and_market(con, stock_code: str, index_code: str, start, end) -> pd.DataFrame:
     """Daily adjusted stock returns + index returns on our trading calendar, (start, end]."""
-    s = con.execute("""SELECT bas_dd AS date, ret_adj, volume, flags FROM price_adj
+    s = con.execute(
+        """SELECT bas_dd AS date, ret_adj, volume, flags FROM price_adj
                        WHERE stock_code = ? AND bas_dd > ? AND bas_dd <= ? ORDER BY bas_dd""",
-                    [stock_code, start, end]).df()
-    m = con.execute("""SELECT date, value / lag(value) OVER (ORDER BY date) - 1 AS mret FROM index_daily
+        [stock_code, start, end],
+    ).df()
+    m = con.execute(
+        """SELECT date, value / lag(value) OVER (ORDER BY date) - 1 AS mret FROM index_daily
                        WHERE index_code = ? AND date > ? - INTERVAL 15 DAY AND date <= ? ORDER BY date""",
-                    [index_code, start, end]).df()
+        [index_code, start, end],
+    ).df()
     df = s.merge(m, on="date", how="inner").set_index("date")
     return df
 
@@ -111,6 +116,15 @@ def estimate(con, stock_code: str, index_code: str, as_of: str, spec: str) -> di
         flags.append("few-obs")
     if df["flags"].fillna("").str.contains("market_change").any():
         flags.append("market-change")
-    return {"stock_code": stock_code, "index": index_code, "spec": spec, "raw": res.beta, "se": res.se,
-            "r2": res.r2, "n": res.n, "blume": blume(res.beta), "zero_volume_share": zero_share,
-            "warn": ",".join(flags)}
+    return {
+        "stock_code": stock_code,
+        "index": index_code,
+        "spec": spec,
+        "raw": res.beta,
+        "se": res.se,
+        "r2": res.r2,
+        "n": res.n,
+        "blume": blume(res.beta),
+        "zero_volume_share": zero_share,
+        "warn": ",".join(flags),
+    }

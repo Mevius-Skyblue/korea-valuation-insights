@@ -16,6 +16,7 @@
 Run (the 엔에프씨 example in reports/p7c1_workbench.md):
     python -m src.workbench.public <session_id> <close> <vwap20>
 """
+
 from __future__ import annotations
 
 import json
@@ -27,6 +28,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src import yamlio
 from src.collect.core import ROOT
 
 MULTS = [("EV/Sales", "ev", "revenue"), ("EV/EBITDA", "ev", "ebitda"), ("PER", "equity", "ni"), ("PBR", "equity", "equity")]
@@ -43,7 +45,7 @@ def _quart(vals: list) -> dict:
 def _peer_multiples(peers: list[dict]) -> dict:
     out = {}
     specs = [(nm, kind, dk, dk) for nm, kind, dk in MULTS] + [("EV/EBITDA(보완 전)", "ev", "ebitda", "ebitda_pre")]
-    for nm, kind, dk, key in specs:
+    for nm, kind, _dk, key in specs:
         vals = []
         for p in peers:
             if not p["include"]:
@@ -63,10 +65,14 @@ def public_aggregates(beta_rows: list[dict], peers: list[dict]) -> dict:
     r2 = [b["r2"] for b in inc]
     from src.workbench import snapdata as SD
     from src.workbench.pubagg import r2_display
+
     r2m = float(np.median(r2)) if r2 else None
-    return {"beta_n": len(inc), "r2_median": r2_display(r2m) if SD.mode() == "record" else r2m,
-            "peers": [{k: p[k] for k in ("name", "tier", "include", "fs_div")} for p in peers],
-            "multiples": _peer_multiples(peers)}
+    return {
+        "beta_n": len(inc),
+        "r2_median": r2_display(r2m) if SD.mode() == "record" else r2m,
+        "peers": [{k: p[k] for k in ("name", "tier", "include", "fs_div")} for p in peers],
+        "multiples": _peer_multiples(peers),
+    }
 
 
 def transform(d: dict) -> dict:
@@ -76,21 +82,29 @@ def transform(d: dict) -> dict:
         raise NotImplementedError("공개 모드는 자동 초안·mechanical 모델만")
     e = d["engine"]
     from src.workbench import snapdata as SD
-    if SD.replaying():
-        import yaml
 
+    if SD.replaying():
         from src.workbench import pubagg
-        agg = pubagg.get("public", d["cfg_path"], yaml.safe_load((ROOT / d["cfg_path"]).read_text(encoding="utf-8")))
+
+        agg = pubagg.get("public", d["cfg_path"], yamlio.load((ROOT / d["cfg_path"]).read_text(encoding="utf-8")))
     else:
         agg = public_aggregates(d["beta"], d["peers"])
-    pub = {"beta": {"n": agg["beta_n"], "bu": float(e["beta_u"]), "src": e.get("beta_src", "peer"), "r2_median": agg["r2_median"]},
-           "peers": agg["peers"], "multiples": agg["multiples"],
-           "de": float(e["de_own"]), "de_n": d["de"].get("n", len(d["de"]["points"])) if d["de"]["rule"] == "points" else None}
+    pub = {
+        "beta": {"n": agg["beta_n"], "bu": float(e["beta_u"]), "src": e.get("beta_src", "peer"), "r2_median": agg["r2_median"]},
+        "peers": agg["peers"],
+        "multiples": agg["multiples"],
+        "de": float(e["de_own"]),
+        "de_n": d["de"].get("n", len(d["de"]["points"])) if d["de"]["rule"] == "points" else None,
+    }
     d = dict(d)
     d["public"] = pub
     d["beta"], d["peers"] = [], []
-    d["de"] = {"rule": "fixed", "value": pub["de"], "src": "(공개 모드 집계 입력)",
-               "basis": f"자체 D/E 시점 평균({pub['de_n']}개 시점, PC에서 계산한 집계값. 시점별 시가총액은 공개 모드에 표시하지 않음)"}
+    d["de"] = {
+        "rule": "fixed",
+        "value": pub["de"],
+        "src": "(공개 모드 집계 입력)",
+        "basis": f"자체 D/E 시점 평균({pub['de_n']}개 시점, PC에서 계산한 집계값. 시점별 시가총액은 공개 모드에 표시하지 않음)",
+    }
     return d
 
 
@@ -105,16 +119,20 @@ def aggregates(d: dict) -> list[float]:
 
 # ---------------------------------------------------------------- scan
 
+
 def krx_values(cfg_path: str, user: dict | None = None) -> list[dict]:
     """KRX raw values of the PC data (DB provider) for a PC-mode config (its beta / peer tables are in the DB), minus the
     values the user entered."""
     from src.excel.model_data import load_model_data
     from src.market.provider import DbMarketProvider, use
+
     with use(DbMarketProvider()):
         d = load_model_data(cfg_path, with_engine=False)
-    out = [{"what": "대상 종가(원)", "v": d["market"]["close"], "unit": "won"},
-           {"what": "대상 시가총액(백만원)", "v": d["market"]["rf_mc"], "unit": "mn"},
-           {"what": "대상 20일 VWAP(원)", "v": d["premium"]["vwap"], "unit": "won"}]
+    out = [
+        {"what": "대상 종가(원)", "v": d["market"]["close"], "unit": "won"},
+        {"what": "대상 시가총액(백만원)", "v": d["market"]["rf_mc"], "unit": "mn"},
+        {"what": "대상 20일 VWAP(원)", "v": d["premium"]["vwap"], "unit": "won"},
+    ]
     for p in d["de"].get("points") or []:
         out.append({"what": f"D/E 시점 시가총액 {p['date']}(백만원)", "v": p["mktcap"], "unit": "mn"})
     for p in d["peers"]:
@@ -124,7 +142,7 @@ def krx_values(cfg_path: str, user: dict | None = None) -> list[dict]:
             out.append({"what": f"피어 베타 회귀 {k} {b['name']}", "v": b[k], "unit": "beta"})
     for p in d["shares"]["listed_pref"]:
         out.append({"what": f"우선주 종가 {p['code']}(원)", "v": p["close"], "unit": "won"})
-    for r in ((d.get("sotp") or {}).get("rows") or []):
+    for r in (d.get("sotp") or {}).get("rows") or []:
         if r.get("close"):
             out.append({"what": f"상장 종속회사 종가 {r.get('name')}(원)", "v": r["close"], "unit": "won"})
     typed = user_values(user, d)
@@ -136,8 +154,13 @@ def user_values(user: dict | None, d: dict) -> list[float]:
     shares outstanding from DART as UserOverlayProvider uses)."""
     u = user or {}
     sh = d["shares"]
-    out = [u.get("close"), u.get("mktcap"), u.get("vwap20"), *((u.get("sub_close") or {}).values()),
-           *[x.get("close") for x in (u.get("pref") or {}).values()]]
+    out = [
+        u.get("close"),
+        u.get("mktcap"),
+        u.get("vwap20"),
+        *((u.get("sub_close") or {}).values()),
+        *[x.get("close") for x in (u.get("pref") or {}).values()],
+    ]
     if u.get("close") and not u.get("mktcap"):
         out.append(float(u["close"]) * (sh["common_issued"] - sh["common_treasury"]))
     return [float(x) for x in out if x]
@@ -153,8 +176,9 @@ def _same(a: float, b: float) -> bool:
 
 def _xlsx_numbers(path: Path) -> list[tuple[str, float]]:
     import openpyxl
+
     out = []
-    for data_only in (True, False):                      # cached formula results and literal inputs
+    for data_only in (True, False):  # cached formula results and literal inputs
         wb = openpyxl.load_workbook(path, data_only=data_only, read_only=True)
         for ws in wb.worksheets:
             for row in ws.iter_rows():
@@ -201,14 +225,15 @@ def scan(paths: list, krx: list[dict], allow: list[float] = ()) -> list[dict]:
                     for i, vv in enumerate(o):
                         walk(vv, f"{k}[{i}]")
                 elif isinstance(o, (int, float)) and not isinstance(o, bool):
-                    nums.append((k, float(o)))
+                    nums.append((k, float(o)))  # noqa: B023 - called within this loop iteration
+
             walk(json.loads(p.read_text(encoding="utf-8")))
         elif p.suffix == ".docx":
             txt = _docx_text(p)
             allowed_forms = {f for a in allow for f in (f"{a:.3f}", f"{a:.2f}")}
             for x in krx:
                 for f in _forms(x):
-                    if f in allowed_forms:          # an aggregate shown in the report (e.g. an odd-count median R²)
+                    if f in allowed_forms:  # an aggregate shown in the report (e.g. an odd-count median R²)
                         continue
                     if re.search(rf"(?<![\d,.]){re.escape(f)}(?![\d])", txt):
                         hits.append({"file": p.name, "where": "text", "what": x["what"], "value": x["v"], "form": f})
@@ -217,7 +242,9 @@ def scan(paths: list, krx: list[dict], allow: list[float] = ()) -> list[dict]:
             continue
         for x in krx:
             v = float(x["v"])
-            scales = [1.0] if x["unit"] == "beta" else ([1.0, 1e-6, 1e-8] if x["unit"] == "won" else [1.0, 1e6, 100.0 / 1e4, 1e-2])
+            scales = (
+                [1.0] if x["unit"] == "beta" else ([1.0, 1e-6, 1e-8] if x["unit"] == "won" else [1.0, 1e6, 100.0 / 1e4, 1e-2])
+            )
             for where, n in nums:
                 if any(_same(n, v * s) for s in scales) and not any(_same(n, a) for a in allow):
                     hits.append({"file": p.name, "where": where, "what": x["what"], "value": x["v"], "found": n})
@@ -236,8 +263,15 @@ def scan_screen(texts: list[str], numbers: list[tuple[str, float]], krx: list[di
             if f in allowed_forms:
                 continue
             for m in re.finditer(rf"(?<![\d,.]){re.escape(f)}(?![\d])", txt):
-                hits.append({"where": "text", "what": x["what"], "value": x["v"], "form": f,
-                             "context": txt[max(0, m.start() - 30):m.end() + 30]})
+                hits.append(
+                    {
+                        "where": "text",
+                        "what": x["what"],
+                        "value": x["v"],
+                        "form": f,
+                        "context": txt[max(0, m.start() - 30) : m.end() + 30],
+                    }
+                )
                 break
         v = float(x["v"])
         scales = [1.0] if x["unit"] == "beta" else ([1.0, 1e-6, 1e-8] if x["unit"] == "won" else [1.0, 1e6, 100.0 / 1e4, 1e-2])
@@ -257,10 +291,17 @@ def outputs_of(summ: dict) -> list[Path]:
 
 if __name__ == "__main__":
     import sys
+
     sys.stdout.reconfigure(encoding="utf-8")
-    from src.workbench import confirm as C, session as S
+    from src.workbench import confirm as C
+    from src.workbench import session as S
+
     sid, close, vw = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])
     s = S.load(sid)
     user = {"close": close, "vwap20": vw}
     summ = C.confirm(s, mode="public", user=user)
-    print(json.dumps({k: summ.get(k) for k in ("result", "success", "outputs", "timing")}, ensure_ascii=False, indent=1, default=str))
+    print(
+        json.dumps(
+            {k: summ.get(k) for k in ("result", "success", "outputs", "timing")}, ensure_ascii=False, indent=1, default=str
+        )
+    )

@@ -8,6 +8,7 @@ XlsxWriter cannot write data tables. Excel stores a 2-D data table as ONE elemen
 All other result cells keep plain cached values. Excel recalculates the table on open (fullCalcOnLoad) and on F9.
 The `formulas` package cannot read such files -> strip_data_tables() gives it a copy without the table formulas.
 """
+
 from __future__ import annotations
 
 import re
@@ -41,11 +42,12 @@ def add_data_tables(path: Path, sheet_index: int, tables: list[dict]) -> None:
             if not m:
                 raise ValueError(f"data table anchor cell {t['first']} not found")
             f = f'<f t="dataTable" ref="{t["ref"]}" dt2D="1" dtr="1" r1="{t["r1"]}" r2="{t["r2"]}"/>'
-            if m.group(2) == "/>":                       # empty cell: <c r=".." s=".."/>
-                xml = xml[:m.start()] + m.group(1) + ">" + f + "</c>" + xml[m.end():]
+            if m.group(2) == "/>":  # empty cell: <c r=".." s=".."/>
+                xml = xml[: m.start()] + m.group(1) + ">" + f + "</c>" + xml[m.end() :]
             else:
-                xml = xml[:m.end()] + f + xml[m.end():]
+                xml = xml[: m.end()] + f + xml[m.end() :]
         return xml
+
     _rewrite(path, path, fn)
 
 
@@ -58,6 +60,7 @@ def strip_data_tables(src: Path, dst: Path) -> bool:
         if new != xml:
             found.append(name)
         return new
+
     _rewrite(Path(src), Path(dst), fn)
     return bool(found)
 
@@ -71,10 +74,12 @@ def zero_cached(src: Path, dst: Path, sheet_index: int, ranges: list[str]) -> in
     """Copy with the cached values of the data-table result cells set to 0 (verification: proves Excel recalculates
     the tables instead of showing stored values). Returns the number of cells changed."""
     from openpyxl.utils.cell import range_boundaries
+
     cells = set()
     for rg in ranges:
         c0, r0, c1, r1 = range_boundaries(rg.split("!")[-1].replace("$", ""))
         from openpyxl.utils import get_column_letter
+
         cells |= {f"{get_column_letter(cc)}{rr}" for rr in range(r0, r1 + 1) for cc in range(c0, c1 + 1)}
     n = [0]
     target = f"xl/worksheets/sheet{sheet_index}.xml"
@@ -88,6 +93,8 @@ def zero_cached(src: Path, dst: Path, sheet_index: int, ranges: list[str]) -> in
                 n[0] += 1
                 return m.group(1) + "<v>0</v>"
             return m.group(0)
+
         return re.sub(r'(<c r="([A-Z]+\d+)"[^>]*>(?:<f[^>]*/>)?)<v>[^<]*</v>', rep, xml)
+
     _rewrite(Path(src), Path(dst), fn)
     return n[0]

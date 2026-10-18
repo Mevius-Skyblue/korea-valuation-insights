@@ -8,6 +8,7 @@ Pages (address):
     /calculator       the simple DCF calculator of P6 (kept: a what-if tool without company data, same engine functions)
 Community Cloud runs this file (branch main, app/Home.py); the file name is kept so its settings need no change.
 """
+
 import sys
 from pathlib import Path
 
@@ -21,7 +22,7 @@ st.set_page_config(page_title="KVI 밸류에이션 워크벤치 — 공개(예�
 
 from src.workbench.public_deploy import boot  # noqa: E402
 
-boot()                                            # snapshot replay: no DB in this process
+boot()  # snapshot replay: no DB in this process
 
 from app.wb import main, public_ui  # noqa: E402
 
@@ -42,7 +43,12 @@ def calculator():
     public_ui.calculator()
 
 
-st.navigation([st.Page(workbench, title="워크벤치", default=True),
-               st.Page(rates, title="실무 할인율 가정(옮김)", url_path="rates"),
-               st.Page(accuracy, title="추정 vs 실적(옮김)", url_path="accuracy"),
-               st.Page(calculator, title="간이 DCF 계산기", url_path="calculator")], position="hidden").run()
+st.navigation(
+    [
+        st.Page(workbench, title="워크벤치", default=True),
+        st.Page(rates, title="실무 할인율 가정(옮김)", url_path="rates"),
+        st.Page(accuracy, title="추정 vs 실적(옮김)", url_path="accuracy"),
+        st.Page(calculator, title="간이 DCF 계산기", url_path="calculator"),
+    ],
+    position="hidden",
+).run()

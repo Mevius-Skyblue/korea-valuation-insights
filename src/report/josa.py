@@ -5,16 +5,38 @@ J(text, "과") returns text + the right form of the pair it belongs to:
 The final sound is read from the last character: a Hangul syllable (its 받침), a digit (Korean reading: 영 일 이 삼 사
 오 육 칠 팔 구), or a unit symbol (% = 퍼센트, no 받침). Latin letters use their English name (L → 엘, M → 엠, N → 엔).
 """
+
 from __future__ import annotations
 
 import re
 
-PAIRS = {"과": ("과", "와"), "와": ("과", "와"), "은": ("은", "는"), "는": ("은", "는"), "이": ("이", "가"), "가": ("이", "가"),
-         "을": ("을", "를"), "를": ("을", "를"), "으로": ("으로", "로"), "로": ("으로", "로"),
-         "이다": ("이다", "다"), "이고": ("이고", "고")}             # copula (서술격): 18,427원이다 / 6.80배다
+PAIRS = {
+    "과": ("과", "와"),
+    "와": ("과", "와"),
+    "은": ("은", "는"),
+    "는": ("은", "는"),
+    "이": ("이", "가"),
+    "가": ("이", "가"),
+    "을": ("을", "를"),
+    "를": ("을", "를"),
+    "으로": ("으로", "로"),
+    "로": ("으로", "로"),
+    "이다": ("이다", "다"),
+    "이고": ("이고", "고"),
+}  # copula (서술격): 18,427원이다 / 6.80배다
 # digit -> (has 받침, 받침 is ㄹ)
-DIGIT = {"0": (True, False), "1": (True, True), "2": (False, False), "3": (True, False), "4": (False, False),
-         "5": (False, False), "6": (True, False), "7": (True, True), "8": (True, True), "9": (False, False)}
+DIGIT = {
+    "0": (True, False),
+    "1": (True, True),
+    "2": (False, False),
+    "3": (True, False),
+    "4": (False, False),
+    "5": (False, False),
+    "6": (True, False),
+    "7": (True, True),
+    "8": (True, True),
+    "9": (False, False),
+}
 LATIN = {"l": (True, True), "m": (True, False), "n": (True, False), "r": (False, False)}
 
 
@@ -45,4 +67,6 @@ def J(text: str, particle: str) -> str:
 
 
 # wrong combinations after a number + unit (used by the report check)
-BAD = re.compile(r"\d(?:원(?:와|는|를|로(?!는)|가[다고])|배(?:과|은|을|으로|가[다고]|이[다고])|%(?:과|은|을|으로|가[다고]|이[다고]))")
+BAD = re.compile(
+    r"\d(?:원(?:와|는|를|로(?!는)|가[다고])|배(?:과|은|을|으로|가[다고]|이[다고])|%(?:과|은|을|으로|가[다고]|이[다고]))"
+)

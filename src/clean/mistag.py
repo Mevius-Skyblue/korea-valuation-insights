@@ -10,6 +10,7 @@ Name/ID rules (config/account_map.yaml never_trust_ids) cannot see that, because
     by_period(items)                         -> {(year, period): amount (원)}
 Only auto drafts use it (src/pipeline/draft.py); fs_std and the RF / JW configs are unchanged.
 """
+
 from __future__ import annotations
 
 import re
@@ -40,12 +41,18 @@ def reclass_rows(api_rows: list[dict], text_rows: list[tuple[str, float, int]]) 
     for lab, amt, unit in text_rows:
         if not amt or amt <= 0 or not is_borrowing(lab):
             continue
-        same = [r for r in api_rows if r.get("amount") is not None and r["amount"] == r["amount"] and _same(float(r["amount"]), amt, unit)]
+        same = [
+            r
+            for r in api_rows
+            if r.get("amount") is not None and r["amount"] == r["amount"] and _same(float(r["amount"]), amt, unit)
+        ]
         if not same or any(is_borrowing(r["account_nm"]) for r in same):
             continue
         if len(same) == 1:
             r = same[0]
-            out.append({"text_label": lab, "api_label": r["account_nm"], "api_id": r.get("account_id"), "amount": float(r["amount"])})
+            out.append(
+                {"text_label": lab, "api_label": r["account_nm"], "api_id": r.get("account_id"), "amount": float(r["amount"])}
+            )
     return out
 
 
@@ -53,6 +60,7 @@ def text_bs_rows(section_markup: str) -> list[tuple[str, float, int]]:
     """(label, first-period amount in 원, unit) of the balance-sheet table(s) of one statements section."""
     from src.clean.dna import _num, html_tables, unit_of
     from src.clean.recon import clean_label
+
     out = []
     for t in html_tables(section_markup) if section_markup else []:
         rows = t["rows"]
@@ -70,24 +78,34 @@ def text_bs_rows(section_markup: str) -> list[tuple[str, float, int]]:
             nums = [x for x in (_num(c) for c in cells) if x is not None]
             if nums:
                 out.append((clean_label(r[0]), float(nums[0]) * unit, unit))
-        break                                           # the first balance sheet of the section (current period)
+        break  # the first balance sheet of the section (current period)
     return out
 
 
 def debt_reclass(con, corp: str, fs_div: str, periods=PERIODS) -> list[dict]:
     from src.collect.doc_text import fs_sections, main_xml
+
     out = []
     for y, p in periods:
-        rc = con.execute("""SELECT DISTINCT rcept_no FROM fs_raw WHERE corp_code=? AND fs_div=? AND bsns_year=? AND reprt_code=?
-                            AND sj_div='BS' ORDER BY rcept_no DESC""", [corp, fs_div, y, REPRT[p]]).fetchone()
+        rc = con.execute(
+            """SELECT DISTINCT rcept_no FROM fs_raw WHERE corp_code=? AND fs_div=? AND bsns_year=? AND reprt_code=?
+                            AND sj_div='BS' ORDER BY rcept_no DESC""",
+            [corp, fs_div, y, REPRT[p]],
+        ).fetchone()
         if not rc:
             continue
         f = ROOT / "data" / "raw" / "dart" / "document.xml" / f"{rc[0]}.zip.gz"
         if not f.exists():
             continue
-        api = con.execute("""SELECT account_nm, account_id, thstrm_num AS amount FROM fs_raw WHERE corp_code=? AND fs_div=?
+        api = (
+            con.execute(
+                """SELECT account_nm, account_id, thstrm_num AS amount FROM fs_raw WHERE corp_code=? AND fs_div=?
                              AND bsns_year=? AND reprt_code=? AND sj_div='BS' AND rcept_no=?""",
-                          [corp, fs_div, y, REPRT[p], rc[0]]).df().to_dict("records")
+                [corp, fs_div, y, REPRT[p], rc[0]],
+            )
+            .df()
+            .to_dict("records")
+        )
         sec = fs_sections(main_xml(RawStore.load(f))).get(f"{fs_div}_FS", "")
         for x in reclass_rows(api, text_bs_rows(sec)):
             out.append({"year": int(y), "period": p, "rcept": rc[0], **x})

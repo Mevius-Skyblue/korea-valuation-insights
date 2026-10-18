@@ -6,26 +6,52 @@ Two kinds:
     hook            values the engine and the Excel model take from `cfg['overrides']` (Inputs '사람 확정값' cells):
                     normal_margin, g_start, beta_u, de, kd, cash_adjust_mn, nci_mn
 """
+
 from __future__ import annotations
 
 import math
 
-import yaml
-
+from src import yamlio
 from src.collect.core import ROOT
 
 NATIVE = ("rf_tenor", "mrp", "srp", "g_terminal", "scenario_width", "peers", "sotp_discount", "premium")
 HOOK = ("normal_margin", "g_start", "beta_u", "de", "kd", "cash_adjust_mn", "nci_mn")
-LABEL = {"rf_tenor": "Rf 만기(년)", "mrp": "MRP", "srp": "SRP", "g_terminal": "영구성장률", "scenario_width": "시나리오 폭(±)",
-         "peers": "피어 목록", "sotp_discount": "상장 지분 할인", "premium": "블록 프리미엄 입력", "normal_margin": "정상 영업이익률(출발)",
-         "g_start": "출발 성장률", "beta_u": "βu", "de": "목표 D/E", "kd": "세전 Kd", "cash_adjust_mn": "영업용 현금(현금성에서 뺌, 백만원)",
-         "nci_mn": "비지배지분(백만원)"}
-KIND = {"rf_tenor": "int", "mrp": "pct", "srp": "pct", "g_terminal": "pct", "scenario_width": "pct", "sotp_discount": "pct",
-        "normal_margin": "pct", "g_start": "pct", "beta_u": "beta", "de": "ratio", "kd": "pct", "cash_adjust_mn": "mn", "nci_mn": "mn"}
+LABEL = {
+    "rf_tenor": "Rf 만기(년)",
+    "mrp": "MRP",
+    "srp": "SRP",
+    "g_terminal": "영구성장률",
+    "scenario_width": "시나리오 폭(±)",
+    "peers": "피어 목록",
+    "sotp_discount": "상장 지분 할인",
+    "premium": "블록 프리미엄 입력",
+    "normal_margin": "정상 영업이익률(출발)",
+    "g_start": "출발 성장률",
+    "beta_u": "βu",
+    "de": "목표 D/E",
+    "kd": "세전 Kd",
+    "cash_adjust_mn": "영업용 현금(현금성에서 뺌, 백만원)",
+    "nci_mn": "비지배지분(백만원)",
+}
+KIND = {
+    "rf_tenor": "int",
+    "mrp": "pct",
+    "srp": "pct",
+    "g_terminal": "pct",
+    "scenario_width": "pct",
+    "sotp_discount": "pct",
+    "normal_margin": "pct",
+    "g_start": "pct",
+    "beta_u": "beta",
+    "de": "ratio",
+    "kd": "pct",
+    "cash_adjust_mn": "mn",
+    "nci_mn": "mn",
+}
 
 
 def rules() -> dict:
-    return yaml.safe_load((ROOT / "config" / "p7c1.yaml").read_text(encoding="utf-8"))["assumptions"]
+    return yamlio.load((ROOT / "config" / "p7c1.yaml").read_text(encoding="utf-8"))["assumptions"]
 
 
 def fmt(field: str, v) -> str:
@@ -66,6 +92,7 @@ def check(field: str, value, allowed_peers: list[str] | None = None) -> tuple[bo
         # P7-C2 fix C2-F1 (config/p7c2.yaml fixes): the allowed values are those predict.premium_range accepts
         # (p7c1 listed buyer_group 'all', which premium_range rejects -> the block card failed)
         from src.premium.predict import BUYER_GROUPS, PERIODS, STAKE_BANDS
+
         if not isinstance(value, dict):
             return False, "블록 프리미엄 입력은 {stake_band, buyer_group, period} 형식", None
         out = {}

@@ -10,6 +10,7 @@ Two parts:
 Run:  python -m src.db.build p2c3            # table
       python -m src.premium.p2c3              # tables -> data/interim/p2c3.md (+ .json for the report)
 """
+
 from __future__ import annotations
 
 import json
@@ -18,13 +19,15 @@ import re
 import duckdb
 import numpy as np
 import pandas as pd
-import yaml
 
+from src import yamlio
 from src.collect.core import ROOT
 from src.db.build import DB_PATH
 
 CFG = ROOT / "config" / "premium_p2c3.yaml"
-SEED = int(yaml.safe_load(CFG.read_text(encoding="utf-8"))["quantile_regression"]["cross_validation"]["seed"])  # pre-registered (P2.6: was a constant)
+SEED = int(
+    yamlio.load(CFG.read_text(encoding="utf-8"))["quantile_regression"]["cross_validation"]["seed"]
+)  # pre-registered (P2.6: was a constant)
 QS = (0.25, 0.5, 0.75)
 BUYER = {"corp": "strategic", "pef_spc": "financial", "union": "other", "person": "other", "other": "other"}
 FIN_TITLE = re.compile(r"전환사채|신주인수권부사채|교환사채|CB|BW|EB|제3자배정")
@@ -33,7 +36,7 @@ FIN_NOT = re.compile(r"만기전|조정|청구|행사|종속회사|자회사|철
 
 
 def load_cfg() -> dict:
-    return yaml.safe_load(CFG.read_text(encoding="utf-8"))
+    return yamlio.load(CFG.read_text(encoding="utf-8"))
 
 
 # ---------------------------------------------------------------- 1. table
@@ -53,6 +56,7 @@ def mktcap_percentiles(con, deals: pd.DataFrame) -> pd.DataFrame:
     """deals: bundle_id, stock_code, d_unaff_doc, market. Returns pct, universe size and excluded count per deal.
     Market caps inside a bonus-issue window (ex-date .. new-share listing) use the corrected value (P3-B, mktcap_fix)."""
     from src.market.mktcap_fix import MKTCAP_JOIN, MKTCAP_SQL
+
     con.register("pairs", deals[["bundle_id", "stock_code", "d_unaff_doc", "market"]])
     try:
         out = con.execute(f"""
@@ -110,18 +114,31 @@ def build_cond(con) -> pd.DataFrame:
     d["kospi"] = (d.market == "KOSPI").astype(int)
     d["period_early"] = (d.year <= 2014).astype(int)
     d["shares"] = d.effective_shares
-    d["premium_amt"] = (d.price - d.bu20_doc) * d.shares / 1e8          # 억원
+    d["premium_amt"] = (d.price - d.bu20_doc) * d.shares / 1e8  # 억원
     d["stake_value"] = d.bu20_doc * d.shares / 1e8
     d["post_financing_1y"] = post_financing(con, d)
     return d
 
 
-COND_COLS = ["bundle_id", "mktcap", "mktcap_pct", "n_univ", "n_excl", "stake_band", "buyer_group", "kospi",
-             "period_early", "premium_amt", "stake_value", "post_financing_1y"]
+COND_COLS = [
+    "bundle_id",
+    "mktcap",
+    "mktcap_pct",
+    "n_univ",
+    "n_excl",
+    "stake_band",
+    "buyer_group",
+    "kospi",
+    "period_early",
+    "premium_amt",
+    "stake_value",
+    "post_financing_1y",
+]
 
 
 def load_cond(con) -> None:
     from src.db.build import _reset
+
     d = build_cond(con)
     _reset(con, "premium_cond")
     df = d[COND_COLS].copy()
@@ -134,6 +151,7 @@ def load_cond(con) -> None:
 
 
 # ---------------------------------------------------------------- 2. analysis helpers (pure, unit-tested)
+
 
 def pinball(y: np.ndarray, pred: np.ndarray, q: float) -> float:
     """Mean pinball (check) loss."""
@@ -156,6 +174,7 @@ def design(df: pd.DataFrame) -> pd.DataFrame:
 
 def fit_qr(df: pd.DataFrame, q: float) -> pd.Series:
     from statsmodels.regression.quantile_regression import QuantReg
+
     X = design(df)
     return QuantReg(df.prem_bu20_doc.astype(float), X).fit(q=q, max_iter=5000).params
 
@@ -179,7 +198,7 @@ def bootstrap_params(df: pd.DataFrame, q: float, n: int = 1000, seed: int = SEED
         s = df.iloc[rng.integers(0, len(df), len(df))]
         try:
             out.append(fit_qr(s, q))
-        except Exception:   # noqa: BLE001  (a degenerate resample: skip)
+        except Exception:  # noqa: BLE001  (a degenerate resample: skip)
             continue
     return pd.DataFrame(out)
 
@@ -217,9 +236,17 @@ def cv_repeats(df: pd.DataFrame, n: int = 20, base_seed: int = SEED) -> dict:
     base_seed + n - 1). The pre-registered decision still uses the single registered seed; this shows how much the
     q50 improvement moves with the split alone."""
     imp = np.array([cross_validate(df, seed=base_seed + i)["q50"]["improvement"] for i in range(n)])
-    return {"n_seeds": n, "seeds": f"{base_seed}..{base_seed + n - 1}", "min": float(imp.min()),
-            "q25": float(np.quantile(imp, 0.25)), "median": float(np.median(imp)), "q75": float(np.quantile(imp, 0.75)),
-            "max": float(imp.max()), "share_ge_5pct": float((imp >= 0.05).mean()), "values": [float(x) for x in imp]}
+    return {
+        "n_seeds": n,
+        "seeds": f"{base_seed}..{base_seed + n - 1}",
+        "min": float(imp.min()),
+        "q25": float(np.quantile(imp, 0.25)),
+        "median": float(np.median(imp)),
+        "q75": float(np.quantile(imp, 0.75)),
+        "max": float(imp.max()),
+        "share_ge_5pct": float((imp >= 0.05).mean()),
+        "values": [float(x) for x in imp],
+    }
 
 
 def neighbours(df: pd.DataFrame, pct: float, market: str, k: int = 50) -> pd.DataFrame:
@@ -239,11 +266,15 @@ def quintile_band(p: float) -> str:
 
 
 def mode_profile(df: pd.DataFrame) -> dict:
-    return {"stake_band": df.stake_band.mode()[0], "buyer_group": df.buyer_group.mode()[0],
-            "period_early": int(df.period_early.mode()[0])}
+    return {
+        "stake_band": df.stake_band.mode()[0],
+        "buyer_group": df.buyer_group.mode()[0],
+        "period_early": int(df.period_early.mode()[0]),
+    }
 
 
 # ---------------------------------------------------------------- 3. analysis
+
 
 def load_frame(con) -> pd.DataFrame:
     df = con.execute("""SELECT c.bundle_id, c.prem_bu20_doc, c.market_at_ann AS market, c.year, c.nocap_suspect,
@@ -256,14 +287,24 @@ def load_frame(con) -> pd.DataFrame:
 
 def amount_checks(df: pd.DataFrame) -> dict:
     from statsmodels.regression.quantile_regression import QuantReg
+
     from src.premium.p2c_stats import median_diff_ci  # noqa: F401  (used by callers for symmetry)
+
     d = df.dropna(subset=["premium_amt", "stake_value"]).copy()
     d["band"] = d.mktcap_pct.map(quintile_band)
-    tab = d.groupby("band").agg(n=("premium_amt", "size"), amt_med=("premium_amt", "median"),
-                                amt_q1=("premium_amt", lambda s: s.quantile(0.25)),
-                                amt_q3=("premium_amt", lambda s: s.quantile(0.75)),
-                                stake_med=("stake_value", "median"), pct_med=("prem_bu20_doc", "median"),
-                                mktcap_med=("mktcap", lambda s: s.median() / 1e8)).reset_index()
+    tab = (
+        d.groupby("band")
+        .agg(
+            n=("premium_amt", "size"),
+            amt_med=("premium_amt", "median"),
+            amt_q1=("premium_amt", lambda s: s.quantile(0.25)),
+            amt_q3=("premium_amt", lambda s: s.quantile(0.75)),
+            stake_med=("stake_value", "median"),
+            pct_med=("prem_bu20_doc", "median"),
+            mktcap_med=("mktcap", lambda s: s.median() / 1e8),
+        )
+        .reset_index()
+    )
     pos = d[(d.premium_amt > 0) & (d.stake_value > 0)]
     x, y = np.log(pos.stake_value.to_numpy()), np.log(pos.premium_amt.to_numpy())
     A = np.column_stack([np.ones(len(x)), x])
@@ -275,27 +316,56 @@ def amount_checks(df: pd.DataFrame) -> dict:
         bs.append(np.linalg.lstsq(A[i], y[i], rcond=None)[0][1])
     lo, hi = np.quantile(bs, [0.025, 0.975])
     qr = QuantReg(d.premium_amt.astype(float), pd.DataFrame({"const": 1.0, "stake_value": d.stake_value})).fit(q=0.5)
-    return {"table": tab, "ols": {"n": len(pos), "beta": beta, "ci_lo": float(lo), "ci_hi": float(hi),
-                                  "fixed_component": bool(hi < 1)},
-            "median_reg": {"n": len(d), "const": float(qr.params["const"]), "slope": float(qr.params["stake_value"])}}
+    return {
+        "table": tab,
+        "ols": {"n": len(pos), "beta": beta, "ci_lo": float(lo), "ci_hi": float(hi), "fixed_component": bool(hi < 1)},
+        "median_reg": {"n": len(d), "const": float(qr.params["const"]), "slope": float(qr.params["stake_value"])},
+    }
 
 
 def small_cap_checks(df: pd.DataFrame) -> pd.DataFrame:
     from src.premium.p2c_stats import median_diff_ci
+
     s = df[df.mktcap_pct <= 100 / 3]
     rows = []
-    for name, col in (("무자본 의심", "nocap_suspect"), ("종결 후 1년 안 CB·BW·EB·제3자배정(post_financing_1y)", "post_financing_1y")):
+    for name, col in (
+        ("무자본 의심", "nocap_suspect"),
+        ("종결 후 1년 안 CB·BW·EB·제3자배정(post_financing_1y)", "post_financing_1y"),
+    ):
         a, b = s.loc[s[col], "prem_bu20_doc"], s.loc[~s[col], "prem_bu20_doc"]
         d, lo, hi = median_diff_ci(a, b)
-        rows.append({"비교(소형 1/3 안)": name, "예 n": len(a), "예 중앙값": a.median(), "아니오 n": len(b),
-                     "아니오 중앙값": b.median(), "차이": d, "95% CI 하한": lo, "95% CI 상한": hi})
+        rows.append(
+            {
+                "비교(소형 1/3 안)": name,
+                "예 n": len(a),
+                "예 중앙값": a.median(),
+                "아니오 n": len(b),
+                "아니오 중앙값": b.median(),
+                "차이": d,
+                "95% CI 하한": lo,
+                "95% CI 상한": hi,
+            }
+        )
     # same comparison in the rest of the sample, for context
     r = df[df.mktcap_pct > 100 / 3]
-    for name, col in (("(참고) 소형 밖: 무자본 의심", "nocap_suspect"), ("(참고) 소형 밖: post_financing_1y", "post_financing_1y")):
+    for name, col in (
+        ("(참고) 소형 밖: 무자본 의심", "nocap_suspect"),
+        ("(참고) 소형 밖: post_financing_1y", "post_financing_1y"),
+    ):
         a, b = r.loc[r[col], "prem_bu20_doc"], r.loc[~r[col], "prem_bu20_doc"]
         d, lo, hi = median_diff_ci(a, b)
-        rows.append({"비교(소형 1/3 안)": name, "예 n": len(a), "예 중앙값": a.median(), "아니오 n": len(b),
-                     "아니오 중앙값": b.median(), "차이": d, "95% CI 하한": lo, "95% CI 상한": hi})
+        rows.append(
+            {
+                "비교(소형 1/3 안)": name,
+                "예 n": len(a),
+                "예 중앙값": a.median(),
+                "아니오 n": len(b),
+                "아니오 중앙값": b.median(),
+                "차이": d,
+                "95% CI 하한": lo,
+                "95% CI 상한": hi,
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -305,9 +375,16 @@ def regression(df: pd.DataFrame, n_boot: int = 1000) -> dict:
         p = fit_qr(df, q)
         bs = bootstrap_params(df, q, n_boot)
         for name in p.index:
-            coefs.append({"q": q, "term": name, "coef": float(p[name]),
-                          "ci_lo": float(bs[name].quantile(0.025)), "ci_hi": float(bs[name].quantile(0.975)),
-                          "n_boot": len(bs)})
+            coefs.append(
+                {
+                    "q": q,
+                    "term": name,
+                    "coef": float(p[name]),
+                    "ci_lo": float(bs[name].quantile(0.025)),
+                    "ci_hi": float(bs[name].quantile(0.975)),
+                    "n_boot": len(bs),
+                }
+            )
     r1 = {f"q{int(q * 100)}": pseudo_r1(df, q) for q in QS}
     return {"coefs": pd.DataFrame(coefs), "pseudo_r1": r1, "cv": cross_validate(df)}
 
@@ -318,16 +395,36 @@ def comparison_table(df: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for market in ("KOSDAQ", "KOSPI"):
         for p in (10, 30, 50, 70, 90):
-            pt = pd.DataFrame([{"mktcap_pct": p, "stake_band": prof["stake_band"], "buyer_group": prof["buyer_group"],
-                                "kospi": int(market == "KOSPI"), "period_early": prof["period_early"]}])
+            pt = pd.DataFrame(
+                [
+                    {
+                        "mktcap_pct": p,
+                        "stake_band": prof["stake_band"],
+                        "buyer_group": prof["buyer_group"],
+                        "kospi": int(market == "KOSPI"),
+                        "period_early": prof["period_early"],
+                    }
+                ]
+            )
             reg = {q: float(predict_qr(params[q], pt)[0]) for q in QS}
             nb = neighbours(df, p, market)
             n_same = int((nb.market == market).sum())
             nq = nb.prem_bu20_doc.quantile(list(QS)).to_list()
-            rows.append({"시장": market, "시총 백분위": p, "회귀 25%": reg[0.25], "회귀 50%": reg[0.5], "회귀 75%": reg[0.75],
-                         "이웃 25%": nq[0], "이웃 50%": nq[1], "이웃 75%": nq[2], "이웃 n(같은 시장)": n_same,
-                         "이웃 백분위 범위": f"{nb.mktcap_pct.min():.0f}~{nb.mktcap_pct.max():.0f}",
-                         "경고(|차이|>10%p)": abs(reg[0.5] - nq[1]) > 0.10})
+            rows.append(
+                {
+                    "시장": market,
+                    "시총 백분위": p,
+                    "회귀 25%": reg[0.25],
+                    "회귀 50%": reg[0.5],
+                    "회귀 75%": reg[0.75],
+                    "이웃 25%": nq[0],
+                    "이웃 50%": nq[1],
+                    "이웃 75%": nq[2],
+                    "이웃 n(같은 시장)": n_same,
+                    "이웃 백분위 범위": f"{nb.mktcap_pct.min():.0f}~{nb.mktcap_pct.max():.0f}",
+                    "경고(|차이|>10%p)": abs(reg[0.5] - nq[1]) > 0.10,
+                }
+            )
     return pd.DataFrame(rows)
 
 
@@ -342,28 +439,44 @@ def analysis(con) -> dict:
     out["small_cap"] = small_cap_checks(df)
     out["regression"] = regression(df)
     imp = out["regression"]["cv"]["q50"]["improvement"]
-    out["decision"] = {"cv_improvement_q50": imp, "threshold": 0.05,
-                       "adopt_regression": bool(imp >= 0.05), "rule": cfg["decision_rules"]["adopt_regression"]}
+    out["decision"] = {
+        "cv_improvement_q50": imp,
+        "threshold": 0.05,
+        "adopt_regression": bool(imp >= 0.05),
+        "rule": cfg["decision_rules"]["adopt_regression"],
+    }
     out["cv_repeats"] = cv_repeats(df)
     out["comparison"] = comparison_table(df)
     d = df.copy()
     d["band"] = d.mktcap_pct.map(quintile_band)
-    out["band_table"] = d.groupby(["band"]).prem_bu20_doc.agg(
-        n="size", q25=lambda s: s.quantile(0.25), q50="median", q75=lambda s: s.quantile(0.75)).reset_index()
-    out["band_market_table"] = d.groupby(["market", "band"]).prem_bu20_doc.agg(
-        n="size", q25=lambda s: s.quantile(0.25), q50="median", q75=lambda s: s.quantile(0.75)).reset_index()
+    out["band_table"] = (
+        d.groupby(["band"])
+        .prem_bu20_doc.agg(n="size", q25=lambda s: s.quantile(0.25), q50="median", q75=lambda s: s.quantile(0.75))
+        .reset_index()
+    )
+    out["band_market_table"] = (
+        d.groupby(["market", "band"])
+        .prem_bu20_doc.agg(n="size", q25=lambda s: s.quantile(0.25), q50="median", q75=lambda s: s.quantile(0.75))
+        .reset_index()
+    )
     return out
 
 
 def main() -> None:
     from src.premium.p2b1_summary import md as to_md
+
     con = duckdb.connect(str(DB_PATH), read_only=True)
     a = analysis(con)
-    parts = [f"n = {a['n']}, mode profile = {a['profile']}", f"universe = {a['universe']}",
-             f"decision = {a['decision']}", f"pseudo R1 = {a['regression']['pseudo_r1']}",
-             f"cv = {json.dumps(a['regression']['cv'], ensure_ascii=False)}",
-             f"amount ols = {a['amount']['ols']}", f"median reg = {a['amount']['median_reg']}",
-             f"cv repeats (reference, not the decision) = {json.dumps(a['cv_repeats'], ensure_ascii=False)}"]
+    parts = [
+        f"n = {a['n']}, mode profile = {a['profile']}",
+        f"universe = {a['universe']}",
+        f"decision = {a['decision']}",
+        f"pseudo R1 = {a['regression']['pseudo_r1']}",
+        f"cv = {json.dumps(a['regression']['cv'], ensure_ascii=False)}",
+        f"amount ols = {a['amount']['ols']}",
+        f"median reg = {a['amount']['median_reg']}",
+        f"cv repeats (reference, not the decision) = {json.dumps(a['cv_repeats'], ensure_ascii=False)}",
+    ]
     for k in ("pct_range", "band_table", "band_market_table", "comparison", "small_cap"):
         parts.append(f"## {k}\n\n{to_md(a[k].round(4))}")
     parts.append(f"## amount table\n\n{to_md(a['amount']['table'].round(3))}")

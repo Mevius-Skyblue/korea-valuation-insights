@@ -15,6 +15,7 @@ Keys = (draft table name, beta spec / index, tiers, peer names). The public snap
 another peer set is not in it (Missing -> 'PC 모드에서만', config/p7c3.yaml decisions.peer_change_public).
 Off mode (PC): record / get are not used and the callers keep their own code.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
