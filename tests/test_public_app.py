@@ -103,7 +103,8 @@ def _keys(o, acc):
 
 AGG_KEYS = {"beta_u0", "r2_median", "n", "stats", "st5", "n_beta", "peer_margin_median", "peer_margin_n", "n_peers", "beta_n",
             "peers", "multiples", "ev_sales", "ev_ebitda", "per", "pbr", "q25", "median", "q75", "med", "name", "tier", "include",
-            "fs_div", "EV/Sales", "EV/EBITDA", "PER", "PBR", "EV/EBITDA(보완 전)"}
+            "fs_div", "EV/Sales", "EV/EBITDA", "PER", "PBR", "EV/EBITDA(보완 전)",
+            "public_cut"}  # P7-X2a: the flag of a cell hidden because of few peers
 
 
 def test_no_market_data_keys_in_snapshots():
