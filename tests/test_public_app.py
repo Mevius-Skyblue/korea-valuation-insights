@@ -137,9 +137,13 @@ def _user(cfg: dict) -> dict:
     sh = cfg.get("shares") or {}
     prefs = list(sh.get("listed_pref_codes") or [])
     n_pref = max((sh.get("pref_issued") or 0) - (sh.get("pref_treasury") or 0), 0)
+    st = cfg.get("structure") or {}
+    subs = [s["stock_code"] for s in st.get("subsidiaries") or []
+            if s.get("listed") and s.get("direct") and s.get("stock_code")]
+    subs += [a["stock_code"] for a in (st.get("associates") or {}).get("rows") or []   # listed associates (P7-X2b)
+             if a.get("shares") and a.get("stock_code")]
     return {"close": 10000.0, "vwap20": 9900.0,
-            "sub_close": {s["stock_code"]: 5000.0 for s in (cfg.get("structure") or {}).get("subsidiaries") or []
-                          if s.get("listed") and s.get("direct") and s.get("stock_code")},
+            "sub_close": {s: 5000.0 for s in subs},
             "pref": {p: {"close": 5000.0, "listed": max(n_pref // max(len(prefs), 1), 1)} for p in prefs}}
 
 
