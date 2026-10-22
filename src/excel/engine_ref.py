@@ -237,6 +237,9 @@ def mechanical_reference(cfg_path: str) -> dict:
     from src.workbench.public_deploy import premium_withheld, srp_cite_value
 
     replay = SD.replaying()  # P7-C3 public snapshot: aggregates instead of the peer tables
+    from src.workbench import pubcut
+
+    pub = pubcut.public_scope(cfg)  # P7-X2a: few-peer aggregates are not shown in the public mode
     tiers = cfg["beta"]["peer_tiers"]
     if replay:
         agg = pubagg.get("engine", cfg_path, cfg)
@@ -268,7 +271,7 @@ def mechanical_reference(cfg_path: str) -> dict:
         bu0, beta_src = agg["beta_u0"]
     else:
         sel = bt[bt.tier.isin(tiers) & (bt["index"] == cfg["beta"]["index"])]
-        bu0, beta_src = beta_u0(bt, cfg)  # P7-B5: peers' median, else the target's own, else 1.0
+        bu0, beta_src = beta_u0(bt, cfg, public=pub)  # P7-B5: peers' median, else the target's own, else 1.0
     de_own = float(c.market["de_points"].de.mean())
     kd, kd_lab, _ = kd_for(c, xl["kd_version"])
     from src.valuation.company_dcf import overrides_of  # P7-C1 workbench: confirmed βu / D/E / Kd
@@ -298,7 +301,7 @@ def mechanical_reference(cfg_path: str) -> dict:
         ("PER", "per", "eq", m_ni),
         ("PBR", "pbr", "eq", m_eq),
     ):
-        st = dict(agg["stats"][col]) if replay else multiple_stats(pr[col])
+        st = dict(agg["stats"][col]) if replay else pubcut.peer_stats(multiple_stats(pr[col]), pub)
 
         def ps(mu, kind=kind, metric=metric):
             if metric is None or not np.isfinite(mu) or metric <= 0:  # P7-B2 B2-F2: negative own metric -> N/M
@@ -406,7 +409,8 @@ def mechanical_reference(cfg_path: str) -> dict:
     if replay:
         st10, st5 = dict(agg["stats"]["ev_ebitda"]), dict(agg["st5"])
     else:
-        st10, st5 = multiple_stats(pr.ev_ebitda), multiple_stats(p2[p2.tier.isin(tiers)].ev_ebitda)
+        st10 = pubcut.peer_stats(multiple_stats(pr.ev_ebitda), pub)
+        st5 = pubcut.peer_stats(multiple_stats(p2[p2.tier.isin(tiers)].ev_ebitda), pub)
     c.ronic_start = "mixed"
     kd2, _, _ = kd_for(c, "c2")
     v_c2 = dcf_value(c, h, tb, discount_rate(c, srps[0], bu0, de_own, kd2), cap)["per_share"]
@@ -421,7 +425,7 @@ def mechanical_reference(cfg_path: str) -> dict:
     if premium_withheld():  # P7-C3 decisions.premium_public = false (public deployment)
         prr, block = None, {"q25": None, "q50": None, "q75": None}
     else:
-        prr = premium_range_pub(pct["mktcap_pct"], market=cfg["target"]["market"], **cfg["params"]["premium"])
+        prr = premium_range_pub(pct["mktcap_pct"], market=cfg["target"]["market"], public=pub, **cfg["params"]["premium"])
         block = block_range(vw["vwap"], {"q25": prr.q25, "q50": prr.q50, "q75": prr.q75})
     # P7-B2 diagnostics (values unchanged: candidates and sensitivities only) and the ranked human-review list
     from src.pipeline.diagnose import mechanical as diagnose
@@ -435,7 +439,9 @@ def mechanical_reference(cfg_path: str) -> dict:
             {
                 "beta_u0": [bu0, beta_src],
                 "st5": st5,
-                "stats": {col: multiple_stats(pr[col]) for col in ("ev_sales", "ev_ebitda", "per", "pbr")},
+                "stats": {
+                    col: pubcut.peer_stats(multiple_stats(pr[col]), True) for col in ("ev_sales", "ev_ebitda", "per", "pbr")
+                },
                 **peer_inputs(sel, p3, tiers),
             },
         )

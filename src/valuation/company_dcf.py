@@ -139,12 +139,18 @@ class Company:
         return f"2H{str(self.Y)[2:]}"
 
 
-def beta_u0(bt: pd.DataFrame, cfg: dict, index: str | None = None) -> tuple[float, str]:
+def beta_u0(bt: pd.DataFrame, cfg: dict, index: str | None = None, public: bool | None = None) -> tuple[float, str]:
     """βu of the model (P7-B5 config/p7b5.yaml peer_relax.beta_fallback): median of the included peers; with no peer
-    βu, the target's own (Blume, Hamada) βu; without that, 1.0. Returns (βu, source)."""
+    βu, the target's own (Blume, Hamada) βu; without that, 1.0. Returns (βu, source).
+    P7-X2a public mode (src/workbench/pubcut.py): fewer than 5 peer βu -> 1.0 (no median of few peers, no own βu)."""
+    from src.workbench import pubcut
+
     ix = index or cfg["beta"]["index"]
     tiers = cfg["beta"]["peer_tiers"]
     v = bt[bt.tier.isin(tiers) & (bt["index"] == ix)].bu_avg.dropna() if len(bt) else pd.Series(dtype=float)
+    pub = pubcut.public_scope(cfg) if public is None else public
+    if pub and len(v) < pubcut.params()["peer_min_n"]:
+        return pubcut.beta(float("nan"), "", len(v), True)
     if len(v):
         return float(v.median()), "peer"
     tg = bt[(bt.tier == "target") & (bt["index"] == ix)].bu_avg.dropna() if len(bt) else pd.Series(dtype=float)
@@ -333,10 +339,11 @@ def load_company(cfg_path: str) -> Company:
         ) / EOK
     rates = _rates(con, as_of)
     # D/E points (own average) on the common market cap of each date
-    de_n = None
+    de_n, de_cut = None, False
     if SD.replaying():  # P7-C3 public snapshot: only the own-average D/E (aggregate; no market caps)
         agg = SD.get("de_points", de_points_key(cfg))
         de_pts, de_n = [{"date": None, "debt": None, "lease": None, "mktcap": None, "de": agg["de"]}], agg["n"]
+        de_cut = bool(agg.get("public_cut"))
     else:
         de_pts = []
         for y, p in cfg["params"]["de_points"]:
@@ -353,7 +360,13 @@ def load_company(cfg_path: str) -> Company:
                         "de": (b["debt"] + b["lease"]) / m,
                     }
                 )
-        if de_pts:
+        from src.workbench import pubcut
+
+        if pubcut.de_cut(len(de_pts), pubcut.public_scope(cfg)):  # P7-X2a: own D/E of fewer than 5 dates not shown
+            de_n, de_cut = len(de_pts), True
+            de_pts = [{"date": None, "debt": None, "lease": None, "mktcap": None, "de": pubcut.params()["de_fallback"]}]
+            SD.put("de_points", de_points_key(cfg), {"de": de_pts[0]["de"], "n": de_n, "public_cut": True})
+        elif de_pts:
             SD.put("de_points", de_points_key(cfg), {"de": float(pd.DataFrame(de_pts).de.mean()), "n": len(de_pts)})
     _close(con)
     market = {
@@ -367,6 +380,7 @@ def load_company(cfg_path: str) -> Company:
         "de_points": pd.DataFrame(de_pts),
         "listed_pref": pref_listed,
         "de_n": de_n if de_n is not None else len(de_pts),
+        **({"de_cut": True} if de_cut else {}),  # P7-X2a public mode: fewer than 5 dates -> D/E 0 (pubcut)
     }
     comp = Company(cfg, led, w, dna, lines, market, rates)
     comp.dna_rec = dna_rec

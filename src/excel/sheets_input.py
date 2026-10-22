@@ -12,6 +12,7 @@ from datetime import date
 
 from src.excel.context import Ctx
 from src.excel.writer import a1
+from src.workbench import pubcut
 
 STATUS_NOTE = "상태: ✅ 1차 출처·독립 확인 / 🔸 단일 출처·직접 계산 / ⚠️ 미확인·프로젝트 가정"
 KRX = "한국거래소 통계정보"
@@ -1120,7 +1121,10 @@ def inputs(c: Ctx):
         )
         b = pr["band"]
         for q in ("q25", "q50", "q75"):
-            w.item(f"prem_band_{q}", f"구간 표 {b['band']} {q}", b[q], "pct1", "%", src_db, "", "🔸", "", name=f"Prem_BAN_{q}")
+            v = b[q]
+            if d.get("public") and (v is None or v != v):  # P7-X2a: a band cell of fewer than 10 deals has no quantile
+                v = pubcut.FEW_DEALS
+            w.item(f"prem_band_{q}", f"구간 표 {b['band']} {q}", v, "pct1", "%", src_db, "", "🔸", "", name=f"Prem_BAN_{q}")
         w.item("prem_band_n", f"구간 표 {b['band']} 표본 수", b["n"], "int", "건", src_db, "", "🔸", "", name="Prem_BAN_n")
         if pr.get("vwap_user"):  # public mode: the user's typed VWAP
             w.item(
@@ -1504,8 +1508,17 @@ def _beta_public(c: Ctx, s, r):
     s.text(r + 3, 0, "βu(Blume → Hamada 포함 피어 중앙값, 피어 없으면 대체값)")
     s.inp(r + 3, 1, b["bu"], "beta", name="BetaPubU")
     s.text(r + 4, 0, "R² 중앙값(포함 피어)")
-    s.inp(r + 4, 1, b["r2_median"], "beta", name="BetaPubR2")
+    few = pubcut.few_peers(b["n"]) or b["n"] == 0  # P7-X2a: R² median of fewer than 5 peers not shown
+    s.inp(r + 4, 1, pubcut.FEW_PEERS if few and b["r2_median"] is None else b["r2_median"], "beta", name="BetaPubR2")
     s.text(r + 2, 2, f"PC 엔진 집계(βu 출처 {b['src']}). 회귀는 한국거래소 통계정보 기반 계산값", "wrap")
+    if b["src"] == pubcut.BETA_SRC:
+        s.text(
+            r + 3,
+            2,
+            f"공개 모드: 회귀가 있는 피어 {b['n']}곳 < {pubcut.params()['peer_min_n']}곳이라 중앙값을 표시하지 않고 βu 1.0(시장 평균, "
+            "config/p7x2a.yaml public_scope) — 사람이 βu를 직접 입력할 수 있음",
+            "wrap",
+        )
     return r + 7
 
 
@@ -1528,12 +1541,13 @@ def _peer_public(c: Ctx, s, r):
         s.text(rr, 0, nm)
         s.inp(rr, 1, m["n"], "int")
         for j, q in enumerate(("q25", "med", "q75")):
-            s.inp(rr, 2 + j, m[q], "x")
+            s.inp(rr, 2 + j, pubcut.FEW_PEERS if m.get("public_cut") else m[q], "x")  # P7-X2a: n < 5 -> text
         rows[nm] = rr
     s.text(
         r + 1 + len(rows),
         0,
-        "PC에서 계산한 집계값(포함 피어의 양(+) 배수, QUARTILE.INC). 재무는 DART 정기보고서, 시가총액은 한국거래소 통계정보",
+        "PC에서 계산한 집계값(포함 피어의 양(+) 배수, QUARTILE.INC). 재무는 DART 정기보고서, 시가총액은 한국거래소 통계정보. "
+        f"공개 모드는 포함 피어 {pubcut.params()['peer_min_n']}곳 미만인 배수의 사분위를 표시하지 않음(config/p7x2a.yaml public_scope)",
         "note",
     )
     c.layout["peer_pub_rows"] = rows

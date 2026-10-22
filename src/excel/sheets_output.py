@@ -233,7 +233,9 @@ def _peers_public(c: Ctx, s, cap: bool):
             s.fx(
                 rr,
                 7 + q,
-                f'=IF(OR({nn}=0,NOT(ISNUMBER({a1(rr, 6)})),N({a1(rr, 6)})<=0),"N/M",({mu}*{a1(rr, 6)}+{add})*MnToWon/Shares)',
+                # P7-X2a: a quartile not shown in the public mode (few peers) is a text -> N/M
+                f'=IF(OR({nn}=0,NOT(ISNUMBER({mu})),NOT(ISNUMBER({a1(rr, 6)})),N({a1(rr, 6)})<=0),"N/M",'
+                f"({mu}*{a1(rr, 6)}+{add})*MnToWon/Shares)",
                 "won",
             )
         s.fx(rr, 10, f'=IF({nn}<PeerNWarn,"n<"&PeerNWarn,"")', "gen")
@@ -412,7 +414,8 @@ def premium(c: Ctx):
             s,
             r + 3 + q,
             f"블록 1주당 q{(25, 50, 75)[q]} = VWAP × (1 + 프리미엄)",
-            f"=VWAP20*(1+PremQ{q + 1})",
+            # P7-X2a: in the public mode a band table of fewer than 10 deals has no quantile (text) -> N/M
+            f'=IF(ISNUMBER(PremQ{q + 1}),VWAP20*(1+PremQ{q + 1}),"N/M")' if d.get("public") else f"=VWAP20*(1+PremQ{q + 1})",
             "won",
             "원",
             f"Block_q{q + 1}",
@@ -910,7 +913,9 @@ def checks(c: Ctx):
         add(f"피어 표본 수: {nm}", f'=IF({po[nm]["n"]}>=PeerNWarn,"OK","WARN")', f"={po[nm]['n']}", "=PeerNWarn", "warn")
     add(
         "베타 신뢰성(피어 R² 중앙값 ≥ 기준)",
-        '=IF(BetaR2Median>=BetaR2Warn,"OK","WARN")',
+        '=IF(NOT(ISNUMBER(BetaR2Median)),"WARN",IF(BetaR2Median>=BetaR2Warn,"OK","WARN"))'
+        if d.get("public")  # P7-X2a: no R² median (few peers) in the public mode
+        else '=IF(BetaR2Median>=BetaR2Warn,"OK","WARN")',
         "=BetaR2Median",
         "=BetaR2Warn",
         "warn",
@@ -941,9 +946,12 @@ def checks(c: Ctx):
             "implied_g": "pct",
             "tv_share_exit": "pct1",
         }[m]
+        cmp_ = f'IF(RfTenor<>5,"N/A",IF(ABS({live}-{sel.format(rng=rng)})<={tol[kind]},"OK","DIFF"))'
+        if d.get("public"):  # P7-X2a: an Exit value is N/M when the peer median is hidden (both sides not a number)
+            cmp_ = f'IF(AND(NOT(ISNUMBER({live})),NOT(ISNUMBER({sel.format(rng=rng)}))),"N/A",{cmp_})'
         add(
             f"엔진 대조(선택 칸): {lab}",
-            f'=IF(RfTenor<>5,"N/A",IF(ABS({live}-{sel.format(rng=rng)})<={tol[kind]},"OK","DIFF"))',
+            "=" + cmp_,
             f"={live}",
             f"={sel.format(rng=rng)}",
             "info",

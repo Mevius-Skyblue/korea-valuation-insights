@@ -468,6 +468,13 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         dna_rows,
         market_only=peer.get("valid") is False,
     )
+    facts_ = (c.cfg.get("draft_meta") or {}).get("facts") or {}
+    struct_forced = structure_items(facts_.get("structure_guard")) + share_items(
+        facts_.get("sotp_share_check") if c.sotp else None
+    )
+    if struct_forced:  # P7-X2a holding guards (config/p7x2a.yaml holding): hold + the structure check first
+        guard["reasons"] += [x.pop("_reason") for x in struct_forced]
+        guard.update({"hold": True, "status": "자동 결과 보류", "structure": True})
     # P7-B3 general SOTP: composition and the listed-stake discount sensitivities
     sp = br.get("sotp")
     sotp = None
@@ -641,6 +648,7 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
                     "alternative": "유상증자·CB 등 희석 반영 여부 판단",
                 },
             )
+    forced = struct_forced + forced
     to_mn = 100.0
     return {
         "v2": None if not v2 else {k: v for k, v in v2.items() if k != "peers"},
@@ -663,6 +671,79 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         "base_per_share": ps0,
         "kd_alt": kd_alt,
     }
+
+
+def _eok(x) -> str:
+    return "—" if x is None else f"{x / 1e8:,.0f}억"
+
+
+def structure_items(sg: dict | None) -> list[dict]:
+    """P7-X2a: the judgement items (with their hold reason under '_reason') of the gate's structure guards a / b."""
+    if not sg:
+        return []
+    out = []
+    if sg.get("a"):
+        inv = sg.get("listed_investees") or []
+        lst = ", ".join(
+            f"{x['name']} 지분 {x['stake']:.1%} 장부 {_eok(x.get('book'))}" for x in inv[:5] if x.get("stake") is not None
+        )
+        out.append(
+            {
+                "category": "상장 종속회사 확인",
+                "item": f"지주회사({sg.get('holding')})인데 연결 범위 상장 종속회사 0",
+                "detail": (
+                    f"config/p7x2a.yaml holding.guard_a — 연결 범위 표 {sg.get('scope_rcept') or '없음'}. 출자현황의 상장 피투자회사: "
+                    + (lst or "없음")
+                    + ". 관계기업·장부가로 남은 상장 지분이 지주 가치의 본체일 수 있음(SOTP·시가 반영 판단)"
+                ),
+                "impact": None,
+                "alternative": "구조 확인(상장 지분 시가·SOTP)",
+                "_reason": {
+                    "key": "holding_no_listed_sub",
+                    "text": "지주회사: 연결 범위 상장 종속회사 0",
+                    "value": sg.get("holding"),
+                },
+            }
+        )
+    if sg.get("b"):
+        ms = ", ".join(f"{x['name']} 지분 {x['stake']:.1%} 장부 {_eok(x['book'])}" for x in (sg.get("minority_subs") or [])[:5])
+        out.append(
+            {
+                "category": "비지배지분 확인",
+                "item": f"비지배 장부 ÷ 연결 자본 {sg['nci_equity']:.3%}",
+                "detail": f"config/p7x2a.yaml holding.guard_b — 지분 90% 이하 종속회사: {ms}. 비지배 장부(단위·계정)와 구조 확인",
+                "impact": None,
+                "alternative": "비지배지분 원문 확인",
+                "_reason": {
+                    "key": "nci_book_mismatch",
+                    "text": "비지배지분 장부가 종속회사 지분 구조와 맞지 않음",
+                    "value": sg.get("nci_equity"),
+                },
+            }
+        )
+    return out
+
+
+def share_items(chk: list[dict] | None) -> list[dict]:
+    """P7-X2a X2a-F1: SOTP listed subsidiaries whose held quantity does not match stake x listed shares (unresolved)."""
+    bad = [x for x in chk or [] if not x.get("fixed")]
+    if not bad:
+        return []
+    txt = ", ".join(f"{x['name']} 수량 ÷ (지분율 × 상장주식수) = {x['ratio']:g}" for x in bad[:5])
+    return [
+        {
+            "category": "SOTP 보유 수량 확인",
+            "item": "상장 종속회사 보유 수량이 지분율과 맞지 않음",
+            "detail": f"config/p7x2a.yaml fixes X2a-F1 — {txt}. 주식 분할·병합·수량 단위를 원문으로 확인",
+            "impact": None,
+            "alternative": "보유 수량 확인",
+            "_reason": {
+                "key": "sotp_share_mismatch",
+                "text": "SOTP 상장 종속회사 보유 수량 불일치",
+                "value": [x["ratio"] for x in bad],
+            },
+        }
+    ]
 
 
 def validity_guard(

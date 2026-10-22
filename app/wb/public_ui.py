@@ -163,6 +163,9 @@ def container() -> dict:
     return out
 
 
+APP_STARTED = time.strftime("%Y-%m-%dT%H:%M:%S")  # when this app process imported the module (P7-X2a diag)
+
+
 def processes() -> list[dict]:
     """Live confirmation processes of this container (Linux /proc): kind (job / warm / standby), current and peak RSS (MB).
     Numbers only. Empty where /proc is not available (this PC)."""
@@ -195,6 +198,8 @@ def diag() -> None:
             except json.JSONDecodeError:
                 continue
     rows = {
+        "app_pid": os.getpid(),
+        "app_started": APP_STARTED,  # P7-X2a: a restart of the app process changes this (restart count under load)
         "app_rss_mb": m["rss_mb"],
         "app_peak_mb": m["peak_mb"],
         "workspaces": len(ws),

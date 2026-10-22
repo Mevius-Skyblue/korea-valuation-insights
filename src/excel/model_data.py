@@ -477,7 +477,7 @@ def mechanical_data(cfg_path: str) -> dict:
     base_name = Path(cfg_path).stem.replace("valuation_", "")
     draft = "draft_meta" in cfg  # P7-B auto draft: generic labels instead of the JW texts
     from src.valuation.company_dcf import _close, _con, dna_wide_of, draft_dna
-    from src.workbench import pubagg
+    from src.workbench import pubagg, pubcut
     from src.workbench import snapdata as SD
     from src.workbench.public_deploy import premium_range as premium_range_pub
     from src.workbench.public_deploy import premium_withheld
@@ -602,7 +602,9 @@ def mechanical_data(cfg_path: str) -> dict:
     if premium_withheld():  # P7-C3 decisions.premium_public = false
         premium = withheld_premium(cfg["target"]["market"], pm_cfg, vw, led)
     else:
-        prr = premium_range_pub(pct["mktcap_pct"], market=cfg["target"]["market"], **pm_cfg)
+        prr = premium_range_pub(
+            pct["mktcap_pct"], market=cfg["target"]["market"], public=pubcut.public_scope(cfg), **pm_cfg
+        )  # P7-X2a
         premium = {
             "pct": pct["mktcap_pct"],
             "n_universe": pct["n_universe"],
@@ -702,12 +704,13 @@ def mechanical_data(cfg_path: str) -> dict:
         "de": {
             "rule": "points",
             "points": []
-            if replay
+            if replay or mk.get("de_cut")
             else [
                 {"date": r.date, "debt": r.debt * EOK_TO_MN, "lease": r.lease * EOK_TO_MN, "mktcap": r.mktcap * EOK_TO_MN}
                 for r in mk["de_points"].itertuples()
             ],
             "n": mk.get("de_n", len(mk["de_points"])),
+            **({"public_cut": True} if mk.get("de_cut") else {}),
             "src": cfg["capital_structure"]["rule"],
             "basis": "자체 3년 평균 D/E(P7-B 초안 규칙)" if draft else "자체 3년 평균 D/E(사전 고정 370efdb)",
         },

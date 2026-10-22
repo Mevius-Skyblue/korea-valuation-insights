@@ -19,6 +19,11 @@ from src.excel.writer import a1, col
 # ---------------------------------------------------------------- WACC
 
 
+def nm_unless_number(formula: str, dep: str) -> str:
+    """P7-X2a public mode: '=expr' -> '=IF(ISNUMBER(dep),expr,"N/M")' (a hidden aggregate is a text)."""
+    return f'=IF(ISNUMBER({dep}),{formula[1:]},"N/M")'
+
+
 def wacc_sheet(c: Ctx):
     d, s = c.d, c.sheet("WACC")
     s.widths({0: 20, 1: 10, 2: 9, 3: 9, 4: 9, 5: 9, 6: 8, 7: 10, 8: 10, 9: 10, 10: 10, 11: 10, 12: 11, 13: 11, 14: 11})
@@ -95,13 +100,10 @@ def wacc_sheet(c: Ctx):
             )
         _vlist(s, r + 2, "R² 중앙값(포함 피어)", f"=MEDIAN({a1(r0, 12)}:{a1(r1, 12)})", "beta", "", "BetaR2Median")
     s.text(r + 3, 0, "베타 신뢰성 경고", "bold")
-    s.fx(
-        r + 3,
-        2,
-        '=IF(BetaR2Median<BetaR2Warn,"경고: 회귀 베타 신뢰 낮음(R² 중앙값 "&TEXT(BetaR2Median,"0.00")&" < "&TEXT(BetaR2Warn,"0.00")&")","경고 없음")',
-        "gen",
-        name="BetaWarn",
-    )
+    warn = '=IF(BetaR2Median<BetaR2Warn,"경고: 회귀 베타 신뢰 낮음(R² 중앙값 "&TEXT(BetaR2Median,"0.00")&" < "&TEXT(BetaR2Warn,"0.00")&")","경고 없음")'
+    if d.get("public"):  # P7-X2a: the R² median of fewer than 5 peers is a text in the public mode
+        warn = f'=IF(ISNUMBER(BetaR2Median),{warn[1:]},"공개 모드: 피어 부족 — R² 중앙값 표시 안 함")'
+    s.fx(r + 3, 2, warn, "gen", name="BetaWarn")
     s.text(r + 3, 3, "표시만(경로 불변, common_rules)", "note")
     s.text(r + 1, 3, "엔진 βu 중앙값", "note")
     s.eng(r + 1, 4, d["engine"]["beta_u"], "beta")
@@ -402,6 +404,9 @@ def dcf_sheet(c: Ctx):
         "tvsx": f"={B('pvx')}/{B('evx630')}",
         "gimp": f"=({B('tvx')}/{mid}*WACC-{B('fcfX')}/(1+GEff))/({B('tvx')}/{mid}+{B('fcfX')}/(1+GEff))",
     }
+    if d.get("public"):  # P7-X2a: the peer EV/EBITDA median may be hidden (few peers) -> the Exit rows are N/M
+        for k in ("tvx", "pvx", "evx630", "evx930", "tvsx", "gimp"):
+            fm2[k] = nm_unless_number(fm2[k], B("exitm"))
     for k, lab, f, kind, nm, note in items2:
         _vlist(s, V2[k], lab, f or fm2[k], kind, "백만원" if kind == "mn" else "", nm, note, bold=k in ("ev930", "tv"))
     c.layout["dcf_vals"] = {**V, **V2}
@@ -511,6 +516,9 @@ def bridge_sotp(c: Ctx):
         "eqx": "=EVExit_930+BridgeAdj",
         "psx": f"={A('eqx')}*MnToWon/Shares",
     }
+    if d.get("public"):  # P7-X2a: Exit value N/M when the peer EV/EBITDA median is hidden
+        fm["eqx"] = nm_unless_number(fm["eqx"], "EVExit_930")
+        fm["psx"] = nm_unless_number(fm["psx"], A("eqx"))
     for kk, lab, f, kind, nm, note in rows:
         _vlist(
             s,
@@ -830,7 +838,14 @@ def bridge_cons(c: Ctx):
         ),
         ("ps", "주당 가치(원, Gordon)", None, "won", "PerShare", "가정 하의 추정 내재가치(예시)"),
         ("vs", "기준일 종가(보통주) 대비", "=PerShare/Close-1", "pct1", None, "가정 차이 표시(판단 아님)"),
-        ("eqx", "주식가치(Exit 영구가치)", "=EVExit_930+BridgeAdj", "mn", None, ""),
+        (
+            "eqx",
+            "주식가치(Exit 영구가치)",
+            nm_unless_number("=EVExit_930+BridgeAdj", "EVExit_930") if d.get("public") else "=EVExit_930+BridgeAdj",
+            "mn",
+            None,
+            "",
+        ),
         ("psx", "주당 가치(원, Exit)", None, "won", "PerShareExit", ""),
     ]
     if aff:
@@ -864,6 +879,8 @@ def bridge_cons(c: Ctx):
         "ps": f"={A('equity')}*MnToWon/Shares",
         "psx": f"={A('eqx')}*MnToWon/Shares",
     }
+    if d.get("public"):  # P7-X2a: Exit value N/M when the peer EV/EBITDA median is hidden
+        fm["psx"] = nm_unless_number(fm["psx"], A("eqx"))
     for kk, lab, f, kind, nm, note in rows:
         _vlist(
             s,

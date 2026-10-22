@@ -486,10 +486,11 @@ def _first_draft(summary: dict, d: dict, cfg: dict, mode: str) -> None:
     if lo:  # P7-B3b loss path: (a) EV/Sales range + (b) transition DCF together
         ev = lo["ev_sales"]
         dcf_ok = not gd["hold"]
+        ev_ok = ev["valid"] and not gd.get("structure")  # P7-X2a: a structure guard holds the peer range too
         summary["headline"] = {
-            "status": "적자 경로" if (ev["valid"] or dcf_ok) else "자동 결과 보류",
+            "status": "적자 경로" if (ev_ok or dcf_ok) else "자동 결과 보류",
             "fixed_text": lo["fixed_text"],
-            "range": [ev["q25"], ev["q75"]] if ev["valid"] else None,
+            "range": [ev["q25"], ev["q75"]] if ev_ok else None,
             "range_invalid": ev["invalid"],
             "per_share": summary["values"]["per_share_base_srp0"] if dcf_ok else None,
             "dcf_hold_reasons": [x["text"] for x in gd["reasons"]] if not dcf_ok else [],

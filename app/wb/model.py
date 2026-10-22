@@ -31,9 +31,9 @@ from src import yamlio
 from src.collect.core import ROOT
 from src.market.user_provider import PublicDataUnavailable
 from src.workbench import judge as J
+from src.workbench import pubcut, spec
 from src.workbench import recalc as R
 from src.workbench import session as S
-from src.workbench import spec
 
 LOCK = threading.RLock()
 AS_OF = "2026-09-30"
@@ -285,7 +285,9 @@ class Opened:
                     self.cfg_path,
                     self.cfg,
                     {
-                        "stats": {c_: multiple_stats(pr[c_]) for c_ in ("ev_sales", "ev_ebitda", "per", "pbr")},
+                        "stats": {
+                            c_: pubcut.peer_stats(multiple_stats(pr[c_]), True) for c_ in ("ev_sales", "ev_ebitda", "per", "pbr")
+                        },  # P7-X2a: quartiles of fewer than 5 peers are not recorded
                         "n_peers": int(len(pr)),
                     },
                 )
@@ -434,7 +436,7 @@ def relative(o: Opened, s: dict, mode: str) -> dict:
         ("PER", "per", "eq", m_ni),
         ("PBR", "pbr", "eq", m_eq),
     ):
-        st_ = dict(agg["stats"][col]) if pr is None else multiple_stats(pr[col])
+        st_ = dict(agg["stats"][col]) if pr is None else pubcut.peer_stats(multiple_stats(pr[col]), mode == "public")
 
         def ps(mu, kind=kind, metric=metric):
             if metric is None or not np.isfinite(mu) or metric <= 0:
@@ -518,7 +520,7 @@ def premium(o: Opened, s: dict, mode: str) -> dict:
         k = ("prem", o.code, json.dumps(pm, sort_keys=True), round(float(mk["mktcap_won"])))
     if k not in _CACHE:
         pct = public_percentile(o.code, AS_OF, mkt) if mode == "public" else get().mktcap_percentile(AS_OF, mkt, mk["mktcap_won"])
-        prr = premium_range(pct["mktcap_pct"], market=mkt, **pm)
+        prr = premium_range(pct["mktcap_pct"], market=mkt, public=mode == "public", **pm)  # P7-X2a n rule
         _CACHE[k] = {
             "pct": pct["mktcap_pct"],
             "pct_fixed": mode == "public",
@@ -811,9 +813,17 @@ def beta_info(o: Opened, s: dict, mode: str) -> dict:
         sel = bt[bt.name.isin(names) & (bt["index"] == o.cfg["beta"]["index"])] if len(bt) else bt
         r2 = float(sel.r2.median()) if len(sel) else None
         n = int(len(sel))
+        r2 = pubcut.r2(r2, n, mode == "public")  # P7-X2a: R² median of fewer than 5 peers not shown
+    de_cut = False
+    if mode == "public":  # P7-X2a: own D/E of fewer than 5 dates -> 0 in the public mode
+        try:
+            de_cut = bool(public_ctx(o, s).c.market.get("de_cut"))
+        except (NeedInput, PublicDataUnavailable):
+            de_cut = bool(o.ctx.c.market.get("de_cut"))
     return {
         "beta_u": r.get("beta_u"),
         "src": r.get("beta_src"),
+        "de_cut": de_cut,
         "r2_median": r2,
         "n": n,
         "index": o.cfg["beta"]["index"],

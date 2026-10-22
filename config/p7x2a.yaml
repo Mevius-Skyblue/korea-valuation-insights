@@ -1,0 +1,15 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7x2a.yaml에서 공개 앱이 읽는 최상위 키만 (params)
+params:
+  public_scope:
+    peer_min_n: 5
+    premium_min_n: 10
+    beta_fallback: 1.0
+    de_fallback: 0.0
+  holding:
+    ksic_prefix: '64992'
+    sep_rev_ratio_max: 0.25
+    nci_equity_max: 0.001
+    minority_stake_max: 0.9
+    minority_book_min: 0.01
+  opinion_parser:
+    wacc_agree_pp: 0.003

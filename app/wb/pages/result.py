@@ -217,6 +217,8 @@ def _football(c: nav.Ctx) -> None:
                     f"사분위 · n={m['n']}" + (" (n<5 주의)" if m["n"] < 5 else ""),
                 ]
             )
+        elif m.get("public_cut"):  # P7-X2a: quartiles of fewer than 5 peers are not shown in the public mode
+            table.append([f"피어 {nm}", "—", "—", "—", f"피어 부족(공개 모드): 포함 피어 {m['n']}곳 < 5곳"])
         else:
             table.append([f"피어 {nm}", "—", "—", "—", "계산 불가(대상 지표 ≤ 0 또는 피어 없음)"])
     try:
@@ -308,7 +310,12 @@ def _premium(c: nav.Ctx) -> None:
             F.pct(bd.get("q25"), 1),
             F.pct(bd.get("q50"), 1),
             F.pct(bd.get("q75"), 1),
-            f"{bd.get('n', '—')}건" + (" (n<10 주의)" if (bd.get("n") or 0) < 10 else ""),
+            f"{bd.get('n', '—')}건"
+            + (
+                (" (n<10: 공개 모드 분위 비표시)" if c.mode == "public" else " (n<10 주의)")  # P7-X2a
+                if (bd.get("n") or 0) < 10
+                else ""
+            ),
         ],
         [
             "분위 회귀",

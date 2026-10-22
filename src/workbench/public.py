@@ -30,6 +30,7 @@ import pandas as pd
 
 from src import yamlio
 from src.collect.core import ROOT
+from src.workbench import pubcut
 
 MULTS = [("EV/Sales", "ev", "revenue"), ("EV/EBITDA", "ev", "ebitda"), ("PER", "equity", "ni"), ("PBR", "equity", "equity")]
 
@@ -54,7 +55,7 @@ def _peer_multiples(peers: list[dict]) -> dict:
             num = ev if kind == "ev" else (p["mktcap"] or 0)
             den = p.get(key)
             vals.append(num / den if den is not None and den > 0 else None)
-        out[nm] = _quart(vals)
+        out[nm] = pubcut.peer_stats(_quart(vals), True, med="med", empty=None)  # P7-X2a: n < 5 -> not shown
     return out
 
 
@@ -67,6 +68,7 @@ def public_aggregates(beta_rows: list[dict], peers: list[dict]) -> dict:
     from src.workbench.pubagg import r2_display
 
     r2m = float(np.median(r2)) if r2 else None
+    r2m = pubcut.r2(r2m, len(inc), True)  # P7-X2a: R² median of fewer than 5 peers not shown
     return {
         "beta_n": len(inc),
         "r2_median": r2_display(r2m) if SD.mode() == "record" else r2m,
@@ -96,6 +98,7 @@ def transform(d: dict) -> dict:
         "de": float(e["de_own"]),
         "de_n": d["de"].get("n", len(d["de"]["points"])) if d["de"]["rule"] == "points" else None,
     }
+    de_cut = d["de"].get("public_cut", False)
     d = dict(d)
     d["public"] = pub
     d["beta"], d["peers"] = [], []
@@ -105,6 +108,11 @@ def transform(d: dict) -> dict:
         "src": "(공개 모드 집계 입력)",
         "basis": f"자체 D/E 시점 평균({pub['de_n']}개 시점, PC에서 계산한 집계값. 시점별 시가총액은 공개 모드에 표시하지 않음)",
     }
+    if de_cut:  # P7-X2a: fewer than 5 dates -> D/E 0 (the average of few dates is not shown)
+        d["de"]["basis"] = (
+            f"공개 모드: D/E 시점 {pub['de_n']}개 < {pubcut.params()['peer_min_n']}개라 시점 평균을 표시하지 않고 D/E "
+            f"{pubcut.params()['de_fallback']:.0f}(자기자본만)으로 둠 — 사람이 D/E를 직접 입력할 수 있음"
+        )
     return d
 
 

@@ -69,16 +69,27 @@ def public_percentile(code: str, as_of: str, market: str, con=None) -> dict:
 
 
 def premium_range(
-    mktcap_pct: float, stake_band: str = "lt25", buyer_group: str = "strategic", market: str = "KOSDAQ", period: str = "2015-2026"
+    mktcap_pct: float,
+    stake_band: str = "lt25",
+    buyer_group: str = "strategic",
+    market: str = "KOSDAQ",
+    period: str = "2015-2026",
+    public: bool | None = None,
 ):
     """predict.premium_range (unchanged) through a data seam: the snapshot holds the result for each premium input at the
-    target's fixed percentile - quantiles, counts, method, warnings; not the neighbours' percentile range (two deals)."""
+    target's fixed percentile - quantiles, counts, method, warnings; not the neighbours' percentile range (two deals).
+    P7-X2a (src/workbench/pubcut.py): in the public mode a band-table cell of fewer than 10 deals has no quantiles.
+    public: None = decide from the mode / market-data provider (pubcut.public_scope)."""
     from dataclasses import asdict
 
     from src.premium import predict as P
+    from src.workbench import pubcut
 
     if SD.mode() == "off":
-        return P.premium_range(mktcap_pct, stake_band=stake_band, buyer_group=buyer_group, market=market, period=period)
+        r = P.premium_range(mktcap_pct, stake_band=stake_band, buyer_group=buyer_group, market=market, period=period)
+        if pubcut.public_scope() if public is None else public:
+            return P.PremiumRange(**pubcut.premium(asdict(r), True))
+        return r
     key = [float(mktcap_pct), stake_band, buyer_group, market, period]
     if SD.replaying():
         d = SD.get("premium_range", key)
@@ -86,7 +97,7 @@ def premium_range(
         d = asdict(P.premium_range(mktcap_pct, stake_band=stake_band, buyer_group=buyer_group, market=market, period=period))
         d["neighbour"] = {k: v for k, v in d["neighbour"].items() if k != "pct_range"}
         d["inputs"] = {}
-        SD.put("premium_range", key, d)
+        SD.put("premium_range", key, pubcut.premium(d, True))
         d = SD.get("premium_range", key)
     return P.PremiumRange(**d)
 

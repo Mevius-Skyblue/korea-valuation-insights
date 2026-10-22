@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import math
 import re
 
 from src.excel.context import Ctx
@@ -195,7 +196,8 @@ def _rf_srp(c: Ctx, s, r):
     s.text(hr, dc0, "표 − 엔진(원)", "header")
     for i in range(nr):
         for j in range(nc):
-            s.fx(hr + 1 + i, dc0 + 1 + j, f"={a1(hr + 1 + i, 1 + j)}-{a1(hr + 1 + i, ec0 + 1 + j)}", "won")
+            e_ = a1(hr + 1 + i, ec0 + 1 + j)  # P7-X2a X2a-F3: an N/M engine cell (WACC <= g) has no difference
+            s.fx(hr + 1 + i, dc0 + 1 + j, f'=IF(ISNUMBER({e_}),{a1(hr + 1 + i, 1 + j)}-{e_},"")', "won")
     diff = f"Scenarios!{a1(hr + 1, dc0 + 1, True)}:{a1(hr + nr, dc0 + nc, True)}"
     c.layout["dt"].append(
         {
@@ -372,7 +374,10 @@ def _data_tables(c: Ctx, s, r) -> int:
             s.inp(hr + 1 + i, 0, v, lfmt)
             for j in range(len(top_vals)):
                 val = grid[gkey(i, j)]
-                s.ws.write_number(hr + 1 + i, 1 + j, float(val), c.book.fmt("calc", "won"))
+                if val is None or not math.isfinite(float(val)):  # P7-X2a X2a-F3: WACC <= g cell (P7-B5 B5-F1) is N/M
+                    s.ws.write_string(hr + 1 + i, 1 + j, "N/M", c.book.fmt("calc", "won"))
+                else:
+                    s.ws.write_number(hr + 1 + i, 1 + j, float(val), c.book.fmt("calc", "won"))
         nr, nc = len(left_vals), len(top_vals)
         first, last = a1(hr + 1, 1), a1(hr + nr, nc)
         c.book.reg.engine.append(("Scenarios", first, last))  # cached values until Excel recalculates
@@ -396,7 +401,8 @@ def _data_tables(c: Ctx, s, r) -> int:
         s.text(hr, dc0, "표 − 엔진(원)", "header")
         for i in range(nr):
             for j in range(nc):
-                s.fx(hr + 1 + i, dc0 + 1 + j, f"={a1(hr + 1 + i, 1 + j)}-{a1(hr + 1 + i, ec0 + 1 + j)}", "won")
+                e_ = a1(hr + 1 + i, ec0 + 1 + j)  # P7-X2a X2a-F3: an N/M engine cell (WACC <= g) has no difference
+                s.fx(hr + 1 + i, dc0 + 1 + j, f'=IF(ISNUMBER({e_}),{a1(hr + 1 + i, 1 + j)}-{e_},"")', "won")
         diff = f"Scenarios!{a1(hr + 1, dc0 + 1, True)}:{a1(hr + nr, dc0 + nc, True)}"
         # centre cell: no change in the overridden input (WACC step 0 / g = base g; growth & margin = base values)
         if key == "C":

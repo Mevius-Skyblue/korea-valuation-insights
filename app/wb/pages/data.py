@@ -157,7 +157,12 @@ def _peers(c: nav.Ctx) -> None:
         )
         ui.table(
             ["배수", "n", "하위 25%", "중앙값", "상위 25%"],
-            [[k, v["n"], F.times(v["q25"]), F.times(v["median"]), F.times(v["q75"])] for k, v in m.items()],
+            [
+                [k, v["n"], *(["피어 부족(공개 모드)"] * 3)]
+                if v.get("public_cut")  # P7-X2a: quartiles of fewer than 5 peers are not shown
+                else [k, v["n"], F.times(v["q25"]), F.times(v["median"]), F.times(v["q75"])]
+                for k, v in m.items()
+            ],
             num_cols=(1, 2, 3, 4),
         )
     with st.expander("피어 편집 · 사업 개요(공시 원문 첫 문단)"):
@@ -223,15 +228,30 @@ def _beta(c: nav.Ctx) -> None:
         f"주간 2년 회귀 · 지수 {b['index']} · 피어 {b['n']}곳",
         ui.badge("확인 필요", "warn") if b["warn"] else ui.badge("기준 통과", "ok"),
     )
-    src = {"peer": "피어 중앙값", "override": "사람 확정값"}.get(b["src"], b["src"])
+    src = {
+        "peer": "피어 중앙값",
+        "override": "사람 확정값",
+        "public_few_peers": "공개 모드 피어 부족 → 시장 평균 1.0",
+        "market_1": "시장 평균 1.0",
+        "target_own": "대상 자기 회귀",
+    }.get(b["src"], b["src"])
     ui.kpis(
         [
             {"label": tx.term("βu") + f" ({src})", "value": F.beta(b["beta_u"])},
-            {"label": "R² 중앙값", "value": F.beta(b["r2_median"]), "note": "설명력(0~1)", "cls": "wb-warn" if b["warn"] else ""},
+            {
+                "label": "R² 중앙값",
+                "value": F.beta(b["r2_median"]) if b["r2_median"] is not None or c.mode == "pc" else "피어 부족(공개 모드)",
+                "note": "설명력(0~1)",
+                "cls": "wb-warn" if b["warn"] else "",
+            },
             {
                 "label": "목표 " + tx.term("D/E"),
                 "value": F.times(b["de"], 3),
-                "note": "자체 과거 시점 평균" + (" · 시점별 시가총액은 공개 모드에서 숨김" if c.mode == "public" else ""),
+                "note": (
+                    "공개 모드: 과거 시점이 5개 미만이라 0(직접 입력 가능)"
+                    if b.get("de_cut")
+                    else "자체 과거 시점 평균" + (" · 시점별 시가총액은 공개 모드에서 숨김" if c.mode == "public" else "")
+                ),
             },
         ]
     )

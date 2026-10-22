@@ -66,8 +66,10 @@ class Ctx:
     def __init__(self, cfg_path: str):
         from src.db.build import DB_PATH
         from src.valuation.company_dcf import hist_roic, history, load_company
+        from src.workbench import pubcut
 
         self.cfg_path = cfg_path
+        self.public = pubcut.public_scope()  # P7-X2a: built in the public mode (user market data) -> public n rules
         c = load_company(cfg_path)
         c.ronic_start = c.cfg["excel"]["ronic_start"]
         self.c = c
@@ -106,10 +108,13 @@ def ctx_aggregates(bt, cfg: dict) -> dict:
     from src.workbench.pubagg import r2_display
 
     names = [p["name"] for p in cfg.get("peers", [])]
+    from src.workbench import pubcut
+
     b = bt[bt.name.isin(names) | (bt.tier == "target")] if len(bt) else bt
     sel = bt[bt.name.isin(names) & (bt["index"] == cfg["beta"]["index"])] if len(bt) else bt
-    bu, src = beta_u0(b, cfg)
-    return {"beta_u0": [bu, src], "r2_median": r2_display(float(sel.r2.median())) if len(sel) else None, "n": int(len(sel))}
+    bu, src = beta_u0(b, cfg, public=True)  # recorded for the public snapshot only (P7-X2a n rule)
+    r2 = pubcut.r2(r2_display(float(sel.r2.median())) if len(sel) else None, len(sel), True)
+    return {"beta_u0": [bu, src], "r2_median": r2, "n": int(len(sel))}
 
 
 def context(cfg_path: str) -> Ctx:
@@ -235,7 +240,7 @@ def recalc(cfg_path: str, ov: dict, ctx: Ctx | None = None) -> dict:
         bu0, src = float(x.beta_pub["beta_u0"][0]), x.beta_pub["beta_u0"][1]
     else:
         bt = x.bt[x.bt.name.isin(names) | (x.bt.tier == "target")] if len(x.bt) else x.bt
-        bu0, src = beta_u0(bt, cfg)
+        bu0, src = beta_u0(bt, cfg, public=x.public)
     de = float(hk["de"]) if hk.get("de") is not None else x.de0
     kd = float(hk["kd"]) if hk.get("kd") is not None else kd_for(c, cfg["excel"]["kd_version"])[0]
     srps = led["decisions"]["srp_columns"]

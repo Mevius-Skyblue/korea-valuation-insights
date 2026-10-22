@@ -7,6 +7,7 @@ scripts/build_public_bundle.py). They need nothing but the repository: no API ke
     4 workspaces: two browser sessions never see each other's sessions or files
     5 screens: the work screen pages render without an exception, with the notice, and without internal code strings
     6 app/data columns = the export whitelist; the calculator equals the engine functions
+    7 (P7-X2a) no aggregate of fewer than 5 peers / D/E dates and no premium band quantile of fewer than 10 deals
 """
 from __future__ import annotations
 
@@ -200,6 +201,38 @@ def test_premium_aggregates_only():
                 ks = {z for z in ks if not z.startswith("$")}
                 assert ks <= PREM_RANGE_KEYS | {"band"}, (x["code"], ks - PREM_RANGE_KEYS)
                 assert "pct_range" not in json.dumps(v), x["code"]
+
+
+def _num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v == v
+
+
+def test_few_peer_and_few_deal_cells_hidden():
+    """P7-X2a (config/p7x2a.yaml public_scope): no quartile / median of fewer than 5 peers (or 5 D/E dates) and no
+    premium band-table quantile of fewer than 10 deals is in a snapshot (a few values interpolate back to single peers)."""
+    bad = []
+    for x in EVAL:
+        for k, v in (_snap(x["code"]).get("seams") or {}).items():
+            kind = k.split(":", 1)[0]
+            if kind == "agg_public":
+                for nm, st in (v.get("multiples") or {}).items():
+                    if 0 < st["n"] < 5 and any(_num(st.get(q)) for q in ("q25", "med", "q75")):
+                        bad.append((x["code"], nm, st["n"]))
+                if v.get("beta_n", 0) < 5 and _num(v.get("r2_median")):
+                    bad.append((x["code"], "r2", v["beta_n"]))
+            elif kind in ("agg_engine", "agg_screen"):
+                for nm, st in (v.get("stats") or {}).items():
+                    if 0 < st["n"] < 5 and any(_num(st.get(q)) for q in ("q25", "median", "q75")):
+                        bad.append((x["code"], kind, nm, st["n"]))
+                if kind == "agg_engine" and v.get("n_beta", 0) < 5 and (v.get("beta_u0") or [None, None])[1] == "peer":
+                    bad.append((x["code"], "beta", v["n_beta"]))
+            elif kind == "de_points" and v.get("n", 5) < 5 and not v.get("public_cut"):
+                bad.append((x["code"], "de", v["n"]))
+            elif kind == "premium_range":
+                b = v.get("band") or {}
+                if b.get("n", 10) < 10 and any(_num(b.get(q)) for q in ("q25", "q50", "q75")):
+                    bad.append((x["code"], "band", b["n"]))
+    assert not bad, bad[:5]
 
 
 # ---------------------------------------------------------------- 3 session file, 4 workspaces

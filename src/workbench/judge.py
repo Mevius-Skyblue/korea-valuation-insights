@@ -39,6 +39,9 @@ DIRECT = {
     "기준일 뒤 주요 공시": [],
     "보고서 사람 작성 칸": [],
     "구조(추가)": [],
+    "상장 종속회사 확인": [],  # P7-X2a holding guard a: a person checks the structure (no single field fixes it)
+    "비지배지분 확인": ["nci_mn"],  # P7-X2a holding guard b
+    "SOTP 보유 수량 확인": ["sotp_discount"],  # P7-X2a X2a-F1
 }
 
 
