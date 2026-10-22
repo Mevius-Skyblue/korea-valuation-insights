@@ -22,14 +22,14 @@
 "q75": 0.807657633383903
 }
 },
-"check_ps": 61461.555859528235,
+"check_ps": 60401.76326764381,
 "code": "000650",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "천일고속",
 "path": "loss",
-"sha256": "2cc9bf5ac4582ad2bd4f3e81b5e8f3993c5b70387e08f1edd9473c96b2fe52b1"
+"sha256": "de6eac3d0990b8f6760ceb9cee5b9e2b19624d809aed39db34c805e951ec6dc6"
 },
 {
 "check_prem": {
@@ -61,7 +61,7 @@
 "market": "KOSPI",
 "name": "JW중외제약",
 "path": "general",
-"sha256": "6729c5ee69e7f2a4d15807514d0f06435a23adf9f31c1d252d722bf81e63b37e"
+"sha256": "77acc0bdfcf19f2b0fd5e040eb993d479755508f2480007a815db4cd654a6729"
 },
 {
 "check_prem": {
@@ -93,7 +93,7 @@
 "market": "KOSPI",
 "name": "LX인터내셔널",
 "path": "nci",
-"sha256": "3c04ecd63fd34281222a8337ca612d2756742ea1ca5bc3f73dfb76a0f3cc40bc"
+"sha256": "c65879b52440730b25efb6da514e106df30b390f8a96d0232481d47f07f3c2c7"
 },
 {
 "check_prem": {
@@ -125,7 +125,7 @@
 "market": "KOSPI",
 "name": "KG케미칼",
 "path": "sotp",
-"sha256": "9ec0fdad7fe9ee76ed82bd6ee6aca4d9b413322e27ea4c9f41abd46ac0792cfd"
+"sha256": "a0cc1c038b7353b53668b75345a8f72228cfd4a3d25ea3459a98e8ba4c9d7984"
 },
 {
 "check_prem": {
@@ -157,7 +157,7 @@
 "market": "KOSPI",
 "name": "BYC",
 "path": "general",
-"sha256": "e8dd5a1820372d2cca907a8b6629aa87aacf9f4bfb13f07e8afd404c8c33c48c"
+"sha256": "1dbd96b95bd606b57be03b2a1d17da57a54984d09d4c462669d79662861f0b49"
 },
 {
 "check_prem": {
@@ -189,7 +189,7 @@
 "market": "KOSPI",
 "name": "HS화성",
 "path": "general",
-"sha256": "3937f76bcc77753d026926f98fbdb3a30d10d795a207017ac70b8d85c546114b"
+"sha256": "f3306e5a68789d7fcb5c9f30798298d254306f7b325df912df3d4714db8f8561"
 },
 {
 "check_prem": {
@@ -221,7 +221,7 @@
 "market": "KOSPI",
 "name": "아모레퍼시픽홀딩스",
 "path": "sotp",
-"sha256": "35a26bbde1368ee3a2f5d71e830f7f2f7a9a73f78f11a61d776e57622dd8b9d4"
+"sha256": "eba96066b68148fc421450a60da766c513321b28514f5e24757a5a3a860b38aa"
 },
 {
 "check_prem": {
@@ -253,7 +253,7 @@
 "market": "KOSPI",
 "name": "금호건설",
 "path": "loss",
-"sha256": "3938afb3e6acab079e73fe7a0ac345033beeac44a200329102a371b865831ede"
+"sha256": "448e2ce926df3e9d3e2097b2041467ad73486cba67367662fdbaa08bb0b78313"
 },
 {
 "check_prem": {
@@ -278,14 +278,14 @@
 "q75": 0.7688086466694185
 }
 },
-"check_ps": 154421.97194865398,
+"check_ps": 28159.49573006955,
 "code": "003070",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "코오롱글로벌",
 "path": "loss",
-"sha256": "e19714936f00f8be588ca7368dcd781420c0de528658c76373227939e0e4692a"
+"sha256": "a78d48ff7966e645e3110337349b33f184dd2a67bada419c49bc1d25a64d6c58"
 },
 {
 "check_prem": {
@@ -317,7 +317,7 @@
 "market": "KOSPI",
 "name": "대웅",
 "path": "sotp",
-"sha256": "8720b71ea75e542ce05efebf895f199d32c1e4c3674022d11cc692d61119376e"
+"sha256": "28ca56ed54c4b5669bc3b33e14373192791f7b38ea8c69d3c8a2a6f65c8c7528"
 },
 {
 "check_prem": {
@@ -349,7 +349,7 @@
 "market": "KOSDAQ",
 "name": "선광",
 "path": "general",
-"sha256": "5a4148b20fccc5264e68e25fef1f89c27d3abcd4fda4d6d350559a20ffcde7eb"
+"sha256": "a34a9e35251ea404b3aafce9949b94037a940413176296921bdfd9d6b5b7dab6"
 },
 {
 "check_prem": {
@@ -374,14 +374,14 @@
 "q75": 0.807657633383903
 }
 },
-"check_ps": 39653.96158481793,
+"check_ps": 40147.347216956296,
 "code": "003200",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "일신방직",
 "path": "nci",
-"sha256": "9576d36a799ecebe29922463be9dfb71f8f62248dbcf5bbd97ef691910b325ee"
+"sha256": "bd8ccd65bebcd8dfffee601fd1dba68047cf5c47c9e555ee03d07da238a8f5b9"
 },
 {
 "check_prem": {
@@ -413,7 +413,7 @@
 "market": "KOSPI",
 "name": "대원제약",
 "path": "sotp",
-"sha256": "dabac915379f79d05f498a278d1d93c2ee4bf0a87500c26cd0f91c7338e046f7"
+"sha256": "dca00e377d9aa818efa028548139aa7d3bdd04986bd5684419c51ef30018ccf7"
 },
 {
 "check_prem": {
@@ -445,7 +445,7 @@
 "market": "KOSPI",
 "name": "한진중공업홀딩스",
 "path": "nci",
-"sha256": "3cfedcdb08ced80ea33aa7bfb4c639035448af57986a718b407566a8612d6946"
+"sha256": "70d773108fbb80519b145b40692c4959a3974c2caefbddaa2b85b65a94f5cdcc"
 },
 {
 "check_prem": {
@@ -477,7 +477,7 @@
 "market": "KOSPI",
 "name": "NPC",
 "path": "general",
-"sha256": "0e16038d64a662307d5711758ae6b1c5cf646c3beca28303f273972168d85c1e"
+"sha256": "dfe8169fe13dda6d22d82dc66e6dc8a0702bb39290df4752e8a2c5c258efe723"
 },
 {
 "check_prem": {
@@ -509,7 +509,7 @@
 "market": "KOSPI",
 "name": "세방전지",
 "path": "general",
-"sha256": "e6ec44fa4598eb62f433295e4b777551b21d0111fcb21035e7193275f9af1cf9"
+"sha256": "9b022a6ed1c280f2b07fc019a99a656de0b8439f8e8b9fef5e3e3576be512bee"
 },
 {
 "check_prem": {
@@ -541,7 +541,7 @@
 "market": "KOSPI",
 "name": "동원산업",
 "path": "sotp",
-"sha256": "8b3937e5b063659981789054002b23a90116794398639281ec8a8c68e12aa926"
+"sha256": "83421f55af6bef78cc693cffc540c02ed618f3b404573c9f5d4a837d49c48715"
 },
 {
 "check_prem": {
@@ -566,14 +566,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 85285.15587877159,
+"check_ps": 160641.04087910702,
 "code": "007690",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "국도화학",
 "path": "general",
-"sha256": "91ea9900c2b4f22626a4d5f82cbff00a793d1f7535f4578ed5ec201671705e14"
+"sha256": "767fb7872f04769964fd155690d90b5030d30b2514b6cdd5dc6256eaf82f0d42"
 },
 {
 "check_prem": {
@@ -598,14 +598,14 @@
 "q75": 0.9793043164940216
 }
 },
-"check_ps": 1737.8129960149267,
+"check_ps": 2510.7254389486666,
 "code": "008350",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "남선알미늄",
 "path": "general",
-"sha256": "a79c18644e60b8e9b94b934521f3bd805c2cf8d38aeee454235a82668e700666"
+"sha256": "dd33236150d72a23a7bd9d0e85f3167083e05f7522762ce3e32bfd2138db9fab"
 },
 {
 "check_prem": {
@@ -637,7 +637,7 @@
 "market": "KOSPI",
 "name": "아이에스동서",
 "path": "sotp",
-"sha256": "c7459c6dcb96875953255ba4ca8c375619bc3e9445a6d1c66a2598afb45fc062"
+"sha256": "a2a483cd3136a3227ee21f75525f0db017b1fc9c25515d21092df1cd27d58668"
 },
 {
 "check_prem": {
@@ -669,7 +669,7 @@
 "market": "KOSDAQ",
 "name": "경동제약",
 "path": "loss",
-"sha256": "8cfac010ab2822f4062e4156ead429d13c6caf1a9482d42be169d6a9374ef988"
+"sha256": "dd4e8656d4889436f0caead57303062890336bfcce93a89b564da75429f4520a"
 },
 {
 "check_prem": {
@@ -694,14 +694,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 803668.9795278019,
+"check_ps": 830450.2960800247,
 "code": "011070",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "LG이노텍",
 "path": "general",
-"sha256": "997930836f9aa2791ef9b1473bb721c8891aed8e1c7d03813818cd9b2d5799ed"
+"sha256": "1b3378f7c8c0889864f999118ed26b031bb78353b7a1c98b7288309288782675"
 },
 {
 "check_prem": {
@@ -726,14 +726,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 119925.40550047984,
+"check_ps": 169524.9701008467,
 "code": "011210",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "현대위아",
 "path": "nci",
-"sha256": "a7916a41312b42acb7324a567a70c287ca390a70e28bbc4f7daf5048bf87dc07"
+"sha256": "b7be96b2bd3d92588caf55e7a8fe32c448facef2a62a629faea87c5251d1e8f7"
 },
 {
 "check_prem": {
@@ -765,7 +765,7 @@
 "market": "KOSPI",
 "name": "현대코퍼레이션",
 "path": "general",
-"sha256": "3aeece8ced5b0aa2c101b6be05ffbb1abe0cfd41f3ca152e6cf688767340c53b"
+"sha256": "c8d018198f9c470a085d64d529cf2d3c6834e31580d5d1732d0431499b887d26"
 },
 {
 "check_prem": {
@@ -797,7 +797,7 @@
 "market": "KOSPI",
 "name": "에스원",
 "path": "general",
-"sha256": "9ac2e7d27fa7bff0074fbd0280b869880743d79297869d115914aa3fb8f6cef8"
+"sha256": "b3c67bae884109cad2b2f49d684db0416a0d643c804592578389e95a3035dcca"
 },
 {
 "check_prem": {
@@ -822,14 +822,14 @@
 "q75": 1.031993679801472
 }
 },
-"check_ps": 2860.4013914702136,
+"check_ps": 7554.199777614787,
 "code": "012800",
-"hold": false,
+"hold": true,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "대창",
 "path": "sotp",
-"sha256": "7d1ced34911220884291967515c0a63444c458eb4176bebac2c4932ef71e09d3"
+"sha256": "86a23f61e9b0a9a57aaca8fb777d3a3cc1874dea546f90862839541eca1fc446"
 },
 {
 "check_prem": {
@@ -861,7 +861,7 @@
 "market": "KOSPI",
 "name": "화승코퍼레이션",
 "path": "sotp",
-"sha256": "ca818170763c28ed4917f8b01321dd1d8f3053980799bc20e8f406a6ffd2ebf1"
+"sha256": "9f68ad5dcacf9b06a06304f25d54888c2229874d8c47fecca96e56b9debdfbe7"
 },
 {
 "check_prem": {
@@ -893,7 +893,7 @@
 "market": "KOSPI",
 "name": "유니드",
 "path": "general",
-"sha256": "d7de71aaca738ae4804fcf194190c6f66f6bc79ed55182585044249af90dd5b4"
+"sha256": "7b512f7108c73d9df70d28d255aab530579a8d7b4641c2c09214c1be6d049c3e"
 },
 {
 "check_prem": {
@@ -918,14 +918,14 @@
 "q75": 0.9793043164940216
 }
 },
-"check_ps": 12461.581651632863,
+"check_ps": 6838.063578354756,
 "code": "015890",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "태경산업",
 "path": "sotp",
-"sha256": "11aa3bd79295eea71aede8fcd709d0988bd9965ef24b491b6d525ddee1906396"
+"sha256": "844949e8e2bce8d0273cede09da37646d5bcff95afefd0f2582317be597b4401"
 },
 {
 "check_prem": {
@@ -957,7 +957,7 @@
 "market": "KOSPI",
 "name": "두올",
 "path": "general",
-"sha256": "b0c7ae60068931b1f90c546d2e8a79826c831dbace45c9de50cda7240d5cd93d"
+"sha256": "d185ca3ef0667ba44a135bf712291568f18c1432a1074fd88b65a2cd43588827"
 },
 {
 "check_prem": {
@@ -989,7 +989,7 @@
 "market": "KOSPI",
 "name": "웅진",
 "path": "sotp",
-"sha256": "76a82bbd04e5e7356d1573e5ee5937a898df36a2665504f83a422ab306c81d29"
+"sha256": "ec4fcb50de87bb02401821f82956e405976e9726f25025b782aa130515c84a73"
 },
 {
 "check_prem": {
@@ -1021,7 +1021,7 @@
 "market": "KOSDAQ",
 "name": "세명전기",
 "path": "general",
-"sha256": "9534d13839bdfa0838319428b2ee44225cb32dcb7e1315789978231feb7c1262"
+"sha256": "5cbc75aa223456f468b2c86b555f801851ccce9ba7eca0591c6060378771e3b1"
 },
 {
 "check_prem": {
@@ -1053,7 +1053,7 @@
 "market": "KOSPI",
 "name": "현대엘리베이터",
 "path": "sotp",
-"sha256": "9ea54bb347e59c46b3ff336e492ed60566e65b1d32a8ec9facd53220eaaac6dd"
+"sha256": "54595e7f9a6a16ceb3a145ea2780efd981f58d2944040e88e94f19f7eaad606f"
 },
 {
 "check_prem": {
@@ -1078,14 +1078,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 8623.657399726808,
+"check_ps": 9586.193982198121,
 "code": "017960",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "한국카본",
 "path": "general",
-"sha256": "b708118dc8f909eed218ed86026dd569332c30302e7b7348f72562f4a322d8dd"
+"sha256": "ccadf34fff698b87464449b5272c9f73bc7a9cc68d7105a0226354c740c901ef"
 },
 {
 "check_prem": {
@@ -1117,7 +1117,7 @@
 "market": "KOSPI",
 "name": "애경산업",
 "path": "general",
-"sha256": "451b2342941724c24400f7219cb15b3857c81312e6c184cd1c4bc90f906ed670"
+"sha256": "b568f89d87c62580bf8985d5fb36dff865507850a33fa932ebe05d3e108e39a0"
 },
 {
 "check_prem": {
@@ -1149,7 +1149,7 @@
 "market": "KOSDAQ",
 "name": "삼목에스폼",
 "path": "general",
-"sha256": "70d73c3b9783d7c4145c8d7a961f896f2158623a118d8975eb3b7022129c8907"
+"sha256": "0b035b926c88cfc0e3b5500e876c5cd1570bb5b7711cbcf6368ddea4ce86a97b"
 },
 {
 "check_prem": {
@@ -1181,7 +1181,7 @@
 "market": "KOSPI",
 "name": "포스코DX",
 "path": "general",
-"sha256": "de61edcb223737f2b8b1a467a548c90e337723f8fab50c376061455b8c32f326"
+"sha256": "cf9e8fd29746598b5482fbe940c3f247f58f794ffe4e7649e649b978d01c1223"
 },
 {
 "check_prem": {
@@ -1213,7 +1213,7 @@
 "market": "KOSPI",
 "name": "제일기획",
 "path": "general",
-"sha256": "e8d0bca0cee8036d5055faf77c46f33bfd180e3370dcb32b56c973327df931dc"
+"sha256": "f9eb4b7bb83e05577038def72894fabd07bea28b2c92eacd4b6b7162f03ee93c"
 },
 {
 "check_prem": {
@@ -1245,7 +1245,7 @@
 "market": "KOSPI",
 "name": "SJG세종",
 "path": "general",
-"sha256": "c347a6810fda66f0182161c9fc70f235ea92bb71e11349ba493836a5ef01bee9"
+"sha256": "f89cab3a9c32eaec3d05a2afe6333d0d02b6683fe80b16a842fca391709a7f82"
 },
 {
 "check_prem": {
@@ -1270,14 +1270,14 @@
 "q75": 0.7688086466694185
 }
 },
-"check_ps": -3359.374333694593,
+"check_ps": 68037.82421165163,
 "code": "034120",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "SBS",
 "path": "general",
-"sha256": "908370f57c8455f569dc3675afd592433e03eb2b702530c165f804bd53066da0"
+"sha256": "aa31fe0475c5bbc244e28172c642cbdfa3a3f5f61150924acddcd74161c0faf9"
 },
 {
 "check_prem": {
@@ -1309,7 +1309,7 @@
 "market": "KOSDAQ",
 "name": "해성산업",
 "path": "sotp",
-"sha256": "8417088068c2c4cd1cdbc7a17c2f1e47ec72d19f1b8a9f8c15a4a06e4e080ca2"
+"sha256": "bffc27c3d5117c28235a543e72bf23a86b0bc9e407f272f5a5c9e8b1b838443b"
 },
 {
 "check_prem": {
@@ -1341,7 +1341,7 @@
 "market": "KOSDAQ",
 "name": "그래디언트",
 "path": "sotp",
-"sha256": "d75142dcdd41ac5b904a17627a093aaa345c9764de38500ebc9410c78583703f"
+"sha256": "dce81a42f504b65ad855dc4a8d9e34c1995b0dc595b537f2f25a55f510f4ea63"
 },
 {
 "check_prem": {
@@ -1373,7 +1373,7 @@
 "market": "KOSDAQ",
 "name": "KG이니시스",
 "path": "sotp",
-"sha256": "d04786e32fbdae0b94807996fc72ce9a7d14194bb566435b55345cc65d0a746d"
+"sha256": "2855ebb0211a7cf0bb6a6b43b641ab7598a4c77601e88bbd6b76f9e35f5bf7e7"
 },
 {
 "check_prem": {
@@ -1398,14 +1398,14 @@
 "q75": 0.36540326158854286
 }
 },
-"check_ps": 5803.863398344159,
+"check_ps": 6146.802074158392,
 "code": "035610",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "솔본",
 "path": "sotp",
-"sha256": "4440fe6d46c398f9f62eeed1ef083cfd9563fb9f5fb650bec122b98e189db078"
+"sha256": "d6b9e7e9e256b692d518624b4942409bb6dff69e95e57fc92d8f5d1f86898e49"
 },
 {
 "check_prem": {
@@ -1430,14 +1430,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 24704.45853362063,
+"check_ps": 24385.60066433413,
 "code": "035720",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "카카오",
 "path": "sotp",
-"sha256": "c2ef7d6a4a553e7cded44e05b718deb6812b377f7da925e97aaaa6a3d8cd0407"
+"sha256": "6561094f5d8c9032a74f23a1b71d62997bb3070dddd306d11517ac0932037420"
 },
 {
 "check_prem": {
@@ -1469,7 +1469,7 @@
 "market": "KOSDAQ",
 "name": "케이티알파",
 "path": "general",
-"sha256": "145c75588d86cda2ab0d6c72c68195902480cd096ed298de29a1630b87d2de8b"
+"sha256": "ca03117fd95b2e5a9dd34fdb14566adf8b0405eb3c45b85e31701e24856c5068"
 },
 {
 "check_prem": {
@@ -1494,14 +1494,14 @@
 "q75": 0.5134027907750078
 }
 },
-"check_ps": 7880.8842123989625,
+"check_ps": 8074.395584225678,
 "code": "036200",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "유니셈",
 "path": "general",
-"sha256": "ed2dbfebd919f3b64a4032d7fc2eb3e060fc2161af1c7e328f375319936febf3"
+"sha256": "369fd8b4316a3c321fd6329b171dae2541914b23b7f0df3f711daf530a5a3e3b"
 },
 {
 "check_prem": {
@@ -1526,14 +1526,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": -169321.15924366575,
+"check_ps": 157181.85813667008,
 "code": "036570",
-"hold": true,
+"hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "NC",
 "path": "general",
-"sha256": "ad1e8d2807b9370f8d8c7aacb824317c26ec6d94342aca0435f2c3fcb734cb80"
+"sha256": "361c80daf0b3cedafa49add0eee861fa5842b56dc91ba72b27b324071927c7c1"
 },
 {
 "check_prem": {
@@ -1558,14 +1558,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 21395.80866237018,
+"check_ps": 21802.68297441061,
 "code": "036930",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "주성엔지니어링",
 "path": "general",
-"sha256": "b38ced0a464a94957332e44aeab5badb96977a17d398f75bc7928b8f43b4d645"
+"sha256": "6b2351d2bf2b374f7e75eef8f35ec01a9b4f7338a84a43fb9b08e5675ec1b31a"
 },
 {
 "check_prem": {
@@ -1590,14 +1590,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 28508.378779462448,
+"check_ps": 28603.856412621444,
 "code": "037460",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "삼지전자",
 "path": "sotp",
-"sha256": "37df80e496e88337c3e093a521aa221b3609cd2e2414bb992d75665e4ed53c70"
+"sha256": "315dc4994b5445b24cdcaa00747ce957c5229096370c8d4eb9ba37e60558a5cd"
 },
 {
 "check_prem": {
@@ -1629,7 +1629,7 @@
 "market": "KOSPI",
 "name": "광주신세계",
 "path": "general",
-"sha256": "4df21e8bfc9ddd2e5c9e4231f6b93e0384062cacbce2a271e19b996336c233d8"
+"sha256": "6131cb2e62f61bf90a49195d425adfd45bb169ffc0751b9b5a3416b7b4d10e41"
 },
 {
 "check_prem": {
@@ -1661,7 +1661,7 @@
 "market": "KOSDAQ",
 "name": "에스엠",
 "path": "sotp",
-"sha256": "6c8b8e05b96d5be5614c46012e375c2693d7c69391945fd8871bbc1446a29924"
+"sha256": "9379a5256c7edb1e0d06f4ad67c72db772cef6d74d48e836d4b33fcb7f05c9ef"
 },
 {
 "check_prem": {
@@ -1693,7 +1693,7 @@
 "market": "KOSDAQ",
 "name": "이엘씨",
 "path": "loss",
-"sha256": "d30a16cd3c1984f1cc7656f721077e1553bad21bd1bf3cee2a1e280fe9379c21"
+"sha256": "470e27c2350744649207c3f59dda085abd6f4e5716c71379fc2c659ce4f472d1"
 },
 {
 "check_prem": {
@@ -1718,14 +1718,14 @@
 "q75": 0.7688086466694185
 }
 },
-"check_ps": 96375.64962256765,
+"check_ps": 65688.42454216597,
 "code": "044820",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "코스맥스비티아이",
 "path": "sotp",
-"sha256": "397c9a286bd7fc7d566e4f7dfd40dc55be926470dd36b0b9b20e95977ff19b04"
+"sha256": "c8a1f0ca799fb1d399ec4d0589ce7b0f37c5e4ea3951efdfafa057307fd0e75f"
 },
 {
 "check_prem": {
@@ -1750,14 +1750,14 @@
 "q75": 0.4192503532670949
 }
 },
-"check_ps": 14.823838065810433,
+"check_ps": 2868.9803777027773,
 "code": "047310",
-"hold": true,
+"hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "파워로직스",
 "path": "general",
-"sha256": "d56dc7e33eff82cd9f7fd8cd042e6d22bb1d9075fdfebebde4fa5989616f97f2"
+"sha256": "d31057ee3acfa8921a290e84fb23fc18f00a201b7c45301577443a0ee5fb097d"
 },
 {
 "check_prem": {
@@ -1789,7 +1789,7 @@
 "market": "KOSDAQ",
 "name": "인터플렉스",
 "path": "general",
-"sha256": "17d2328d561dda7f435e0f8f7c6a99ea44d274aff0a8aae9cbbe7482de38df03"
+"sha256": "1bdd9e07571205ad4ba02e1fcafd3edc50e01ccb2f0582702b2f2f3a4ae334ad"
 },
 {
 "check_prem": {
@@ -1814,14 +1814,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 618687.1115080785,
+"check_ps": 91117.09398110973,
 "code": "051910",
-"hold": true,
+"hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "LG화학",
 "path": "sotp",
-"sha256": "1359421d38dde6e666532499a1ce9d501944b147cb3035f8be1b047c3f2efed1"
+"sha256": "edda72209892edf819a1735192c28b9a6df4e5052d8f3044979ebc1e86a46048"
 },
 {
 "check_prem": {
@@ -1846,14 +1846,14 @@
 "q75": 0.5134027907750078
 }
 },
-"check_ps": 6806.735710535256,
+"check_ps": 3293.917526422614,
 "code": "052710",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "아모텍",
 "path": "loss",
-"sha256": "01dbdbb5ac1f3a23975baf66c9b2bbafb31146983730613cc83343d93a46f739"
+"sha256": "7c661e8f1d1d01b4de51b782166019dbad1556ef31ec2464df85a668d78b9cb2"
 },
 {
 "check_prem": {
@@ -1878,14 +1878,14 @@
 "q75": 0.8881931538903816
 }
 },
-"check_ps": -5765.225532688485,
+"check_ps": 12221.869420723788,
 "code": "053210",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "스카이라이프",
 "path": "nci",
-"sha256": "83450f28dfc90e99bcc29698617e41738a3c0dbfb2ea8de290a0d878950fa4ac"
+"sha256": "022fab8c01ed552df9454da723787834fa34922072e73799f66dc6e07236cb4d"
 },
 {
 "check_prem": {
@@ -1917,7 +1917,7 @@
 "market": "KOSDAQ",
 "name": "제이브이엠",
 "path": "general",
-"sha256": "682dc26a2317bc273e53d07d71aa2931124c37c846d3ac93268fe860fb4a6fbc"
+"sha256": "df564da0b16118ef1308340be0714b315c6b3e0e44bb9a06a956d019bce4a2c8"
 },
 {
 "check_prem": {
@@ -1949,7 +1949,7 @@
 "market": "KOSDAQ",
 "name": "미코",
 "path": "sotp",
-"sha256": "6e77cd114242af8e0cc66551d369d175f8acb5a4ac7064230fa77a607b01a908"
+"sha256": "b9526bd6b67e0432a5a6d439bde1c20c0d84e771ffff308edcbc4cb42ed5f85a"
 },
 {
 "check_prem": {
@@ -1981,7 +1981,7 @@
 "market": "KOSDAQ",
 "name": "인선이엔티",
 "path": "general",
-"sha256": "5b63c9f0427885c410edfbfcae47af97bc7f947a185d602b0b01964bf3baa8e1"
+"sha256": "1cf2d52833dc665210e61c7f7f96cd682f9fdc4959a8528f3be99ff7701aab55"
 },
 {
 "check_prem": {
@@ -2013,7 +2013,7 @@
 "market": "KOSDAQ",
 "name": "LS마린솔루션",
 "path": "general",
-"sha256": "6831bc9a29650a1ae43377e48613c8ed0ac8da547ac97ef09ab5941398657066"
+"sha256": "3bee0cd830e14b2f74f044e3097be8f10a4ab4513623abaff5c420f5e2f7c5d4"
 },
 {
 "check_prem": {
@@ -2038,14 +2038,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 3152.454378988956,
+"check_ps": 1639.0827366624092,
 "code": "064290",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "인텍플러스",
 "path": "loss",
-"sha256": "022927e3eeaf1f48f33a2476d3e1ac0201bf7280bb1dc2653624fca527618031"
+"sha256": "b0f7a36e6680638dc97613f3775547233f119de4e5592f0092f4b769c11eb649"
 },
 {
 "check_prem": {
@@ -2070,14 +2070,14 @@
 "q75": 0.6039854248032701
 }
 },
-"check_ps": 106942.82362390563,
+"check_ps": 13649.422763919407,
 "code": "064550",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "바이오니아",
 "path": "general",
-"sha256": "c4ec96c5983b8a8ac08f10d9fb813de0508c2be6bb7c9f2d46a76a577fe13d37"
+"sha256": "8f1b62243045236e5e9de086938f97e713671e816845666d56e7835b8d47ef94"
 },
 {
 "check_prem": {
@@ -2109,7 +2109,7 @@
 "market": "KOSDAQ",
 "name": "국보디자인",
 "path": "general",
-"sha256": "74a01f34e8f9d158cf9cea84b8e3eecca2fbfd670b59025d59f85d49b05df8b8"
+"sha256": "e35aee7db182ecb48213bdea91c58a006c748bfb5be890413cfa47a97c36cf26"
 },
 {
 "check_prem": {
@@ -2141,7 +2141,7 @@
 "market": "KOSPI",
 "name": "대웅제약",
 "path": "sotp",
-"sha256": "1ea7fd95c1d5c8af50de47d4b4c45b686c9816c0e9d534b44cd08d96c325c015"
+"sha256": "aa6c28889d13344e39ad4501107691e3977432cb6a0ee2eb06024696ba8df67a"
 },
 {
 "check_prem": {
@@ -2173,7 +2173,7 @@
 "market": "KOSPI",
 "name": "지역난방공사",
 "path": "general",
-"sha256": "79fe801dc54e05b718ce081d6d4b212c81b20d63cd1e7461666c8c5259033680"
+"sha256": "57e7e14a4f44d999a69ca5413a9e0b101791b3749f353d84db6f58e93e47db28"
 },
 {
 "check_prem": {
@@ -2205,7 +2205,7 @@
 "market": "KOSDAQ",
 "name": "메가스터디",
 "path": "sotp",
-"sha256": "5767cad0547724f28d333269b099ab158ae568fc6a334a4d292d237e572f5b7e"
+"sha256": "3a9d1dc114b699b1e1ba3334eb0bb5d790ca40eaad06e0ae7ed1a238a3695256"
 },
 {
 "check_prem": {
@@ -2237,7 +2237,7 @@
 "market": "KOSDAQ",
 "name": "유비쿼스홀딩스",
 "path": "sotp",
-"sha256": "517b7bd3193dbdb1060e3eabe3be7b51382683c4f859185b65e19c35dc446db0"
+"sha256": "805f28d789a6fab3698851e915da79cefc9fcab156361dae9d34edb82b3613a1"
 },
 {
 "check_prem": {
@@ -2269,7 +2269,7 @@
 "market": "KOSDAQ",
 "name": "대주전자재료",
 "path": "general",
-"sha256": "6d59c6f31eb514fe390708dcf9a875e2683a7eec3f68321f8c1836190f90c7c8"
+"sha256": "eceaf457e863741ca08e15e0f236402b7ee6f14e247ab626c7df435c11c551dd"
 },
 {
 "check_prem": {
@@ -2294,14 +2294,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 1200.6963031202456,
+"check_ps": 1687.9987172657939,
 "code": "080580",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "오킨스전자",
 "path": "general",
-"sha256": "e4df33d482192a3098a04de6fdd807e082d2917fe0af1c6a95b888e6af0a8bba"
+"sha256": "de8d47bc404b820b68cf530151f7a69a6f844c416f9b8f8d1d1d339e032b4f4a"
 },
 {
 "check_prem": {
@@ -2333,7 +2333,7 @@
 "market": "KOSPI",
 "name": "미스토홀딩스",
 "path": "nci",
-"sha256": "a94ff6d3f7f3ee0212c2119d1cc3f91d3717adecc7ddc9421e8eaa726d44912b"
+"sha256": "b7419f8243c81c579f3467348909598ac7358450cdef409757c6f5c7ed09be9c"
 },
 {
 "check_prem": {
@@ -2358,14 +2358,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 2766.0508033975575,
+"check_ps": 2477.957847624784,
 "code": "082270",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "젬백스",
 "path": "loss",
-"sha256": "7b32906b1a1bf61ca96dbce9aa1acbe05e0848f7a6957cae18334391331b5092"
+"sha256": "81e7356c25076cb39b219d1f0d3dfe8f0f0ca3b2a40a344b8e761fd335a47f06"
 },
 {
 "check_prem": {
@@ -2397,7 +2397,7 @@
 "market": "KOSDAQ",
 "name": "비츠로셀",
 "path": "general",
-"sha256": "b5c0853ff87c7ac8b75f424aa8dc97cab0b4d3fcc1f60a35161f21ef93247bcc"
+"sha256": "45f31e09c903414a0757c43201a4a12a0c54e5387a209bc22ccbd8dcaeda70eb"
 },
 {
 "check_prem": {
@@ -2429,7 +2429,7 @@
 "market": "KOSDAQ",
 "name": "휴온스글로벌",
 "path": "sotp",
-"sha256": "f8dfea5c04c1700ead829d27bad5fa5c059661566960cd98382a18900aa378b3"
+"sha256": "03b4bd5cfe8fff14e87a48e6b868bbcb98fde748c47184895fa1a89f20cbc470"
 },
 {
 "check_prem": {
@@ -2461,7 +2461,7 @@
 "market": "KOSDAQ",
 "name": "켐트로닉스",
 "path": "sotp",
-"sha256": "e0a2b701c2f5a500da1bf2372fc114328bca88e67d930d3b975ce81e695ba84e"
+"sha256": "bdcd10050537eadd531424193c1af72585d8ec4fc734d82559262a97f6266bf7"
 },
 {
 "check_prem": {
@@ -2493,7 +2493,7 @@
 "market": "KOSDAQ",
 "name": "KT나스미디어",
 "path": "general",
-"sha256": "f7fab0a366a6e0ba9d46ad6c481954bc0204af562fbe88792a58285031ff092c"
+"sha256": "f41c02e1af77d64c7a377d688e88bd55607557ed6d5a334ededbd0b3dc593f98"
 },
 {
 "check_prem": {
@@ -2525,7 +2525,7 @@
 "market": "KOSPI",
 "name": "아모레퍼시픽",
 "path": "general",
-"sha256": "9cc70af4dd2ef90f32c04c9e579cfceaf05fb607510453d3d1eda1cc1a642058"
+"sha256": "a87da105d12f348e4e792fc7cc7ee2141974b3b39db2a0bc62f9ac98313c2aaa"
 },
 {
 "check_prem": {
@@ -2550,14 +2550,14 @@
 "q75": 0.33243565443840895
 }
 },
-"check_ps": 15890.92222426263,
+"check_ps": 5994.130358502312,
 "code": "092070",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "디엔에프",
 "path": "loss",
-"sha256": "e53a3a720aef1ba6ae63aa712ad635c1d9df02e315c4a667ec268a7fd85497b3"
+"sha256": "d43ad90ea75ecdcfee72a1e3202753f167620a29ae74a2d18fca4e22ca97edf2"
 },
 {
 "check_prem": {
@@ -2589,7 +2589,7 @@
 "market": "KOSDAQ",
 "name": "네오팜",
 "path": "general",
-"sha256": "594621eba09b4fbadab6ee7ef1ccabd58f1b4dfb925412e5eac243c8398a5502"
+"sha256": "e848c0a0aa47ff4801d804328aa4baa722e3bed60c4bd12433d9798e10f7053e"
 },
 {
 "check_prem": {
@@ -2621,7 +2621,7 @@
 "market": "KOSPI",
 "name": "넥스틸",
 "path": "general",
-"sha256": "dd450d2567cc9b79a1623e7ce0b8bce16cefa93bd100ca340640b275a72e344b"
+"sha256": "6830e067961bc63787ce8e689ca4cd526927fddcd5da501238408f2f82e2485d"
 },
 {
 "check_prem": {
@@ -2653,7 +2653,7 @@
 "market": "KOSPI",
 "name": "후성",
 "path": "sotp",
-"sha256": "712260e7440659b0358393cd753f0ed0a4c3e5d475f60093525706173b999f70"
+"sha256": "fe8b939f5148bba13dbe7792979dd412eb13fc3cbefd09e1d7ede8f195f14529"
 },
 {
 "check_prem": {
@@ -2685,7 +2685,7 @@
 "market": "KOSDAQ",
 "name": "슈프리마에이치큐",
 "path": "general",
-"sha256": "9e0f5e60be19a40c60cafd553fcd6506dfb24ad80d8846fe3cc444a1315a587e"
+"sha256": "dba3673be56b1a6e12df29f45ec6f20e839e0d99e6b2e399a155ca604b264730"
 },
 {
 "check_prem": {
@@ -2717,7 +2717,7 @@
 "market": "KOSDAQ",
 "name": "씨젠",
 "path": "loss",
-"sha256": "d4b09fd564ccd7f89e963868951970dd192315028211ab638dbd762464eff2f9"
+"sha256": "67771197cebc8563c969f79124172477b0c1af144811a23b697a609a095c94a7"
 },
 {
 "check_prem": {
@@ -2749,7 +2749,7 @@
 "market": "KOSPI",
 "name": "SK이노베이션",
 "path": "sotp",
-"sha256": "5438a48de98dcfaf8878067d18199b6d96c9253dc46186e0172eaf01bca0cbe8"
+"sha256": "fe78a08e4e33b2835eaedb04aeb31d4b79ab87053d6fd5dd8ce7299a8231d285"
 },
 {
 "check_prem": {
@@ -2781,7 +2781,7 @@
 "market": "KOSPI",
 "name": "SNT에너지",
 "path": "general",
-"sha256": "c9007dd542c0b4265ae4ef3e3cc58868188df391ae1070d67da44312f674e8b2"
+"sha256": "c8cde6feb60de02788c1bb91fba5e2eddc0e7f93ba1b9d10fa0eabfccc985389"
 },
 {
 "check_prem": {
@@ -2813,7 +2813,7 @@
 "market": "KOSPI",
 "name": "동성케미컬",
 "path": "sotp",
-"sha256": "75704e1fdf16de299a378d67b169f4f6534ceed48c64932e9a45df5038e73fa7"
+"sha256": "87213311e378c70ce8216babba6e57fc7fec78f720916263ccaf26078dcb9dad"
 },
 {
 "check_prem": {
@@ -2838,14 +2838,14 @@
 "q75": 0.8881931538903816
 }
 },
-"check_ps": -3558.1956541691457,
+"check_ps": -8262.20426593481,
 "code": "102460",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "이연제약",
 "path": "loss",
-"sha256": "9857a8cddc77452bf90afd909dfe6dc241d92e9f7acaf619bee01eb0b48d84b8"
+"sha256": "e0525be38c6a4c5172ca36deb8f25f828956f9ae2535019660180bb318e7616b"
 },
 {
 "check_prem": {
@@ -2877,7 +2877,7 @@
 "market": "KOSDAQ",
 "name": "강원에너지",
 "path": "nci",
-"sha256": "a6a225f9fcb0876d864d548a517cb3ae8b218559cfb73d27f75cfbc24f8e6f1b"
+"sha256": "3a0582bb3b1a04bd7390a0686b46cb1f610465acdf9a6e74fd9709442dfbc3a9"
 },
 {
 "check_prem": {
@@ -2909,7 +2909,7 @@
 "market": "KOSDAQ",
 "name": "아이패밀리에스씨",
 "path": "general",
-"sha256": "a75274917fdc9c8e0d527af8fce19c673cd2713acad3138542b125dc5816f877"
+"sha256": "bafac123ed2c9074be6c55b90a452d16838d5e1dff985c49e025dcad942f1da4"
 },
 {
 "check_prem": {
@@ -2941,7 +2941,7 @@
 "market": "KOSDAQ",
 "name": "아이텍",
 "path": "loss",
-"sha256": "760bacc2525d6222e791994e5ecd70f158f472f6c2c1ce9a4c01c22bc1c0408b"
+"sha256": "31cd26de07de4fbcfe9494a5cf230bab21e21bf7b4d75c80f9d1a5dc1f2a3827"
 },
 {
 "check_prem": {
@@ -2966,14 +2966,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 49945.506061168824,
+"check_ps": 76128.46513296787,
 "code": "120110",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "코오롱인더",
 "path": "general",
-"sha256": "f139e8035bf5422fc390a9e2fb3f6cb864ba8fb4a012d23a6e78b9f143cd3341"
+"sha256": "f70bbcaa5b651d36379c4c9e5941e4c2108ede58830904044155676eac69344e"
 },
 {
 "check_prem": {
@@ -2998,14 +2998,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 42267.31545091041,
+"check_ps": 43014.77293441197,
 "code": "122870",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "와이지엔터테인먼트",
 "path": "sotp",
-"sha256": "7d6a3205b513257ec24eb9aff9477bd3f1fb952a0c7904c9e68e666e000b47b6"
+"sha256": "893dc69ed9feec45d5c8c429b4ff2b30aee363ae4558082cdfb41262ecbecae1"
 },
 {
 "check_prem": {
@@ -3037,7 +3037,7 @@
 "market": "KOSDAQ",
 "name": "코칩",
 "path": "general",
-"sha256": "36d4058e5d9774d48ee91f4cfa048c0e7d7797e7dfa1d9921af8554e9ff26316"
+"sha256": "5f1e54da50798847f848696a7af16b92e6089dd60bb3bc47556e837770cf818f"
 },
 {
 "check_prem": {
@@ -3069,7 +3069,7 @@
 "market": "KOSDAQ",
 "name": "탑코미디어",
 "path": "loss",
-"sha256": "39869d75d5d1e6f75a5b3395744f48685754e4b982892e891a86ca02b9ec6501"
+"sha256": "6df0cdfc04e3ee4f3d423483e2f28d5865f9550f1275a21c4b21aed29c10e8eb"
 },
 {
 "check_prem": {
@@ -3101,7 +3101,7 @@
 "market": "KOSPI",
 "name": "에스디바이오센서",
 "path": "loss",
-"sha256": "321fc0155eb2b1e19a2a6aa097c6de64533b115542d8e98eb80f6035d37e0057"
+"sha256": "acb3a605c76c03f5de954ec4cdcbc42591ef8a2fd201c917fd509d8d65f953a6"
 },
 {
 "check_prem": {
@@ -3133,7 +3133,7 @@
 "market": "KOSDAQ",
 "name": "앤로보틱스",
 "path": "loss",
-"sha256": "99660105b01af7c7f49df73dd76c45e596f70f7f83c5e06767d2b44d203a33cc"
+"sha256": "573d421c003d5150e609cfc838ec129d0b3aa1910f4539596c016cf03f0f8f43"
 },
 {
 "check_prem": {
@@ -3158,14 +3158,14 @@
 "q75": 0.2862810044282217
 }
 },
-"check_ps": 6505.00531889548,
+"check_ps": 1612.2241979693028,
 "code": "138610",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "나이벡",
 "path": "loss",
-"sha256": "cf9d32c7be7bda0132339c884e41f07e01feb772ee6b30704dd1f27ac3184f0c"
+"sha256": "014ab043c877d96fab84f25ba821e4b4ea5c311f1118af8a100709d440e430b3"
 },
 {
 "check_prem": {
@@ -3197,7 +3197,7 @@
 "market": "KOSDAQ",
 "name": "아이디스",
 "path": "nci",
-"sha256": "f120a5fdb99755e8acacec30131476816dfa4e1a0d72db01a47474f252df8eb2"
+"sha256": "37a3b1c8803260757265c36dafec988334dc0bf87431d5dde6a9defdc8f86a17"
 },
 {
 "check_prem": {
@@ -3229,7 +3229,7 @@
 "market": "KOSDAQ",
 "name": "제룡산업",
 "path": "general",
-"sha256": "b34fc679c8faf2161e6d942479afa8c177d3994d17c1d1e4e49361120b7fbee7"
+"sha256": "f2499ccb842425cda0e7d675be51f1e0e604024fc3dbeaffca66d38fb86aa3ec"
 },
 {
 "check_prem": {
@@ -3261,7 +3261,7 @@
 "market": "KOSDAQ",
 "name": "아바텍",
 "path": "general",
-"sha256": "a7c8b20b6d38a53c793180120eaa9c95ececdee7d790b178cc8fe64c0b523df0"
+"sha256": "c11b40e72142857924036c4a7be3f053e5c37d178016e8e343829b5431f25405"
 },
 {
 "check_prem": {
@@ -3286,14 +3286,14 @@
 "q75": 0.4468347384464297
 }
 },
-"check_ps": 11873.029302815105,
+"check_ps": 2086.942342388331,
 "code": "159010",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "아스플로",
 "path": "loss",
-"sha256": "461a949df1b1a196c78e81416b234e424ee5b2ae3ef3f40886ac7a64c0443dfb"
+"sha256": "159342cec96d80f6e307268783fd29870ebf91bb852364a57be923a14fa9156a"
 },
 {
 "check_prem": {
@@ -3325,7 +3325,7 @@
 "market": "KOSDAQ",
 "name": "싸이맥스",
 "path": "general",
-"sha256": "8a22f4edf7d094a0a3d57d21227a0467d0ad87873dbb312bf4ac6e01c0ea2e6c"
+"sha256": "80b9f698523201a44a7598b3b1793cba57372da6699d9edadcde53de05f1bed8"
 },
 {
 "check_prem": {
@@ -3357,7 +3357,7 @@
 "market": "KOSPI",
 "name": "한국콜마",
 "path": "sotp",
-"sha256": "063acbc576e6a16f1f952612a067b1d821dc32eab045c428b2f46dc6b8f9081b"
+"sha256": "120bbc5fd47e84dac26964993faa4f12d02290182ecf29ff8891ebf9ebba967f"
 },
 {
 "check_prem": {
@@ -3389,7 +3389,7 @@
 "market": "KOSPI",
 "name": "종근당",
 "path": "general",
-"sha256": "09afbe9da1694c44ac800da480a8c7d1e8983254de31c034b0308ec151a25e27"
+"sha256": "69aa2543aac40a2ed21097d1b11e2ae55e36327c037a187f3fc815ac710dacd0"
 },
 {
 "check_prem": {
@@ -3421,7 +3421,7 @@
 "market": "KOSDAQ",
 "name": "슈피겐코리아",
 "path": "general",
-"sha256": "d459b18a6d750d53c7d0348915e1e95a5e5e10421b9092466dd5fa7b44686595"
+"sha256": "7ec62183569477c802a39c90e9799f4f36e59b52a83589e45ff9bb5cfd245a22"
 },
 {
 "check_prem": {
@@ -3446,14 +3446,14 @@
 "q75": 0.6039854248032701
 }
 },
-"check_ps": 14376.81791420348,
+"check_ps": 16941.750514305324,
 "code": "200130",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "콜마비앤에이치",
 "path": "general",
-"sha256": "773fbaeb00cee98253712e458dac4f758293339a9600c434f6408ddfdced46d3"
+"sha256": "c3b9e07c3c596f5a746281db23b1387853f9220f916be77564c4dcd636debaf2"
 },
 {
 "check_prem": {
@@ -3485,7 +3485,7 @@
 "market": "KOSDAQ",
 "name": "드림시큐리티",
 "path": "sotp",
-"sha256": "86a43969ff73cf7b315eb2039cefad710f2fc4a87704c1b5644d4a22e8037679"
+"sha256": "818ae5cbc83d56720c85942698b1e724df7355cac4b2f57b09ee104f31550498"
 },
 {
 "check_prem": {
@@ -3517,7 +3517,7 @@
 "market": "KOSDAQ",
 "name": "제이앤티씨",
 "path": "loss",
-"sha256": "b6ced0a2a2950f66906aece5f77e0aea7162a06960131528a8e1d8e3487a3921"
+"sha256": "85d0b00c11db821dabf413952ca15e909dafbcee28a2a99d8d84f027bc6df8d3"
 },
 {
 "check_prem": {
@@ -3549,7 +3549,7 @@
 "market": "KOSDAQ",
 "name": "덕산네오룩스",
 "path": "general",
-"sha256": "8548184a56dbcc5c181d14bf46274e05f0cbe9c89b02f5d79b0443812c4ddd4c"
+"sha256": "66e7725bc868df6ee5fe0b240e2790d607886fe32fc5c1f3d67dd2384105a02c"
 },
 {
 "check_prem": {
@@ -3581,7 +3581,7 @@
 "market": "KOSPI",
 "name": "한솔제지",
 "path": "general",
-"sha256": "69f85ec64bd47d07a8adf5a00e6673c5b5ed95d403f4ab5be7386324a90f1e86"
+"sha256": "ebd4418eb298f2d7c6bc32a3703c1c3b75f21171edf98ef346b3813c0c52391a"
 },
 {
 "check_prem": {
@@ -3613,7 +3613,7 @@
 "market": "KOSDAQ",
 "name": "케어젠",
 "path": "general",
-"sha256": "8cfd4944105227908c6b125772f2f8e4283af5eeb3e4cd6e55bdc3932d06630d"
+"sha256": "e7fb3d7f2cdd5d49581609cd686991afaf92e477058b199eb8ba92bd79fee77c"
 },
 {
 "check_prem": {
@@ -3645,7 +3645,7 @@
 "market": "KOSDAQ",
 "name": "아이쓰리시스템",
 "path": "general",
-"sha256": "341df1cfcd9529da920d411f1fe94a8f7645b2aca07938e7be051b089150ff85"
+"sha256": "1aca76189430beb2f80645c0c77b8c3b154c4d7e913b1d76b66b09f5a6d9ee09"
 },
 {
 "check_prem": {
@@ -3677,7 +3677,7 @@
 "market": "KOSDAQ",
 "name": "메가스터디교육",
 "path": "sotp",
-"sha256": "5fcbb7214f472ea49f4aecf0df3dd2d069689d15a31252a1152faa891e3b0863"
+"sha256": "45089e6bfa4324c8ed4b7ee5f8526db5238511a3620da622a3115ffb2db46335"
 },
 {
 "check_prem": {
@@ -3709,7 +3709,7 @@
 "market": "KOSDAQ",
 "name": "타이거일렉",
 "path": "general",
-"sha256": "4902a9b915e57f47ca52c6503c74670c1206f8e0093a014521fde5cf5a51d1ee"
+"sha256": "1af5e13971c3fb9a86ce97ce19f96460b89c8080375d97e3e97c49ce4f827001"
 },
 {
 "check_prem": {
@@ -3741,7 +3741,7 @@
 "market": "KOSDAQ",
 "name": "퓨쳐켐",
 "path": "loss",
-"sha256": "4fc5508f856ad9b2bc53919949143df93a0fdbe8a7c4eb442df38c1992c858fb"
+"sha256": "e2c91aab25fd2a1b5d66ee52db2619cd26cb32add4ea2ea0720e6ca4ef0556d3"
 },
 {
 "check_prem": {
@@ -3773,7 +3773,7 @@
 "market": "KOSDAQ",
 "name": "SFA넥셀",
 "path": "general",
-"sha256": "677ff76f1f3c47229b5b8a891a9799223349388c92d6dffaa1ba330536fd1063"
+"sha256": "7cd74ca8fcc76db90b9806bc2eda7355bdf67fa1d649cf5736e1c9f301b86b4b"
 },
 {
 "check_prem": {
@@ -3798,14 +3798,14 @@
 "q75": 1.0050676985368532
 }
 },
-"check_ps": 36416.380414203064,
+"check_ps": 38211.95249264916,
 "code": "227840",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "현대코퍼레이션홀딩스",
 "path": "general",
-"sha256": "54e2eae57336c1f3a5596ef031643f25a39ee193c008fedb0ec6a97d7ebb1730"
+"sha256": "ca506050b739771de36a7410bb35b15ab9abd60cff7a3b816e22df068158667d"
 },
 {
 "check_prem": {
@@ -3830,14 +3830,14 @@
 "q75": 0.3610075806351918
 }
 },
-"check_ps": 18198.827274975753,
+"check_ps": 19474.510199012155,
 "code": "228850",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "레이언스",
 "path": "general",
-"sha256": "b612013563dae707d312e7090fd44b0bf51e401a17438705e2ec10d9b5ed9895"
+"sha256": "65e639305fc5bf581c6c27986b6b2ee18eb1cfeda06e32a566ed320ca03f1d22"
 },
 {
 "check_prem": {
@@ -3869,7 +3869,7 @@
 "market": "KOSDAQ",
 "name": "클리오",
 "path": "general",
-"sha256": "d48e60ee183a59e599abd44ff7f0a4bab1356c45c1a86bab03fe0df677e53ef2"
+"sha256": "0788124efea41203369ac001147cc59203439c45832108f81d33b86d303485db"
 },
 {
 "check_prem": {
@@ -3901,7 +3901,7 @@
 "market": "KOSDAQ",
 "name": "코스메카코리아",
 "path": "sotp",
-"sha256": "e42a49251dd69eb4f5a02fb947784dd2dfb5e8ead61de27f1dd07f1dd00e5ec1"
+"sha256": "b36d0b9c298d93d6e8d779c07979c93e505ec25157df3e24d6f881f9a7fd50e6"
 },
 {
 "check_prem": {
@@ -3933,7 +3933,7 @@
 "market": "KOSDAQ",
 "name": "티앤알바이오팹",
 "path": "loss",
-"sha256": "46f20fd19c4b3cda01ccb17fc24922e0e8055290941c26e7b8dd78a7a25bcf8e"
+"sha256": "0f38d157c519654938edda029ac0cba3f5b86d14fb971178bce51d06dac2c952"
 },
 {
 "check_prem": {
@@ -3965,7 +3965,7 @@
 "market": "KOSPI",
 "name": "솔루엠",
 "path": "general",
-"sha256": "e5f61f786012c62fa3b86e7aa11b4546ac4c6e50b2fbb247908e532d82b4204b"
+"sha256": "0696c3687a7f537ca8f30196e6b2cdeb9230ff43a4ac76d74dc211b2639fee99"
 },
 {
 "check_prem": {
@@ -3990,14 +3990,14 @@
 "q75": 0.37089786278023185
 }
 },
-"check_ps": 3527.9365265866313,
+"check_ps": 4298.804976469747,
 "code": "265740",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "엔에프씨",
 "path": "general",
-"sha256": "ad336e7d6cda38c02da62990b5a81281cbed5f61b87f1918e38ee1c020ae86e3"
+"sha256": "043b02e164a40ce78e4e1a7f39d51b4adf50c4efbb31c1650f217f11ee16a7c2"
 },
 {
 "check_prem": {
@@ -4022,14 +4022,14 @@
 "q75": 0.99853214303146
 }
 },
-"check_ps": 114596.62409159492,
+"check_ps": 118263.19388232825,
 "code": "267290",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "경동도시가스",
 "path": "general",
-"sha256": "d68e7c56eb95831fbb3f0a20d225fb69009ef7cb8892f12d52d105812cb635b0"
+"sha256": "adaf3fc5fafa75cf92abde690d0b8a91c94f903f7d04ff096da0662f9bae1c03"
 },
 {
 "check_prem": {
@@ -4054,14 +4054,14 @@
 "q75": 0.3170507711016799
 }
 },
-"check_ps": 1573.410015502739,
+"check_ps": 777.7107095847183,
 "code": "267320",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "나인테크",
 "path": "loss",
-"sha256": "b840b707b42eb18956a1d95371719a4223b119472e18f3cf0a431364a5967a21"
+"sha256": "f596fc32b01fc36c42c629199e362f2db6d21d284c01c02e7344c505181aa749"
 },
 {
 "check_prem": {
@@ -4093,7 +4093,7 @@
 "market": "KOSPI",
 "name": "미원에스씨",
 "path": "general",
-"sha256": "aaec9958e206686a79e5816ddf51687dbe019cafdc8c50fb9e160586b37e3918"
+"sha256": "631e5aec249d978e925d3a0ce3780df56109c50221078ea6425f988c6c6f9f5d"
 },
 {
 "check_prem": {
@@ -4118,14 +4118,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 9116.193440756686,
+"check_ps": 8614.19725058471,
 "code": "271940",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "일진하이솔루스",
 "path": "loss",
-"sha256": "26e983aa3406720d0b7e317c8516ee4e56e1661fbbc3fdd1d1c638a42ae727df"
+"sha256": "dc90cfde7f00902f86f4e9f9738a7900089fab2f096e11a61f0ff49c6b2aa10f"
 },
 {
 "check_prem": {
@@ -4150,14 +4150,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 22970.053817856537,
+"check_ps": 24070.807184094738,
 "code": "272210",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "한화시스템",
 "path": "general",
-"sha256": "dda15102167afde8e3b113357e2c51c5316dc600d9084a673e4aa3bfb97933be"
+"sha256": "934217ccb8fe2d5d2a6cd018488b2f3063b17ecdee29ef4650058c298e294ee5"
 },
 {
 "check_prem": {
@@ -4189,7 +4189,7 @@
 "market": "KOSDAQ",
 "name": "천보",
 "path": "loss",
-"sha256": "9047de4ec1b47444cde3b1e2a940b47ff02b70c094b0b3d0dd9b744ef20e83d0"
+"sha256": "8119d5427ef11eb83744afcea31d2d0a3ac14acdd9f1fc3cec560a68a2fb44ac"
 },
 {
 "check_prem": {
@@ -4221,7 +4221,7 @@
 "market": "KOSPI",
 "name": "SK케미칼",
 "path": "sotp",
-"sha256": "28cf1b7294298014b77207f5531704054e990e14474bc506e3710ef65938cde8"
+"sha256": "e67a901af792a84eed47b54a7f6f8d044d5aa658e4ee7cad060aa6d858c01185"
 },
 {
 "check_prem": {
@@ -4253,7 +4253,7 @@
 "market": "KOSDAQ",
 "name": "노바텍",
 "path": "general",
-"sha256": "7337e401f9fbd0adce6b8f965a7029f9bc06a3189aa9723df1ae6c862175d653"
+"sha256": "41b759a7dc5a1b11bab859827306f40317a5d154ef5b72dab0d20e9970f8c677"
 },
 {
 "check_prem": {
@@ -4285,7 +4285,7 @@
 "market": "KOSDAQ",
 "name": "아리바이오홀딩스",
 "path": "loss",
-"sha256": "73bb124c6a00333c05290d453f51f7acbcde28eaf1f992c10a15ae147d4a40d2"
+"sha256": "4e5608f971591ce860c234f490d43850816552e5f7e976b3ea873a6f128f509b"
 },
 {
 "check_prem": {
@@ -4310,14 +4310,14 @@
 "q75": 0.386282746116961
 }
 },
-"check_ps": 341.488641936808,
+"check_ps": 1076.649677392232,
 "code": "297090",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "씨에스베어링",
 "path": "general",
-"sha256": "eaf2a0e681fae087acf2a4617f1af7b82e55dd2c4e64f53f795d36e89a739528"
+"sha256": "1356ef34ff4a64078236596a4bc54c97665cf99606809f15ee07a19c93bfc41b"
 },
 {
 "check_prem": {
@@ -4342,14 +4342,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 355195.92903099436,
+"check_ps": 386824.33857604826,
 "code": "298020",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "효성티앤씨",
 "path": "nci",
-"sha256": "9cbe7e13f30db7fb5b412674b87a3ed59ce81904b5148f2e1ff71d628ae6c641"
+"sha256": "97438a3ab2aec1ea834120afcf4a0f167ffc4fc47400e2965577169b6ba9c69e"
 },
 {
 "check_prem": {
@@ -4381,7 +4381,7 @@
 "market": "KOSPI",
 "name": "에어부산",
 "path": "general",
-"sha256": "26ab807e6e5485d2b2ba1bb8c3d7be8ba74a9cfb8b3a08729dc2306ac8889ec7"
+"sha256": "e49d1a220c064ff0cdc42d92b078154258b3e01ccd1d83a234fd15021d186cd4"
 },
 {
 "check_prem": {
@@ -4406,14 +4406,14 @@
 "q75": 0.7586985629076208
 }
 },
-"check_ps": 1054.945270962726,
+"check_ps": -3448.476129682633,
 "code": "302440",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSPI",
 "name": "SK바이오사이언스",
 "path": "loss",
-"sha256": "76bc805be9e4f963e077b2c0e8a1fd1beb08a7e050e3da93967717d51865abeb"
+"sha256": "7fa97d5845fb5c7f27457a471c11ab33e602d25e4669244c0b2906e824ec4252"
 },
 {
 "check_prem": {
@@ -4445,7 +4445,7 @@
 "market": "KOSPI",
 "name": "현대오토에버",
 "path": "general",
-"sha256": "1123996d1e5afb3f22d12a168dd95edf736d949605976cf2bc8b947b6b32abc7"
+"sha256": "1d47a0bf5b4914c9055694456211c450ebe00dc5f0a7be36ef642612af8083f0"
 },
 {
 "check_prem": {
@@ -4470,14 +4470,14 @@
 "q75": 0.5858494584332685
 }
 },
-"check_ps": -1032.3648018100123,
+"check_ps": -1254.7405243235432,
 "code": "314130",
 "hold": false,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "지놈앤컴퍼니",
 "path": "loss",
-"sha256": "a981ada6c9e1205f0b6253dd4008b3c3eb66d6e7267f59dbd35de2ed943d404e"
+"sha256": "89ff879119fcffef6d39d0b384f13cf67e795d158edac02e7de5eed4b47275cc"
 },
 {
 "check_prem": {
@@ -4502,14 +4502,14 @@
 "q75": 0.4271567149157336
 }
 },
-"check_ps": 6473.242824497109,
+"check_ps": 6434.300172674677,
 "code": "327260",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "RF머트리얼즈",
 "path": "sotp",
-"sha256": "a5dac00948f79b27132ae212071e29fbcbf152c6fa007bb287f7c3c12dca073a"
+"sha256": "3b53ef62d5c35237c25ae759215d7abe6dbbef4096efc40eafdc0af7b5e098ea"
 },
 {
 "check_prem": {
@@ -4541,7 +4541,7 @@
 "market": "KOSDAQ",
 "name": "뷰노",
 "path": "loss",
-"sha256": "e2f4b247c2e8e47263cf4f432bb959809314330897f1861476506c698d509c25"
+"sha256": "cecf516b4d96ea7e4d82fe788a2f587e024e1153adc36f684be056e50c79ba1a"
 },
 {
 "check_prem": {
@@ -4573,7 +4573,7 @@
 "market": "KOSPI",
 "name": "KCC글라스",
 "path": "general",
-"sha256": "164357daeb2fc914c2be96a1db4c51d97845f50f4d89fabe09a06ca9f530d86d"
+"sha256": "34e2d442df8e68ccd8a414a6c62f7c49518bec51a288e3524597e56c4723b256"
 },
 {
 "check_prem": {
@@ -4605,7 +4605,7 @@
 "market": "KOSDAQ",
 "name": "이지바이오",
 "path": "general",
-"sha256": "b845867051bc95f0c9c76dff9c88953c8b3954fea97713098e12e42f1cf3ae9c"
+"sha256": "c4eaf4cd2229a47486978d61dbae531c19d7cd21d97ff8f09caca655326fe473"
 },
 {
 "check_prem": {
@@ -4637,7 +4637,7 @@
 "market": "KOSDAQ",
 "name": "엑스게이트",
 "path": "general",
-"sha256": "720675dc71dfb9dfa8fb669f4179e346d3557113de713a5c6cf1a958ed46c7cb"
+"sha256": "386cf77b7228f0653da009847e0c02d6ccf951b9946b925b9544d90a68313d23"
 },
 {
 "check_prem": {
@@ -4669,7 +4669,7 @@
 "market": "KOSPI",
 "name": "DL이앤씨",
 "path": "general",
-"sha256": "5e39f415680b74afc390c83394bba788ddb6cad105149733524dbeb8c317bef3"
+"sha256": "8b127d7b64959c79d057a249597c44dc873a6cb4c01a35ed88a5b1938515e37a"
 },
 {
 "check_prem": {
@@ -4701,7 +4701,7 @@
 "market": "KOSDAQ",
 "name": "지앤비에스 에코",
 "path": "general",
-"sha256": "94b5524f16cf663e798c999a4879cc61d94cb4f2788dbebc860bb006f0a95986"
+"sha256": "a82e0777c6cb840e03b24d9c81f8a73021b66cee1505ac312c5956903ca6a411"
 },
 {
 "check_prem": {
@@ -4733,7 +4733,7 @@
 "market": "KOSDAQ",
 "name": "에코프로에이치엔",
 "path": "general",
-"sha256": "2cc91f57ec84ce86b7543186c5f6e76935ea43f6ddf8b5b9fae00b8391a38100"
+"sha256": "35b09dc737a75793c83015976c7fb8646c904dc9d27989e23ed1cb480d1004d8"
 },
 {
 "check_prem": {
@@ -4765,7 +4765,7 @@
 "market": "KOSDAQ",
 "name": "라이콤",
 "path": "loss",
-"sha256": "1e1dea72c2fc6f70318d0291c7a0511d1cefcf4f5fae9d7fa215f4c7ac82ad75"
+"sha256": "6fdaaf886f9e5075816f43a36c28cf3edcde7656be52247cd94f7480dacb8530"
 },
 {
 "check_prem": {
@@ -4797,7 +4797,7 @@
 "market": "KOSDAQ",
 "name": "오픈엣지테크놀로지",
 "path": "loss",
-"sha256": "c15c4fdd58747e874aada78bbdb6f681d82c33e67c03010ab00dcf08a82a5800"
+"sha256": "007663f8c4e8086be272926081a6e4ea20d7938ed65b2633b9388c1370937ff0"
 },
 {
 "check_prem": {
@@ -4829,7 +4829,7 @@
 "market": "KOSPI",
 "name": "쏘카",
 "path": "general",
-"sha256": "e99d9e721890a182db9c067b2fa2639a97cc44b7991e695bcaae3476b8168212"
+"sha256": "9e33ff62828c12c0aad277a6ff8b91945e8a1fbec1a3af8284ff4dfec5d9017e"
 },
 {
 "check_prem": {
@@ -4861,7 +4861,7 @@
 "market": "KOSDAQ",
 "name": "큐알티",
 "path": "general",
-"sha256": "1e62c62b54b9a706d4c678442ca315d72bdc353c5985a891f5fd465374865709"
+"sha256": "d3c0c12a9bb47ef4c7f9d7ec079d04d08bb9d8f778eb8832c749817d546aa1cc"
 },
 {
 "check_prem": {
@@ -4893,7 +4893,7 @@
 "market": "KOSDAQ",
 "name": "제이아이테크",
 "path": "general",
-"sha256": "cda40344cb97b2d52cac3d923b0058e35e382d11c525bdb4d686b9a4bcbf4ebe"
+"sha256": "ce054dc7d2734bbce05d8f8d786effd393525be173bb1f170f5a8774379a6414"
 },
 {
 "check_prem": {
@@ -4918,14 +4918,14 @@
 "q75": 0.32913889372339555
 }
 },
-"check_ps": -1310.8660019672357,
+"check_ps": -1031.0889217280378,
 "code": "418550",
 "hold": true,
 "kind": "evaluable",
 "market": "KOSDAQ",
 "name": "제이오",
 "path": "general",
-"sha256": "45258646b59d363897f6888a49b2e82279abdf7332ad55a2e687229ee4838a07"
+"sha256": "f1fec6a8959cbf521feda0e2385e2a09eea3292a44865951806ad320665c541f"
 },
 {
 "check_prem": {
@@ -4957,7 +4957,7 @@
 "market": "KOSDAQ",
 "name": "SAMG엔터",
 "path": "general",
-"sha256": "ac98b463cbfcecb682ea46ba62fb2649589ad7c1be0d5ffbf91a8f44094728e6"
+"sha256": "98189542789f5a8ae1bba3b4a9f534d5b32f850c4e14768d9cccb9cfd2c7b36c"
 },
 {
 "check_prem": {
@@ -4989,7 +4989,7 @@
 "market": "KOSDAQ",
 "name": "퓨릿",
 "path": "general",
-"sha256": "58f766fbbd99a9bc48c946c494aac945dcb7752c6a617fbf75a678d7dd749995"
+"sha256": "45e91756a99a079a94832a57016197ffa17e883bc10c71bde71d6a9d934fc04c"
 },
 {
 "check_prem": {
@@ -5021,7 +5021,7 @@
 "market": "KOSPI",
 "name": "조선내화",
 "path": "general",
-"sha256": "f26181871841b54c63290e3c86e54634b33641ffc1578895dd5c2cc398ec4d03"
+"sha256": "f34a239dd838ccf5c6019f6afabab66bb410b25b3344acbe9a1382d04a2fa269"
 },
 {
 "check_prem": {
@@ -5053,7 +5053,7 @@
 "market": "KOSDAQ",
 "name": "폰드그룹",
 "path": "nci",
-"sha256": "33a9dc3161913f04e59e7992a98840c721585ad53a505b3422c1d6f6672de629"
+"sha256": "909a491e874feb9c6e8942c610f679986b022a7229617b2303dba0d1e0ecdcf9"
 },
 {
 "check_prem": null,
@@ -5075,7 +5075,7 @@
 "market": "KOSPI",
 "name": "현대건설",
 "path": null,
-"sha256": "e98703ae6df91275a1fa0184ae0cdb4f29e1dc29776ce99c67792084fcb36267"
+"sha256": "e38f2772e4b19bf4c3ac2d383651f725d55c91bc30bd2d7d5c3ef13cd5d381cf"
 },
 {
 "check_prem": null,
@@ -5130,7 +5130,7 @@
 "market": "KOSPI",
 "name": "한화에어로스페이스",
 "path": null,
-"sha256": "13f27a203e3f1a5bdb748cce9c50ff4e9842d70e770319165a9dd1a7b5609df6"
+"sha256": "c97b4d70b09cd380969704bd80d4260465b847cee91c9c28ccc7fee118d23627"
 },
 {
 "check_prem": null,

@@ -27,13 +27,17 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
+from src import yamlio
+from src.collect.core import ROOT
 from src.premium.p2c3 import ELIGIBLE_SQL, QS, fit_qr, neighbours, predict_qr, quintile_band
 
 STAKE_BANDS = ("lt25", "25to50", "gt50")
 BUYER_GROUPS = ("strategic", "financial", "other")
 PERIODS = {"2010-2014": 1, "2015-2026": 0, "early": 1, "late": 0}
 GAP_WARN = 0.10
-K = 50
+# P7-X2b (config/p7x2b.yaml config_constants.duplicates): the neighbour count is read from the pre-registration
+# (config/premium_p2c3.yaml neighbours.k = 50), not typed a second time
+K = int(yamlio.load((ROOT / "config" / "premium_p2c3.yaml").read_text(encoding="utf-8"))["neighbours"]["k"])
 
 
 @dataclass

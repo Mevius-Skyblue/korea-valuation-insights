@@ -86,6 +86,10 @@ class UserOverlayProvider:
             x["stock_code"]
             for x in (cfg.get("structure") or {}).get("subsidiaries") or []
             if x.get("listed") and x.get("direct") and x.get("stock_code")
+        } | {  # P7-X2b: listed associates valued at market (config structure.associates)
+            x["stock_code"]
+            for x in ((cfg.get("structure") or {}).get("associates") or {}).get("rows") or []
+            if x.get("shares") and x.get("stock_code")
         }
         self.prefs = set(sh.get("listed_pref_codes") or [])
         if not self.u.get("close"):
@@ -94,7 +98,7 @@ class UserOverlayProvider:
             raise PublicDataUnavailable("공개 모드 내보내기: 대상 20일 VWAP(사용자 입력)가 필요하다(블록 1주당 가격)")
         miss = sorted(self.subs - set(self.u.get("sub_close") or {}))
         if miss:
-            raise PublicDataUnavailable(f"공개 모드 내보내기: 상장 종속회사 종가 입력 필요 {miss}")
+            raise PublicDataUnavailable(f"공개 모드 내보내기: 상장 종속회사·관계기업 종가 입력 필요 {miss}")
         missp = sorted(self.prefs - set(self.u.get("pref") or {}))
         if missp:
             raise PublicDataUnavailable(f"공개 모드 내보내기: 상장 우선주 종가·상장주식수 입력 필요 {missp}")

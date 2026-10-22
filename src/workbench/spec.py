@@ -2,9 +2,10 @@
 
 Two kinds:
     config-native   values the draft config / discount ledger already holds (the Excel model already has input cells):
-                    rf_tenor, mrp, srp, g_terminal, scenario_width, peers, sotp_discount, premium
+                    rf_tenor, mrp, srp, g_terminal, scenario_width, peers, sotp_discount, premium, assoc_discount
     hook            values the engine and the Excel model take from `cfg['overrides']` (Inputs '사람 확정값' cells):
-                    normal_margin, g_start, beta_u, de, kd, cash_adjust_mn, nci_mn
+                    normal_margin, g_start, beta_u, de, kd, cash_adjust_mn, nci_mn,
+                    P7-X2b: dna_ratio, capex_ratio, nwc_days ({dso, dio, dpo}), conv_share, conv_end, ronic
 """
 
 from __future__ import annotations
@@ -14,8 +15,22 @@ import math
 from src import yamlio
 from src.collect.core import ROOT
 
-NATIVE = ("rf_tenor", "mrp", "srp", "g_terminal", "scenario_width", "peers", "sotp_discount", "premium")
-HOOK = ("normal_margin", "g_start", "beta_u", "de", "kd", "cash_adjust_mn", "nci_mn")
+NATIVE = ("rf_tenor", "mrp", "srp", "g_terminal", "scenario_width", "peers", "sotp_discount", "premium", "assoc_discount")
+HOOK = (
+    "normal_margin",
+    "g_start",
+    "beta_u",
+    "de",
+    "kd",
+    "cash_adjust_mn",
+    "nci_mn",
+    "dna_ratio",
+    "capex_ratio",
+    "nwc_days",
+    "conv_share",
+    "conv_end",
+    "ronic",
+)
 LABEL = {
     "rf_tenor": "Rf 만기(년)",
     "mrp": "MRP",
@@ -32,6 +47,13 @@ LABEL = {
     "kd": "세전 Kd",
     "cash_adjust_mn": "영업용 현금(현금성에서 뺌, 백만원)",
     "nci_mn": "비지배지분(백만원)",
+    "assoc_discount": "상장 관계기업 지분 할인",
+    "dna_ratio": "D&A ÷ 매출",
+    "capex_ratio": "CAPEX ÷ 매출",
+    "nwc_days": "운전자본 회전일수(DSO·DIO·DPO)",
+    "conv_share": "피어 쪽 이익률 수렴 비율",
+    "conv_end": "이익률 수렴 도달 연도",
+    "ronic": "영구 구간 RONIC",
 }
 KIND = {
     "rf_tenor": "int",
@@ -47,11 +69,21 @@ KIND = {
     "kd": "pct",
     "cash_adjust_mn": "mn",
     "nci_mn": "mn",
+    "assoc_discount": "pct",
+    "dna_ratio": "pct",
+    "capex_ratio": "pct",
+    "conv_share": "pct",
+    "ronic": "pct",
+    "conv_end": "int",
+    "nwc_days": "days3",
 }
 
 
 def rules() -> dict:
-    return yamlio.load((ROOT / "config" / "p7c1.yaml").read_text(encoding="utf-8"))["assumptions"]
+    """Ranges of config/p7c1.yaml assumptions + the P7-X2b fields (config/p7x2b.yaml params.assumptions)."""
+    from src.valuation.associates import params
+
+    return {**yamlio.load((ROOT / "config" / "p7c1.yaml").read_text(encoding="utf-8"))["assumptions"], **params()["assumptions"]}
 
 
 def fmt(field: str, v) -> str:
@@ -73,6 +105,8 @@ def fmt(field: str, v) -> str:
         return f"{float(v):,.0f}백만원"
     if k == "int":
         return f"{int(v)}"
+    if k == "days3":
+        return "·".join(f"{n} {float(v[x]):.0f}일" for n, x in (("DSO", "dso"), ("DIO", "dio"), ("DPO", "dpo")))
     return str(v)
 
 
@@ -107,6 +141,28 @@ def check(field: str, value, allowed_peers: list[str] | None = None) -> tuple[bo
                 return False, f"알 수 없는 프리미엄 칸 '{k}'", None
             out[k] = v
         return True, "", out
+    if field == "nwc_days":  # P7-X2b: the three turnover days together
+        if not isinstance(value, dict) or set(value) != {"dso", "dio", "dpo"}:
+            return False, "운전자본 회전일수는 {dso, dio, dpo} 세 값", None
+        s = r["nwc_days"]
+        out = {}
+        for k in ("dso", "dio", "dpo"):
+            try:
+                v = float(value[k])
+            except (TypeError, ValueError):
+                return False, f"{k.upper()}: 숫자가 아님", None
+            if not math.isfinite(v) or v < s["min"] or v > s["max"]:
+                return False, f"{k.upper()}: 허용 범위 {s['min']}~{s['max']}일 밖({value[k]})", None
+            out[k] = v
+        return True, "", out
+    if field == "conv_end":  # P7-X2b: an integer year after the LTM year
+        try:
+            v = int(value)
+        except (TypeError, ValueError):
+            return False, "도달 연도는 정수(연도)", None
+        if v != float(value) or v > r["conv_end"]["max"]:
+            return False, f"도달 연도는 {r['conv_end']['max']}년 이하의 정수", None
+        return True, "", v
     if field == "rf_tenor":
         try:
             v = int(value)

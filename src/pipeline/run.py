@@ -131,10 +131,18 @@ def report_check(docx: Path, reg, xlsx: Path) -> dict:
     }
 
 
-@seam("recon_check", key=lambda corp, fs_div, years=range(2021, 2026): (corp, fs_div, list(years)))
-def recon_check(corp: str, fs_div: str, years=range(2021, 2026)) -> dict:
+def _hist() -> list[int]:
+    from src.pipeline import asof
+
+    return asof.default()["hist"]
+
+
+@seam("recon_check", key=lambda corp, fs_div, years=None: (corp, fs_div, list(years or _hist())))
+def recon_check(corp: str, fs_div: str, years=None) -> dict:
     """S4: fs_recon of the target (report text vs API): no mismatch / sign rows and found share >= 80%."""
     from src.db.build import DB_PATH
+
+    years = list(years) if years is not None else _hist()
 
     con = duckdb.connect(str(DB_PATH), read_only=True)
     try:
@@ -455,7 +463,7 @@ def _first_draft(summary: dict, d: dict, cfg: dict, mode: str) -> None:
     corp = (cfg["meta"]["target"] if mode == "legacy_rf" else cfg["target"])["corp_code"]
     fsd = "OFS" if mode == "legacy_rf" else cfg["meta"].get("fs_div", "CFS")
     summary["checks"] = {
-        "S4_recon": recon_check(corp, fsd, range(2021, 2026) if mode != "legacy_rf" else range(2019, 2026)),
+        "S4_recon": recon_check(corp, fsd, _hist() if mode != "legacy_rf" else range(2019, 2026)),
         "S5_human_list": human_check(cfg) if mode == "draft" else {"pass": None, "note": "수기 설정: 해당 없음"},
     }
     summary["human_review"] = cfg.get("human_review") or []

@@ -293,6 +293,8 @@ class Opened:
                 )
         st_ = self.cfg.get("structure") or {}
         self.subs = [x for x in st_.get("subsidiaries") or [] if x.get("listed") and x.get("direct") and x.get("stock_code")]
+        # P7-X2b: listed associates at market value - their closes are user inputs too (same sub_close table)
+        self.assocs = [x for x in (st_.get("associates") or {}).get("rows") or [] if x.get("shares") and x.get("stock_code")]
         self.prefs = list((self.cfg.get("shares") or {}).get("listed_pref_codes") or [])
         self.sotp = st_.get("method") == "sotp_general"
         self._warm = _submit(_warm, self, s)
@@ -345,6 +347,9 @@ def public_missing(o: Opened, s: dict) -> list[str]:
     for x in o.subs:
         if x["stock_code"] not in (u.get("sub_close") or {}):
             miss.append(f"상장 종속회사 종가: {x.get('name', x['stock_code'])}({x['stock_code']})")
+    for x in getattr(o, "assocs", []):
+        if x["stock_code"] not in (u.get("sub_close") or {}):
+            miss.append(f"상장 관계기업 종가: {x.get('name', x['stock_code'])}({x['stock_code']})")
     for p in o.prefs:
         if p not in (u.get("pref") or {}):
             miss.append(f"상장 우선주 종가·상장주식수: {p}")

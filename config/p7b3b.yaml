@@ -1,4 +1,4 @@
-# 공개 축약본(P7-C3): 비공개 저장소 config/p7b3b.yaml에서 공개 앱이 읽는 최상위 키만 (loss_path, turnaround)
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7b3b.yaml에서 공개 앱이 읽는 최상위 키만 (loss_path, sotp_guard, turnaround)
 loss_path:
   trigger: 게이트 G2(3년 모두 영업손실) 또는 G3(3년 합계 ≤ 0)에 걸린 회사
   eligible:
@@ -37,3 +37,9 @@ turnaround:
   default: 기본값은 v2 그대로(후보만)
   basis: 최근 실적이 과거 분포를 벗어나면 과거 중앙값 정상화가 구조 변화를 놓칠 수 있다. 어느 쪽이 정상인지는 사람이 판단(🔸)
   scope: 적자 경로 회사는 이미 LTM 출발이므로 해당 없음
+sotp_guard:
+  parent_ev_nonpositive: 모회사 영업가치(EV, 9/30) ≤ 0 → 대표값 보류 + 판단 목록 1순위
+  market_multiple: 3.0
+  market_rule: '높은 쪽: 상장 지분 할인 50% 적용 주당 ÷ 종가 > 3 → 보류. 낮은 쪽: 할인 0% 주당 ÷ 종가 < 1/3 → 보류. (가장 유리한 할인 가정으로도 시장가 3배 안에 못 들어오면 보류)'
+  discount_review: 상장 지분 할인은 판단 목록 상위(1순위 항목들 바로 뒤)
+  basis: 틀린 숫자보다 평가 불가(docs/quality_standard.md). 할인 0~50%는 지주회사 할인 관찰 범위(🔸)

@@ -294,12 +294,14 @@ def ensure(code: str) -> str:
         SD.add(sn["seams"])
         _LOADED.add(code)
     p = runtime_dir() / "drafts" / f"valuation_{code}.yaml"
-    if not p.exists():
-        cfg = dict(sn["draft_config"])
-        cfg["meta"] = {**cfg["meta"], "discount_ledger": (snapshot_dir() / "ledger_public.yaml").as_posix()}
+    cfg = dict(sn["draft_config"])
+    cfg["meta"] = {**cfg["meta"], "discount_ledger": (snapshot_dir() / "ledger_public.yaml").as_posix()}
+    text = yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False, width=200)
+    # P7-X2b: rewrite when the snapshot changed (the PC folder 'pc' outlives a snapshot rebuild; it held an old draft)
+    if not p.exists() or p.read_text(encoding="utf-8") != text:
         p.parent.mkdir(parents=True, exist_ok=True)
         tmp = p.with_suffix(f".{os.getpid()}.tmp")
-        tmp.write_text(yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False, width=200), encoding="utf-8")
+        tmp.write_text(text, encoding="utf-8")
         os.replace(tmp, p)
     return p.as_posix()
 

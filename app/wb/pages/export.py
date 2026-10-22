@@ -25,6 +25,12 @@ MIME = {
 
 def render(c: nav.Ctx) -> None:
     nav.header(c, "내보내기")
+    with ui.card(
+        "engagement",
+        "평가 목적·전제·평가자",
+        "보고서 '1. 평가 개요'와 엑셀 표지에 들어갑니다. 비워 두면 기본 문구(방법론 예시, 계속기업)를 씁니다",
+    ):
+        _engagement(c)
     if c.mode == "pc":
         with ui.card(
             "confirm",
@@ -56,6 +62,19 @@ def render(c: nav.Ctx) -> None:
     ):
         _outputs(c)
     ui.footer(c.mode, M.AS_OF)
+
+
+def _engagement(c: nav.Ctx) -> None:
+    """P7-X2b: the three engagement fields of the session (saved with an audit entry; no new version)."""
+    e = c.s.get("engagement") or {}
+    a, b, d = st.columns(3)
+    purpose = a.text_input("평가 목적", value=e.get("purpose", ""), key="eng_purpose", placeholder="방법론 예시(기본)")
+    premise = b.text_input("평가 전제", value=e.get("premise", ""), key="eng_premise", placeholder="계속기업(기본)")
+    who = d.text_input("평가자", value=e.get("evaluator", ""), key="eng_evaluator", placeholder="(비워 두면 표시 안 함)")
+    if st.button("저장", key="eng_save"):
+        r = M.S.set_engagement(M.load(c.sid), {"purpose": purpose, "premise": premise, "evaluator": who})
+        if not r.get("noop"):
+            st.rerun()
 
 
 def _confirm(c: nav.Ctx) -> None:

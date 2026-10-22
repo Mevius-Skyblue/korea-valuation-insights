@@ -91,6 +91,8 @@ def forecast_rows(c: Ctx, s, top: int, P: dict, main: bool) -> dict:
         }
         if mech:  # company_dcf.forecast: growth_path to g by FadeTo, ratios of the average years
             y0 = "YEAR(CfStart)"
+            # P7-X2b: a confirmed year the margin path reaches its end value (default the explicit end)
+            conv_end = "ConvEndOverride" if (c.d.get("overrides") or {}).get("conv_end") is not None else "ExplicitEnd"
             f.update(
                 {
                     "g": (
@@ -99,7 +101,7 @@ def forecast_rows(c: Ctx, s, top: int, P: dict, main: bool) -> dict:
                     ),
                     "rev_fy": f"=IF({X('k', j)}=1,RevFY_Last*(1+{X('g', j)}),{W('rev_fy', j)}*(1+{X('g', j)}))",
                     "ebit": (
-                        f"={X('rev', j)}*({P['margin']}+MarginConvAmt*MIN(({X('year', j)}-YEAR(CfStart))/(ExplicitEnd-YEAR(CfStart)),1))"
+                        f"={X('rev', j)}*({P['margin']}+MarginConvAmt*MIN(({X('year', j)}-YEAR(CfStart))/({conv_end}-YEAR(CfStart)),1))"
                         if c.d.get("v2")
                         else f"={X('rev', j)}*{P['margin']}"
                     ),
@@ -163,7 +165,7 @@ def forecast(c: Ctx):
         }
 
     # ---- timeline
-    s.text(r, 0, "예측 (기초 열 = 2026-06-30 재무상태표)", "subtitle")
+    s.text(r, 0, f"예측 (기초 열 = {d['meta']['bs_date']} 재무상태표)", "subtitle")
     s.text(r, C_OPEN, "기초", "header")
     s.ws.freeze_panes(r + 1, 3)
     R = forecast_rows(c, s, r + 1, P, main=True)
@@ -217,9 +219,9 @@ def _plan_check(c: Ctx, s, r):
     s.text(r, 0, "사업계획 검증 — 예측(선택 시나리오) vs 과거 (표시만, 괴리 경고 기준은 사람 판단)", "subtitle")
     rows = [
         (lab_h, hist_cagr, "PlanHistCAGR"),
-        ("예측 FY2026 매출 성장률(직전 회계연도 대비)", f"=Forecast!{a1(F['rev_fy'], C_FIRST)}/{rev_last}-1", "PlanG26"),
+        (f"예측 FY{L} 매출 성장률(직전 회계연도 대비)", f"=Forecast!{a1(F['rev_fy'], C_FIRST)}/{rev_last}-1", "PlanG26"),
         (
-            "예측 매출 CAGR(FY2026 → 명시 마지막 연도)",
+            f"예측 매출 CAGR(FY{L} → 명시 마지막 연도)",
             f"=(INDEX({fr('rev_fy')},MATCH(ExplicitEnd,{fr('year')},0))/Forecast!{a1(F['rev_fy'], C_FIRST)})^(1/(ExplicitEnd-YEAR(CfStart)))-1",
             "PlanFcCAGR",
         ),
@@ -448,6 +450,12 @@ def _base_mech(c: Ctx, s, r):
         avg = (
             f"=IF(COUNT({rg})=0,0,AVERAGE({rg}))" if nm in ("DSO", "DIO", "DPO") else f"=AVERAGE({rg})"
         )  # no year with a non-zero denominator -> 0 days, as the engine (B3-F5)
+        ovr_ = d.get("overrides") or {}  # P7-X2b: a confirmed ratio replaces the 3-year average (the row above stays)
+        okey = {"DnaRatio": "dna_ratio", "CapexRatio": "capex_ratio"}.get(nm)
+        if okey and ovr_.get(okey) is not None:
+            avg = f"={nm}Override"
+        elif nm in ("DSO", "DIO", "DPO") and ovr_.get("nwc_days") is not None:
+            avg = f"={nm[0] + nm[1:].lower()}Override"
         s.fx(r, 2 + len(av), avg, "days" if nm in ("DSO", "DIO", "DPO") else "pct", name=nm)
         r += 1
     # historical ROIC (RONIC cap): NOPAT_y / opening invested capital (NWC + PPE + intangibles + ROU at FY y−1)
@@ -487,15 +495,15 @@ def _base_mech(c: Ctx, s, r):
     _vlist(
         s,
         r + 1,
-        "순운전자본(기초, 2026-06-30)",
+        f"순운전자본(기초, {d['meta']['bs_date']})",
         f"={o('receivables', h1)}+{o('inventories', h1)}-{o('trade_payables', h1)}",
         "mn",
         "백만원",
         "NWC_Open",
         "매출채권 + 재고 − 매입채무",
     )
-    _vlist(s, r + 2, "2026 상반기 매출(연결)", f"={o('revenue', h1)}", "mn", "백만원", "H1Rev")
-    _vlist(s, r + 3, "2026 상반기 영업이익(연결)", f"={o('operating_income', h1)}", "mn", "백만원", "H1Op")
+    _vlist(s, r + 2, f"{L} 상반기 매출(연결)", f"={o('revenue', h1)}", "mn", "백만원", "H1Rev")
+    _vlist(s, r + 3, f"{L} 상반기 영업이익(연결)", f"={o('operating_income', h1)}", "mn", "백만원", "H1Op")
     _vlist(s, r + 4, f"FY{L - 1} 매출(연결)", f"={o('revenue', fy)}", "mn", "백만원", "RevFY_Last")
     _vlist(
         s,
@@ -510,8 +518,9 @@ def _base_mech(c: Ctx, s, r):
     if d.get("v2"):  # P7-B2b mechanical_v2 (auto drafts): config/p7b2b.yaml, company_dcf.v2_inputs
         s.text(r, 0, "기본 경로 v2 — 5년 이익률 중앙값, 피어 쪽 수렴, 성장률 혼합(사전 고정 91a84dd)", "subtitle")
         r += 1
-        s.text(r, 0, "영업이익률 FY2021~2025(매출 > 0인 해)")
-        for j, y in enumerate(range(2021, 2026)):
+        hy = list(range(L - 5, L))  # P7-X2b: FY(Y−5)~FY(Y−1), the engine's v2 window (was typed 2021~2025)
+        s.text(r, 0, f"영업이익률 FY{hy[0]}~{hy[-1]}(매출 > 0인 해)")
+        for j, y in enumerate(hy):
             k = f"FY{y}"
             f = (
                 f'=IF({o("revenue", k)}>0,{o("operating_income", k)}/{o("revenue", k)},"n/a")'
@@ -538,7 +547,7 @@ def _base_mech(c: Ctx, s, r):
                 "pct",
                 "%",
                 "M0V2",
-                "2032년에 피어 중앙값 도달(수렴 비율 1.0) — 위 5년 값은 참고",
+                f"{d['dcf']['explicit_end']}년에 피어 중앙값 도달(수렴 비율 1.0) — 위 5년 값은 참고",
             )
         else:
             _vlist(
@@ -553,8 +562,10 @@ def _base_mech(c: Ctx, s, r):
         _vlist(
             s,
             r + 2,
-            "2032년까지 피어 쪽 이동 폭 = 수렴 비율 × (피어 중앙값 − 출발)",
-            "=IF(ISNUMBER(PeerMarginV2),ConvShare*(PeerMarginV2-M0V2),0)",
+            f"{d['dcf']['explicit_end']}년까지 피어 쪽 이동 폭 = 수렴 비율 × (피어 중앙값 − 출발)",
+            "=IF(ISNUMBER(PeerMarginV2),"
+            + ("ConvShareOverride" if ovr.get("conv_share") is not None else "ConvShare")
+            + "*(PeerMarginV2-M0V2),0)",
             "pct",
             "%",
             "MarginConvAmt",
@@ -693,7 +704,7 @@ def _params_mech(c: Ctx, s, r):
     der = [
         (
             "g0",
-            "출발 성장률 = v2 출발 성장률 + 이동" if v2 else "출발 성장률 g_2026 = CAGR + 이동",
+            "출발 성장률 = v2 출발 성장률 + 이동" if v2 else f"출발 성장률 g_{d['meta']['ltm_year']} = CAGR + 이동",
             "=G0Base+{gs}" if v2 else "=CAGR+{gs}",
             "G0_Sel",
         ),

@@ -20,7 +20,14 @@ from src.collect.core import ROOT, RawStore
 BORROW = re.compile(r"(차입금|사채|차입부채|장기부채)$")
 NOT_BORROW = re.compile(r"할인|조정|할증|이자|부채총계|합계")
 REPRT = {"FY": "11011", "H1": "11012"}
-PERIODS = [(2023, "FY"), (2024, "FY"), (2025, "FY"), (2025, "H1"), (2026, "H1")]
+
+
+def _periods() -> list[tuple[int, str]]:
+    """FY(Y−3)~FY(Y−1) + (FY, P) + (Y, P) of the draft rules' meta (P7-X2b; FY2023~2025, 2025·2026 H1 at 2026-09-30)."""
+    from src.pipeline import asof
+
+    pe = asof.default()
+    return [(y, "FY") for y in pe["avg"]] + [(pe["FY"], pe["P"]), (pe["Y"], pe["P"])]
 
 
 def is_borrowing(label: str) -> bool:
@@ -82,11 +89,11 @@ def text_bs_rows(section_markup: str) -> list[tuple[str, float, int]]:
     return out
 
 
-def debt_reclass(con, corp: str, fs_div: str, periods=PERIODS) -> list[dict]:
+def debt_reclass(con, corp: str, fs_div: str, periods=None) -> list[dict]:
     from src.collect.doc_text import fs_sections, main_xml
 
     out = []
-    for y, p in periods:
+    for y, p in periods or _periods():
         rc = con.execute(
             """SELECT DISTINCT rcept_no FROM fs_raw WHERE corp_code=? AND fs_div=? AND bsns_year=? AND reprt_code=?
                             AND sj_div='BS' ORDER BY rcept_no DESC""",

@@ -31,6 +31,18 @@ MN = 1e6
 KRX = "한국거래소 통계정보"
 
 
+def _ledger_text(led: dict) -> dict:
+    """Source texts of the discount ledger shown in Inputs (config/valuation_rf.yaml risk_free.value_series / options,
+    mrp.as_of)."""
+    vs = led["risk_free"]["value_series"]
+    o10 = next((o for o in led["risk_free"].get("options") or [] if o.get("code") == "KTB10Y"), {})
+    return {
+        "rf_series": f"ECOS {vs['stat']} {vs['item']} ({vs['code']})",
+        "rf10_series": f"ECOS {vs['stat']} {o10.get('item', '')} ({o10.get('code', 'KTB10Y')})",
+        "mrp_asof": str(led["mrp"].get("as_of", "")),
+    }
+
+
 def load_model_data(cfg_path: str = "config/valuation_rf.yaml", with_engine: bool = True) -> dict:
     from src.db.ro import shared_readonly
 
@@ -50,6 +62,9 @@ def _load_model_data(cfg_path: str, with_engine: bool) -> dict:
         raise NotImplementedError(f"forecast_type {ftype!r}")
     data["type"] = ftype
     data["cfg_path"] = cfg_path
+    from src.report.engagement import engagement
+
+    data["engagement"] = engagement(raw)  # P7-X2b: purpose / premise / evaluator (defaults = the earlier texts)
     from src.valuation.company_dcf import _close, _con
     from src.workbench.public_deploy import p5b_excel_data  # P6-A: P5-B reference aggregates (display only)
 
@@ -295,6 +310,7 @@ def scenario_capex_data(led: dict) -> dict:
             "kd_aa": inp["rates"]["CB3Y_AAm"],
             "mrp": led["mrp"]["value"],
             "mrp_src": led["mrp"]["source"],
+            **_ledger_text(led),  # P7-X2b: Rf series codes and the MRP as-of date from the ledger (were typed in the sheet)
             "mrp_status": led["mrp"]["status"],
             "srp_list": list(led["decisions"]["srp_columns"]),
             "srp_src": led["srp"]["source"],
@@ -437,7 +453,7 @@ def mechanical_data(cfg_path: str) -> dict:
     from src.market.provider import get as market_provider
     from src.premium.predict import ADOPT_THRESHOLD, GAP_WARN, application_rule
     from src.valuation.common_rules import load_common
-    from src.valuation.company_dcf import EXPLICIT_END, FADE, fs_div, load_company, val
+    from src.valuation.company_dcf import explicit_end, fade_years, fs_div, load_company, val
     from src.valuation.peer_p3 import CASH_LIKE, DERIV, NON_OP, _bs
     from src.valuation.structure import load_rules
 
@@ -448,8 +464,8 @@ def mechanical_data(cfg_path: str) -> dict:
     corp, code, as_of = cfg["target"]["corp_code"], cfg["target"]["stock_code"], cfg["meta"]["as_of"]
     y0, y1 = pr_["cagr_years"]
     years = sorted(
-        set(range(y0, y1 + 1)) | {min(pr_["avg_years"]) - 1} | (set(range(2021, 2026)) if c.v2 else set())
-    )  # P7-B2b v2: 5-year margin median needs FY2021~2025
+        set(range(y0, y1 + 1)) | {min(pr_["avg_years"]) - 1} | (set(range(c.FY - 4, c.FY + 1)) if c.v2 else set())
+    )  # P7-B2b v2: 5-year margin median needs FY(Y−5)~FY(Y−1) (P7-X2b: from the config's LTM year)
     accts = [
         "revenue",
         "cogs",
@@ -491,6 +507,8 @@ def mechanical_data(cfg_path: str) -> dict:
             dw = dna_wide_of(con, corp, fsd)
 
         def colvals(y, p):
+            if draft and (y, p) not in c.w.index:  # P7-X2b X7: no statements for the period -> blank cells, not 0
+                return {a: None for a in accts}
             out = {}
             for a in accts:
                 if a == "dna":  # P7-B2 B2-F5: no D&A for the period -> blank (the engine skips it)
@@ -506,6 +524,8 @@ def mechanical_data(cfg_path: str) -> dict:
         for y, p in [(y, "FY") for y in years] + [(c.Y - 1, c.P), (c.Y, c.P)]:
             main, other = _mode_rcept(con, corp, fsd, y, p)
             fs["CFS"][f"{p}{y}"] = {"year": y, "period": p, "values": colvals(y, p), "rcept": main, "rcept_other": other}
+            if draft and (y, p) not in c.w.index:
+                fs["CFS"][f"{p}{y}"]["blank"] = True
         # balance-sheet lines with the peer_p3 classification (cash-like / non-operating)
         lines = []
         if c.sotp:
@@ -522,6 +542,11 @@ def mechanical_data(cfg_path: str) -> dict:
                 cls = "cash_like"
             elif r.section == "NCA" and re.search(NON_OP, nm) and not deriv and "매출채권" not in nm:
                 cls = "non_operating"
+            if cls == "non_operating" and c.assoc and not (c.sotp and sub_mask[i]):
+                from src.valuation.associates import is_assoc_line
+
+                if is_assoc_line(nm):  # P7-X2b: the associates line the listed associates replace (Bridge rows)
+                    cls = "nonop_assoc"
             if cls:
                 lines.append({"section": r.section, "name": r.account_nm, "amount": r.amount / MN, "class": cls})
         bs_rcept = _mode_rcept(con, corp, fsd, c.Y, c.P)[0]
@@ -662,6 +687,7 @@ def mechanical_data(cfg_path: str) -> dict:
             "kd_aa": c.rates["CB3Y_AAm"],
             "mrp": led["mrp"]["value"],
             "mrp_src": led["mrp"]["source"],
+            **_ledger_text(led),  # P7-X2b: Rf series codes and the MRP as-of date from the ledger (were typed in the sheet)
             "mrp_status": led["mrp"]["status"],
             "srp_list": list(led["decisions"]["srp_columns"]),
             "srp_src": led["srp"]["source"],
@@ -724,8 +750,8 @@ def mechanical_data(cfg_path: str) -> dict:
             "ebitda_rule": dict(pr_["ebitda_rule"]),
         },
         "dcf": {
-            "explicit_end": EXPLICIT_END,
-            "fade_years": len(FADE),
+            "explicit_end": explicit_end(c),
+            "fade_years": len(fade_years(c)),
             "mid_year": int(bool(cfg["forecast"]["mid_year"])),
             "exit_multiple": None,
             "exit_src": "피어 EV/EBITDA 중앙값(Peers 시트, 병행 표시용 ⚠️ — 엔진은 Exit 미계산)",
@@ -747,6 +773,15 @@ def mechanical_data(cfg_path: str) -> dict:
         "peer_relax": _relax_note(cfg),  # P7-B5 peer_relax
         "overrides": dict(cfg.get("overrides") or {}),  # P7-C1 workbench confirmed assumptions
         "workbench": cfg.get("workbench"),  # P7-C1 session record (changes table)
+        "associates": None  # P7-X2b listed associates at market value
+        if not c.assoc
+        else {
+            "rows": c.assoc["rows"],
+            "basis": c.assoc["basis"],
+            "discount": c.assoc["discount"],
+            "sensitivities": c.assoc["sensitivities"],
+            "equity_income": {f"{y}|{p}": v for (y, p), v in c.assoc["equity_income"].items()},
+        },
         "sotp": None
         if not c.sotp
         else {

@@ -54,7 +54,19 @@ def ols_beta(x: np.ndarray, y: np.ndarray) -> BetaResult:
 
 
 def blume(raw: float | None) -> float | None:
-    return None if raw is None else 0.67 * raw + 0.33
+    """Blume adjustment with the ledger's weights (config/valuation_rf.yaml beta.blume: 0.67 x raw + 0.33; P7-X2b — the
+    numbers were typed here as well)."""
+    if raw is None:
+        return None
+    from src import yamlio
+    from src.collect.core import ROOT
+
+    if not _BLUME:
+        _BLUME.update(yamlio.load((ROOT / "config" / "valuation_rf.yaml").read_text(encoding="utf-8"))["beta"]["blume"])
+    return _BLUME["weight_raw"] * raw + _BLUME["constant"]
+
+
+_BLUME: dict = {}
 
 
 def unlever(beta_l: float | None, t: float, de: float | None) -> float | None:

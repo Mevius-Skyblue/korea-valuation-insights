@@ -786,6 +786,20 @@ def checks(c: Ctx):
             '=IF(ABS(SotpListed-SUMPRODUCT(SubShares,SubClose,SubListedDirect)/MnToWon)<0.001,"OK","ERR")',
             "=SotpListed",
         )
+    if d.get("associates"):  # P7-X2b listed associates (config/p7x2b.yaml associates)
+        add(
+            "상장 관계기업 시가 = 보유 주식수 × 종가 × (1 − 할인)",
+            '=IF(ABS(AssocValue-SUMPRODUCT(AssocShares,AssocClose)/MnToWon*(1-AssocDiscount))<0.001,"OK","ERR")',
+            "=AssocValue",
+        )
+        add(
+            "상장 관계기업 이중 계산 점검: 빼는 장부 ≤ 관계기업 줄(또는 SOTP 나머지)·장부 합",
+            "=IF(AND(AssocReplaced<=SUM(AssocBook)+0.001,AssocReplaced<=MAX(AssocLines,"
+            + ("SotpRemainder" if d.get("sotp") else "0")
+            + ')+0.001),"OK","ERR")',
+            "=AssocReplaced",
+            "=AssocLines",
+        )
     if d["meta"]["structure"] == "sotp":
         add(
             "SOTP 합계 = 항목 합",

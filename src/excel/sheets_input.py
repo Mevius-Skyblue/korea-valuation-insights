@@ -75,8 +75,9 @@ def cover(c: Ctx):
         ("평가기준일", m["as_of"]),
         ("재무 기준일", f"{m['bs_date']} (반기보고서)"),
         ("기준가치", "주당 내재가치 추정(가치산정, 가정 하의 예시). '공정가치'(K-IFRS 1113·자본시장법 공정가액)가 아님"),
-        ("평가 전제", "계속기업"),
-        ("목적", "방법론 예시·교육(실제 거래·공시용 아님)"),
+        ("평가 전제", (d.get("engagement") or {}).get("premise", "계속기업")),
+        ("목적", (d.get("engagement") or {}).get("excel_purpose", "방법론 예시·교육(실제 거래·공시용 아님)")),
+        *([("평가자", d["engagement"]["evaluator"])] if (d.get("engagement") or {}).get("evaluator") else []),
         (
             "평가 구조",
             "SOTP: 모회사 DCF + 상장 종속회사 지분 시가 + 모회사 순현금·비영업 (교차 확인: 연결 DCF − 비지배 시가)"
@@ -381,7 +382,7 @@ def inputs(c: Ctx):
         rt["rf"],
         "pct3",
         "%",
-        "ECOS 817Y002 010200001 (KTB5Y)",
+        rt["rf_series"],
         asof,
         rt["rf_status"],
         "평가 표본 5년 48%·10년 39%(P3) → 5년 기본. 모델이 쓰는 Rf = WACC 시트 'Rf'(Rf 만기 선택)",
@@ -393,7 +394,7 @@ def inputs(c: Ctx):
         rt["rf10"],
         "pct3",
         "%",
-        "ECOS 817Y002 010210000 (KTB10Y)",
+        rt["rf10_series"],
         asof,
         "✅",
         "P5-B 외부평가 의견서 Rf 만기 표시 57건 중 10년 56건(reports/p5b_final.md 7절)",
@@ -406,7 +407,7 @@ def inputs(c: Ctx):
         "pct",
         "%",
         rt["mrp_src"],
-        "2026-05",
+        rt["mrp_asof"],
         rt["mrp_status"],
         "가이던스 7~9% 중앙값",
         name="MRP",
@@ -847,6 +848,12 @@ def inputs(c: Ctx):
             ("kd", "사람 확정값: 세전 Kd", "pct3", "%", "KdOverride"),
             ("cash_adjust_mn", "사람 확정값: 현금성에서 뺄 영업용 현금", "mn", "백만원", "CashAdjust"),
             ("nci_mn", "사람 확정값: 비지배지분", "mn", "백만원", "NciOverride"),
+            # P7-X2b (config/p7x2b.yaml judgements): the large assumptions a person may confirm
+            ("dna_ratio", "사람 확정값: D&A ÷ 매출", "pct", "%", "DnaRatioOverride"),
+            ("capex_ratio", "사람 확정값: CAPEX ÷ 매출", "pct", "%", "CapexRatioOverride"),
+            ("conv_share", "사람 확정값: 피어 쪽 이익률 수렴 비율", "pct", "", "ConvShareOverride"),
+            ("conv_end", "사람 확정값: 이익률 수렴 도달 연도", "year", "연도", "ConvEndOverride"),
+            ("ronic", "사람 확정값: 영구 구간 RONIC", "pct", "%", "RonicOverride"),
         ):
             if ovr.get(key) is not None:
                 w.item(
@@ -855,6 +862,20 @@ def inputs(c: Ctx):
                     float(ovr[key]),
                     kind,
                     unit,
+                    src_wb,
+                    "",
+                    "⚠️",
+                    "사람 판단 반영 내역(Judgements 시트)",
+                    name=nm,
+                )
+        if ovr.get("nwc_days") is not None:  # P7-X2b: the three turnover days together
+            for k, lab, nm in (("dso", "DSO", "DsoOverride"), ("dio", "DIO", "DioOverride"), ("dpo", "DPO", "DpoOverride")):
+                w.item(
+                    f"ovr_{k}",
+                    f"사람 확정값: {lab}(회전일수)",
+                    float(ovr["nwc_days"][k]),
+                    "days",
+                    "일",
                     src_wb,
                     "",
                     "⚠️",
@@ -1240,6 +1261,8 @@ def inputs(c: Ctx):
         r = _affiliate_table(c, s, r)
     if d.get("sotp"):
         r = _sotp_table(c, s, r)
+    if d.get("associates"):
+        r = _assoc_table(c, s, r)
     s.ws.data_validation(scen_row, 1, scen_row, 1, {"validate": "list", "source": "=ScenNames"})
     s.ws.data_validation(srp_row, 1, srp_row, 1, {"validate": "list", "source": "=SRP_List"})
     s.ws.data_validation(ronic_row, 1, ronic_row, 1, {"validate": "list", "source": ["normal", "mixed"]})
@@ -1346,6 +1369,64 @@ def _sotp_table(c: Ctx, s, r):
     r0, r1 = r + 2, r + 1 + max(len(rows), 1)
     for nm, j in (("SubShares", 4), ("SubClose", 5), ("SubBook", 6), ("SubListedDirect", 3), ("SubUnlisted", 7)):
         c.range_name(nm, "Inputs", a1(r0, j), a1(r1, j))
+    return r1 + 3
+
+
+def _assoc_table(c: Ctx, s, r):
+    """P7-X2b listed associates (config/p7x2b.yaml associates): stake >= 20%, outside the consolidation scope, held directly.
+    Value = shares x close x (1 − discount); the associates line of the balance sheet gives back min(line, Σ book) where book
+    = estimated equity-method book (consolidated: stake x the associate's owners' equity) or the separate book."""
+    a = c.d["associates"]
+    s.text(
+        r,
+        0,
+        "표 11. 상장 관계기업 (config/p7x2b.yaml associates) — 보유 주식수 × 종가 × (1 − 할인), 관계기업 줄 장부는 뺌",
+        "subtitle",
+    )
+    s.text(r, 6, "관계기업 지분 할인율", "bold")
+    s.inp(r, 7, a["discount"], "pct", name="AssocDiscount")
+    _hdr(s, r + 1, ["관계기업", "종목코드", "지분율", "보유 주식수", "종가(원)", "빼는 장부(백만원)", "장부 근거", "출처"])
+    rows = [x for x in a["rows"] if x.get("shares")]
+    for i, x in enumerate(rows):
+        rr = r + 2 + i
+        cfs = a["basis"] == "CFS" and x.get("est_carrying") is not None
+        s.text(rr, 0, x["name"])
+        s.text(rr, 1, x.get("stock_code") or "-")
+        s.inp(rr, 2, x.get("stake") or 0, "pct")
+        s.inp(rr, 3, x.get("shares") or 0, "int")
+        s.inp(rr, 4, x.get("close") or 0, "won", krx="associate close" if x.get("close") else None)
+        s.inp(rr, 5, ((x["est_carrying"] if cfs else x.get("book")) or 0) / 1e6, "mn")
+        s.text(
+            rr,
+            6,
+            ("지분율 × 관계기업 지배주주지분 " + str(x.get("est_source", ""))) if cfs else "출자현황 장부가(별도 기준)",
+            "note",
+        )
+        s.text(
+            rr,
+            7,
+            "타법인 출자현황 · corp_master 이름 일치"
+            + (" · " + x["shares_event_fixed"] if x.get("shares_event_fixed") else "")
+            + (" · 종가 한국거래소 통계정보" if x.get("close") else ""),
+            "note",
+        )
+    r0, r1 = r + 2, r + 1 + max(len(rows), 1)
+    for nm, j in (("AssocShares", 3), ("AssocClose", 4), ("AssocBook", 5)):
+        c.range_name(nm, "Inputs", a1(r0, j), a1(r1, j))
+    ei = a.get("equity_income") or {}
+    if ei:
+        rr = r1 + 1
+        s.text(
+            rr,
+            0,
+            "영업이익 안 지분법 손익(이중 계산 방지로 매출·영업이익에서 뺌, FS_Hist 값은 뺀 뒤): "
+            + "; ".join(
+                f"{k.replace('|', ' ')} {v['amount'] / 1e6:,.0f}백만원{'(영업수익 안)' if v['in_revenue'] else ''}"
+                for k, v in sorted(ei.items())
+            ),
+            "note",
+        )
+        r1 = rr
     return r1 + 3
 
 
@@ -1664,7 +1745,13 @@ def fs_hist(c: Ctx):
     s.text(
         1,
         0,
-        "열마다 주 접수번호(가장 많은 줄의 출처), 기타 접수번호는 비교 칸 출처. 값이 없는 줄은 0(엔진과 같음). 입력 셀",
+        "열마다 주 접수번호(가장 많은 줄의 출처), 기타 접수번호는 비교 칸 출처. 값이 없는 줄은 0(엔진과 같음)"
+        + (
+            ", 재무 자료가 없는 기간은 빈칸(수식에서 0으로 계산)"
+            if any(info.get("blank") for div in d["fs"] for info in d["fs"][div].values())
+            else ""
+        )
+        + ". 입력 셀",
         "note",
     )
     cols = [("OFS", k) for k in d["fs"].get("OFS", {})] + [("CFS", k) for k in d["fs"].get("CFS", {})]
@@ -1688,8 +1775,8 @@ def fs_hist(c: Ctx):
         s.text(rr, 1, a, "note")
         for j, (div, k) in enumerate(cols):
             v = d["fs"][div][k]["values"].get(a)
-            if v is None and not (a == "dna" and a in d["fs"][div][k]["values"]):
-                continue
+            if v is None and not (a == "dna" and a in d["fs"][div][k]["values"]) and not d["fs"][div][k].get("blank"):
+                continue  # P7-X2b X7: a period without statements is a blank input cell (not skipped, not 0)
             refs[(div, k, a)] = s.inp(rr, 2 + j, v, "mn")  # P7-B2 B2-F5: a missing D&A period is a blank input cell
     c.layout["fs_refs"] = refs
     r = 7 + len(accts) + 2

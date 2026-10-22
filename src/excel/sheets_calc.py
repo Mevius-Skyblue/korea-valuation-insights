@@ -227,7 +227,11 @@ def wacc_sheet(c: Ctx):
     s.text(
         r + 10,
         0,
-        "Kd 규칙(공통 규칙, 위 순서): 무등급 → BBB- 3년 / AA- 이상 → AA- 3년 / A+~BBB+ → max(실제 가중, AA- 3년) / BBB 이하 → BBB- 3년, 하한 Rf",
+        # P7-X2b X8: an auto draft without a rating uses the implied rate (config/p7b.yaml draft.kd), not the rating bands
+        "Kd 규칙(자동 초안, 등급 미확인): 이자비용(없으면 이자의 지급) ÷ 평균(차입금 + 리스부채, 전기말·당기말), 하한 Rf / "
+        "계산 불가(이자 없음·평균 차입 ≤ 0)면 무등급 → BBB- 3년"
+        if d["meta"].get("draft") and d.get("kd_method") == "implied"
+        else "Kd 규칙(공통 규칙, 위 순서): 무등급 → BBB- 3년 / AA- 이상 → AA- 3년 / A+~BBB+ → max(실제 가중, AA- 3년) / BBB 이하 → BBB- 3년, 하한 Rf",
         "note",
     )
     r += 12
@@ -258,8 +262,12 @@ def dcf_sheet(c: Ctx):
     s.widths({0: 42, 1: 9, 2: 14, 3: 40, **{C_FIRST + j: 12 for j in range(1, n)}})
     s.ws.set_column(C_FIRST, C_FIRST, 14)
     s.text(0, 0, "DCF — 할인·영구가치·EV (선택한 시나리오·SRP)", "title")
+    bs_, ao_ = d["meta"]["bs_date"][5:].replace("-", "/").lstrip("0"), d["meta"]["as_of"][5:].replace("-", "/").lstrip("0")
     s.text(
-        1, 0, "할인 기준일 6/30(재무상태표) → mid-year 할인 → EV를 평가기준일 9/30로 이월. 순현금은 6/30 장부(이월 안 함)", "note"
+        1,
+        0,
+        f"할인 기준일 {bs_}(재무상태표) → mid-year 할인 → EV를 평가기준일 {ao_}로 이월. 순현금은 {bs_} 장부(이월 안 함)",
+        "note",
     )
     top = 3
     R = {k: top + i for i, (k, *_r) in enumerate(DCF_ROWS)}
@@ -289,15 +297,22 @@ def dcf_sheet(c: Ctx):
     items = [
         (
             "e26",
-            "FY2026 EBIT(정상 = FY2026 매출 × 정상 이익률)",
+            f"FY{d['meta']['ltm_year']} EBIT(정상 = FY{d['meta']['ltm_year']} 매출 × 정상 이익률)",
             f"=Forecast!{a1(F['rev_fy'], C_FIRST)}*Margin_Sel",
             "mn",
             None,
             "",
         ),
-        ("n26n", "  NOPAT FY2026 (normal 규칙)", None, "mn", None, ""),
-        ("fy26", "FY2026 EBIT(혼합 = 1H 실적 + 2H 정상)", f"=Forecast!{a1(F['fy_ebit'], C_FIRST)}", "mn", None, ""),
-        ("n26m", "  NOPAT FY2026 (mixed 규칙)", None, "mn", None, ""),
+        ("n26n", f"  NOPAT FY{d['meta']['ltm_year']} (normal 규칙)", None, "mn", None, ""),
+        (
+            "fy26",
+            f"FY{d['meta']['ltm_year']} EBIT(혼합 = 1H 실적 + 2H 정상)",
+            f"=Forecast!{a1(F['fy_ebit'], C_FIRST)}",
+            "mn",
+            None,
+            "",
+        ),
+        ("n26m", f"  NOPAT FY{d['meta']['ltm_year']} (mixed 규칙)", None, "mn", None, ""),
         ("n26", "출발 NOPAT(선택 규칙)", None, "mn", None, "Inputs의 RONIC 출발점 규칙"),
         ("e32", "명시 마지막 연도 EBIT", f"=INDEX({fr('ebit')},{end_idx})", "mn", None, ""),
         ("n32", "  NOPAT", None, "mn", None, ""),
@@ -318,7 +333,8 @@ def dcf_sheet(c: Ctx):
             "RONIC",
             "계산값 ≤ 0 또는 ≤ g면 WACC로 대체"
             if d["type"] == "scenario_capex"
-            else "재투자 ≤ 0이면 WACC, 그 밖은 [WACC, 과거 3년 ROIC]로 자름(사전 고정)",
+            else "재투자 ≤ 0이면 WACC, 그 밖은 [WACC, 과거 3년 ROIC]로 자름(사전 고정)"
+            + ("; 과거 ROIC < WACC면 WACC(하한 우선, P7-X2b)" if d["meta"].get("draft") else ""),
         ),
         ("flag", "대체 여부", None, "gen", None, ""),
     ]
@@ -763,7 +779,8 @@ def bridge_cons(c: Ctx):
                 '=SUMIFS(BsAmt,BsClass,"non_operating")+SotpRemainder+SotpListed*(1-SubDiscount)+SotpUnlisted'
                 if d.get("sotp")
                 else '=SUMIFS(BsAmt,BsClass,"non_operating")'
-            ),
+            )
+            + ("+AssocLines+AssocValue-AssocReplaced" if d.get("associates") else ""),  # P7-X2b listed associates
             "mn",
             None,
             "FS_Hist 분류 non_operating" + (" + 아래 SOTP 행(종속 줄은 빼고 바꿔 넣음)" if d.get("sotp") else ""),
@@ -805,6 +822,37 @@ def bridge_cons(c: Ctx):
                 "mn",
                 "SotpUnlisted",
                 "Inputs 표 10",
+            ),
+        ]
+    if d.get("associates"):  # P7-X2b (config/p7x2b.yaml associates): listed associates at market value
+        rows += [
+            (
+                "as_lines",
+                "  상장 관계기업: 관계기업·공동기업·지분법 줄(비영업, 장부)",
+                '=SUMIFS(BsAmt,BsClass,"nonop_assoc")',
+                "mn",
+                "AssocLines",
+                "FS_Hist 분류 nonop_assoc",
+            ),
+            (
+                "as_val",
+                "  상장 관계기업 지분 시가 × (1 − 할인)",
+                "=SUMPRODUCT(AssocShares,AssocClose)/MnToWon*(1-AssocDiscount)",
+                "mn",
+                "AssocValue",
+                "Inputs 표 11, 한국거래소 통계정보 종가",
+            ),
+            (
+                "as_rep",
+                "  빼는 장부 = MIN(관계기업 줄, Σ 관계기업 장부)" + (" (줄이 없으면 SOTP 나머지에서)" if d.get("sotp") else ""),
+                (
+                    "=IF(AssocLines>0,MIN(AssocLines,SUM(AssocBook)),MIN(SotpRemainder,SUM(AssocBook)))"
+                    if d.get("sotp")
+                    else "=MIN(AssocLines,SUM(AssocBook))"
+                ),
+                "mn",
+                "AssocReplaced",
+                "이중 계산 방지(관계기업 장부를 시가로 바꿈)",
             ),
         ]
     if aff:
@@ -969,8 +1017,8 @@ def scen_calc(c: Ctx):
         end_idx = f"MATCH(ExplicitEnd,{rng('year')},0)"
         mend = f"({P['margin']}+MarginConvAmt)" if d.get("v2") else P["margin"]  # P7-B2b v2: terminal margin = path end
         sc = [
-            ("e26", "FY2026 EBIT(정상)", f"={a1(R['rev_fy'], C_FIRST)}*{P['margin']}", "mn"),
-            ("fy26", "FY2026 EBIT(혼합)", f"={a1(R['fy_ebit'], C_FIRST)}", "mn"),
+            ("e26", f"FY{d['meta']['ltm_year']} EBIT(정상)", f"={a1(R['rev_fy'], C_FIRST)}*{P['margin']}", "mn"),
+            ("fy26", f"FY{d['meta']['ltm_year']} EBIT(혼합)", f"={a1(R['fy_ebit'], C_FIRST)}", "mn"),
             ("n26", "출발 NOPAT(선택 규칙)", None, "mn"),
             ("e32", "명시 마지막 연도 EBIT", f"=INDEX({rng('ebit')},{end_idx})", "mn"),
             ("n32", "  NOPAT", None, "mn"),

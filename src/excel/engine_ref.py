@@ -317,7 +317,9 @@ def mechanical_reference(cfg_path: str) -> dict:
             "ps_q75": ps(st["q75"]),
         }
     exit_mult = multiples["EV/EBITDA"]["median"]
-    days = 92
+    from datetime import date as _date
+
+    days = (_date.fromisoformat(cfg["meta"]["as_of"]) - _date.fromisoformat(cfg["meta"]["bs_date"])).days  # P7-X2b (was 92)
     grid = {}
     labels = xl["scenarios"]
     for k in labels:
@@ -442,16 +444,20 @@ def mechanical_reference(cfg_path: str) -> dict:
                 "stats": {
                     col: pubcut.peer_stats(multiple_stats(pr[col]), True) for col in ("ev_sales", "ev_ebitda", "per", "pbr")
                 },
-                **peer_inputs(sel, p3, tiers),
+                **pubcut.peer_de(peer_inputs(sel, p3, tiers), True),  # P7-X2b: peer D/E median, few-peer cut
             },
         )
-    pin = {k: agg[k] for k in ("n_beta", "peer_margin_median", "peer_margin_n")} if replay else None
+    pin = (
+        {k: agg.get(k) for k in ("n_beta", "peer_margin_median", "peer_margin_n", "peer_de_median", "peer_de_n")}
+        if replay
+        else None
+    )
     diag = diagnose(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3, grid, rf_srp, tiers, public=pin)
     used = {(y, "FY") for y in cfg["params"]["avg_years"]} | {
-        (2025, "FY"),
-        (2025, "H1"),
-        (2026, "H1"),
-    }  # periods the value uses (B2b-F3)
+        (c.FY, "FY"),
+        (c.FY, c.P),
+        (c.Y, c.P),
+    }  # periods the value uses (B2b-F3; P7-X2b: from the config's LTM year)
     forced = [
         {"category": "D&A 추정", "item": f"{x['period']}{x['year']} D&A 추정", "detail": x["source"]}
         for x in diag["dna"]

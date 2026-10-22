@@ -353,6 +353,9 @@ def build_report(
     _diag_section(D, m, R)  # P7-B2 new section (unnumbered, earlier sections unchanged)
 
     # 1 ---------------------------------------------------------------- overview
+    from src.report.engagement import engagement
+
+    eng = engagement(cfg)  # P7-X2b: purpose / premise / evaluator from the config or the session (defaults = earlier texts)
     D.h(L("1. 평가 개요"))
     D.table(
         ["항목", "내용"],
@@ -361,8 +364,9 @@ def build_report(
             ["평가기준일", L(asof)],
             ["재무 기준일", L(f"{cfg['meta']['bs_date']} (반기보고서)")],
             ["기준가치", L("주당 내재가치 추정(가치산정, 가정 하의 예시). K-IFRS 1113·자본시장법의 '공정가치(공정가액)'가 아님")],
-            ["평가 전제", "계속기업"],
-            ["목적", "포트폴리오 예시(방법론 시연). 실제 거래·공시·과세 목적이 아님"],
+            ["평가 전제", L(eng["premise"])],
+            ["목적", L(eng["report_purpose"])],
+            *([["평가자", L(eng["evaluator"])]] if eng["evaluator"] else []),
             [
                 "평가 구조",
                 L(f"SOTP: 모회사 사업 DCF + 상장 종속회사({sub_name}) 지분 시가 + 모회사 순현금·비영업자산")

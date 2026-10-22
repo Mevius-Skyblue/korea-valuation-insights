@@ -69,6 +69,13 @@ def r2(v, n: int, public: bool):
     return None if public and int(n or 0) < params()["peer_min_n"] else v
 
 
+def peer_de(pin: dict, public: bool) -> dict:
+    """P7-X2b: the peer D/E median of peer_inputs (judgement alternative) is emptied in the public mode with 1~4 peers."""
+    if public and few_peers(pin.get("peer_de_n")) and pin.get("peer_de_median") is not None:
+        return {**pin, "peer_de_median": None, "peer_de_cut": True}
+    return pin
+
+
 def de_cut(n: int, public: bool) -> bool:
     return public and 0 < int(n or 0) < params()["peer_min_n"]
 

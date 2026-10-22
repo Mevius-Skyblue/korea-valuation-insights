@@ -214,6 +214,13 @@ def public_inputs(c: Ctx, key: str) -> None:
                     value=f"{cur:.0f}" if cur else "",
                     key=f"pub_sub_{x['stock_code']}_{key}",
                 )
+            for x in getattr(o, "assocs", []):  # P7-X2b listed associates (each row asks for its own close)
+                cur = (u.get("sub_close") or {}).get(x["stock_code"])
+                subs[x["stock_code"]] = st.text_input(
+                    f"상장 관계기업 종가(원): {x.get('name', '')}({x['stock_code']})",
+                    value=f"{cur:.0f}" if cur else "",
+                    key=f"pub_as_{x['stock_code']}_{key}",
+                )
             prefs = {}
             for p in o.prefs:
                 cur = (u.get("pref") or {}).get(p) or {}

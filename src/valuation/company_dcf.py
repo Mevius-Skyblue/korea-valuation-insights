@@ -28,16 +28,51 @@ from src.valuation.wacc import wacc, wacc_hp
 from src.workbench.snapdata import seam
 
 EOK = 1e8
-EXPLICIT_END = 2032  # design of the three-stage structure (P3-B2), not an as-of value
-FADE_END = 2040
+
+
+def _structure() -> dict:
+    """Lengths of the three-stage structure (P3-B2: explicit 6 years after the LTM year, fade 8 years; config/p7x2b.yaml
+    params.structure). P7-X2b: the years follow the config's LTM year instead of fixed 2032 / 2040."""
+    from src.valuation.associates import params
+
+    return params()["structure"]
+
+
+def explicit_end_of(Y: int) -> int:
+    """Last explicit year for an LTM year (2026 -> 2032)."""
+    return int(Y) + int(_structure()["explicit_years"])
+
+
+def explicit_end(c) -> int:
+    return explicit_end_of(c.Y)
 
 
 def explicit_years(c) -> list[int]:
     """Forecast years after the base year up to the end of the explicit period."""
-    return list(range(c.Y + 1, EXPLICIT_END + 1))
+    return list(range(c.Y + 1, explicit_end(c) + 1))
 
 
-FADE = list(range(EXPLICIT_END + 1, FADE_END + 1))
+def fade_years(c) -> list[int]:
+    """Fade years after the explicit period (2033~2040 for an LTM year 2026)."""
+    e = explicit_end(c)
+    return list(range(e + 1, e + int(_structure()["fade_years"]) + 1))
+
+
+def _x2b() -> dict:
+    from src.valuation.associates import params
+
+    return params()
+
+
+def _off(rule: str) -> bool:
+    from src.valuation.associates import off
+
+    return off(rule)
+
+
+def is_draft(cfg: dict) -> bool:
+    """An automatic draft (or a session config made from one): the P7-X2b rules apply; RF / JW human configs: not."""
+    return "draft_meta" in cfg
 
 
 # ---------------------------------------------------------------- pure pieces (unit-tested)
@@ -54,13 +89,17 @@ def cagr(v0: float, v1: float, years: int) -> float:
     return (v1 / v0) ** (1 / years) - 1
 
 
-def bounded_ronic(r_calc: float, reinvestment: float, w: float, cap: float) -> tuple[float, str]:
-    """Pre-registered bounds: reinvestment <= 0 -> WACC; else clip to [WACC, cap]."""
+def bounded_ronic(r_calc: float, reinvestment: float, w: float, cap: float, floor: bool = False) -> tuple[float, str]:
+    """Pre-registered bounds: reinvestment <= 0 -> WACC; else clip to [WACC, cap].
+    floor (P7-X2b config/p7x2b.yaml ronic, auto drafts): when the cap (historical ROIC) is below WACC the interval is empty;
+    the WACC floor wins (RONIC = max(WACC, rule value)) - growth then neither creates nor destroys value."""
     if not np.isfinite(r_calc) or reinvestment <= 0:
         return w, "재투자 ≤ 0 → WACC"
     if r_calc < w:
         return w, f"계산값 {r_calc:.1%} < WACC → 하한"
     if r_calc > cap:
+        if floor and cap < w:
+            return w, f"과거 ROIC {cap:.1%} < WACC → WACC(하한 우선, P7-X2b)"
         return cap, f"계산값 {r_calc:.1%} > 상한(과거 ROIC {cap:.1%})"
     return r_calc, "계산값"
 
@@ -120,6 +159,7 @@ class Company:
     dna_rec: object = None  # P7-B2b: per-period D&A source of an auto draft (원문 / 보완 / 추정)
     v2: dict | None = None  # P7-B2b: mechanical_v2 inputs of an auto draft (None = v1 path)
     sotp: dict | None = None  # P7-B3: general SOTP (subsidiary rows with prices, discount, dividend adjustment)
+    assoc: dict | None = None  # P7-X2b: listed associates (rows with prices, discount, equity income in operating income)
 
     # P3-C3: as-of dependent periods come only from config meta (ltm.year / ltm.period)
     @property
@@ -397,6 +437,20 @@ def load_company(cfg_path: str) -> Company:
                         comp.w.loc[(y, p), k] -= amt / EOK
         comp.__dict__.pop("_val_cache", None)
         comp.__dict__.pop("_wraw_cache", None)
+    if is_draft(cfg) and (cfg.get("structure") or {}).get("associates") and not _off("assoc"):  # P7-X2b listed associates
+        con = _con()
+        try:
+            comp.assoc = assoc_inputs(con, cfg, corp, fs, as_of)
+        finally:
+            _close(con)
+        # equity-method income inside operating income -> out of the base (the associates are valued in the bridge)
+        for (y, p), e in comp.assoc["equity_income"].items():
+            if (y, p) in comp.w.index:
+                for k in ("operating_income",) + (("revenue",) if e["in_revenue"] else ()):
+                    if k in comp.w.columns and pd.notna(comp.w.loc[(y, p), k]):
+                        comp.w.loc[(y, p), k] -= e["amount"] / EOK
+        comp.__dict__.pop("_val_cache", None)
+        comp.__dict__.pop("_wraw_cache", None)
     if cfg.get("forecast", {}).get("method") == "mechanical_v2":  # P7-B2b auto-draft default path
         con = _con()
         try:
@@ -447,6 +501,36 @@ def sotp_inputs(con, cfg: dict, corp: str, fs: str, as_of: str) -> dict:
         "discount": float(st.get("discount", {}).get("base", 0.0)),
         "sensitivities": list(st.get("discount", {}).get("sensitivities", [])),
         "dividends": dividends_in_revenue(con, corp, fs),
+    }
+
+
+@seam("equity_income", key=lambda con, corp, fs: (corp, fs))
+def equity_income_in_op(con, corp: str, fs: str) -> dict:
+    """P7-X2b: '지분법' lines above the operating-income line by report (src/valuation/associates.equity_income_rows)."""
+    from src.valuation.associates import equity_income_rows
+
+    rows = con.execute(
+        """SELECT bsns_year, reprt_code, sj_div, ord, account_id, account_nm, thstrm_num, thstrm_add_num FROM fs_raw
+                          WHERE corp_code=? AND fs_div=? AND sj_div IN ('IS','CIS') AND reprt_code IN ('11011','11012')""",
+        [corp, fs],
+    ).df()
+    return {f"{y}|{p}": v for (y, p), v in equity_income_rows(rows).items()}
+
+
+def assoc_inputs(con, cfg: dict, corp: str, fs: str, as_of: str) -> dict:
+    """Associate rows of the draft (config structure.associates) with the as-of closes (market provider)."""
+    st = cfg["structure"]["associates"]
+    rows = []
+    for x in st.get("rows") or []:
+        q = _quote(market_provider(), x["stock_code"], as_of, con)
+        rows.append({**x, "close": float(q[0]) if q and q[0] is not None else None})
+    ei = {(int(k.split("|")[0]), k.split("|")[1]): v for k, v in equity_income_in_op(con, corp, fs).items()}
+    return {
+        "rows": rows,
+        "basis": st.get("basis", fs),
+        "discount": float(st.get("discount", {}).get("base", 0.0)),
+        "sensitivities": list(st.get("discount", {}).get("sensitivities", [])),
+        "equity_income": ei,
     }
 
 
@@ -546,7 +630,7 @@ def v2_inputs(c: Company, con) -> dict:
     start growth (own CAGR blended with the peer growth median, clipped)."""
     r = v2_rules()
     h = history(c)
-    yrs = [y for y in range(2021, 2026) if val(c, "revenue", y) > 0]
+    yrs = [y for y in range(c.FY - 4, c.FY + 1) if val(c, "revenue", y) > 0]  # FY(Y−5)~FY(Y−1)
     ms = [val(c, "operating_income", y) / val(c, "revenue", y) for y in yrs]
     m0 = v2_start_margin(ms, h["margin"])
     m_src = f"FY{yrs[0]}~{yrs[-1]} 영업이익률 중앙값({len(ms)}년)" if len(ms) >= 3 else "v1 3년 평균(자료 3년 미만)"
@@ -561,7 +645,7 @@ def v2_inputs(c: Company, con) -> dict:
     if start == "ltm":  # P7-B3b loss path (config/p7b3b.yaml loss_path.method.b_transition_dcf)
         lr = ltm(c, "revenue")
         m0 = ltm(c, "operating_income") / lr if lr > 0 else m0
-        m_src = "LTM 영업이익률(적자 경로: FY2025 + 2026 H1 − 2025 H1)"
+        m_src = f"LTM 영업이익률(적자 경로: FY{c.FY} + {c.Y} {c.P} − {c.FY} {c.P})"
         share = float(fc.get("converge_share", share))
     w, (lo, hi) = r["start_growth"]["weight_own"], r["start_growth"]["clip"]
     v = {
@@ -598,6 +682,11 @@ def v2_apply(v: dict, ov: dict) -> dict:
     if ov.get("normal_margin") is not None:
         v["m0"] = float(ov["normal_margin"])
         v["m0_src"] = "사람 확정값(평가 세션)"
+    if ov.get("conv_share") is not None:  # P7-X2b: confirmed convergence share toward the peer margin
+        v["conv_share_auto"] = v.get("conv_share_auto", v["conv_share"])
+        v["conv_share"] = float(ov["conv_share"])
+    if ov.get("conv_end") is not None:  # P7-X2b: confirmed year the margin path reaches its end value
+        v["conv_end"] = int(ov["conv_end"])
     if v.get("peer_margin") is not None:
         v["conv_amt"] = v["conv_share"] * (v["peer_margin"] - v["m0"])
     if ov.get("g_start") is not None:
@@ -616,9 +705,11 @@ def v2_start_growth(own: float, peer: float | None, w: float, lo: float, hi: flo
     return float(min(max(blend, lo), hi))
 
 
-def margin_path(m_start: float, conv: float, year: int, Y: int) -> float:
-    """v2 margin of a forecast year: start + conv x min((year − Y) / (EXPLICIT_END − Y), 1)."""
-    return m_start + conv * min((year - Y) / (EXPLICIT_END - Y), 1.0)
+def margin_path(m_start: float, conv: float, year: int, Y: int, end: int | None = None) -> float:
+    """v2 margin of a forecast year: start + conv x min((year − Y) / (end − Y), 1); end = the explicit end (Y + 6) unless a
+    person set the year the path reaches its end value (P7-X2b conv_end)."""
+    e = explicit_end_of(Y) if end is None else int(end)
+    return m_start + conv * min((year - Y) / (e - Y), 1.0)
 
 
 def val(c: Company, k: str, y: int, p: str = "FY") -> float:
@@ -684,6 +775,48 @@ def history(c: Company) -> dict:
         "dio": _days(a.inv, a.cogs),
         "dpo": _days(a.pay, a.cogs),
     }
+    return hist_overrides(out, overrides_of(c.cfg))
+
+
+def hist_overrides(h: dict, ov: dict) -> dict:
+    """P7-X2b workbench: confirmed reinvestment ratios (D&A ÷ sales, CAPEX ÷ sales, DSO / DIO / DPO) replace the 3-year
+    averages; the automatic values stay under '<key>_auto'."""
+    if not any(ov.get(k) is not None for k in ("dna_ratio", "capex_ratio", "nwc_days")):
+        return h
+    h = dict(h)
+    for k in ("dna_ratio", "capex_ratio", "dso", "dio", "dpo"):
+        h.setdefault(f"{k}_auto", h[k])
+    if ov.get("dna_ratio") is not None:
+        h["dna_ratio"] = float(ov["dna_ratio"])
+    if ov.get("capex_ratio") is not None:
+        h["capex_ratio"] = float(ov["capex_ratio"])
+    if ov.get("nwc_days") is not None:
+        for k in ("dso", "dio", "dpo"):
+            h[k] = float(ov["nwc_days"][k])
+    return h
+
+
+def five_year_ratios(c: Company, min_years: int) -> dict:
+    """P7-X2b judgement alternatives: the reinvestment ratios averaged over FY(Y−5)~FY(Y−1) (years with revenue > 0 and the
+    item there; None when fewer than min_years). Same formulas as history()."""
+    out = {}
+    yrs = [y for y in range(c.FY - 4, c.FY + 1) if val(c, "revenue", y) > 0]
+    dna = [float(c.dna.get((y, "FY"), np.nan)) / val(c, "revenue", y) for y in yrs]
+    dna = [x for x in dna if np.isfinite(x)]
+    out["dna_ratio"] = float(np.mean(dna)) if len(dna) >= min_years else None
+    cx = [(val(c, "capex_ppe", y) + val(c, "capex_intangibles", y)) / val(c, "revenue", y) for y in yrs]
+    out["capex_ratio"] = float(np.mean(cx)) if len(yrs) >= min_years else None
+    if len(yrs) >= min_years:
+        rev = pd.Series([val(c, "revenue", y) for y in yrs])
+        cogs = pd.Series([val(c, "cogs", y) for y in yrs])
+        out["nwc_days"] = {
+            "dso": _days(pd.Series([val(c, "receivables", y) for y in yrs]), rev),
+            "dio": _days(pd.Series([val(c, "inventories", y) for y in yrs]), cogs),
+            "dpo": _days(pd.Series([val(c, "trade_payables", y) for y in yrs]), cogs),
+        }
+    else:
+        out["nwc_days"] = None
+    out["years"] = yrs
     return out
 
 
@@ -754,7 +887,7 @@ def forecast(
     first_start = date.fromordinal(date.fromisoformat(c.cfg["meta"]["bs_date"]).toordinal() + 1)
     for lab, y, start in [(c.first, Y, first_start)] + [(str(y), y, date(y, 1, 1)) for y in years]:
         rev = rev_fy[Y] - h1_rev if lab == c.first else rev_fy[y]
-        ebit = rev * (margin_path(m, conv, y, Y) if v2 else m)
+        ebit = rev * (margin_path(m, conv, y, Y, v2.get("conv_end")) if v2 else m)
         cur = nwc(y)
         rows.append(
             {
@@ -775,6 +908,8 @@ def forecast(
         prev = cur
     t = pd.DataFrame(rows)
     t.attrs.update({"g_start": g0, "margin": m, "margin_end": m + conv, "rev_fy": rev_fy, "gT": gT})
+    if v2 and v2.get("conv_end") is not None:  # P7-X2b: a path that ends after the explicit period goes on in the fade
+        t.attrs.update({"m_start": m, "conv": conv, "conv_end": int(v2["conv_end"])})
     return t
 
 
@@ -805,11 +940,15 @@ def dcf_value(
         n26 = start_nopat(t.attrs["rev_fy"][c.Y], t.attrs["margin"], tax_fn(c))
     else:
         n26 = fy26 * (1 - eff(c, fy26))
-    e32 = col["ebit"][ix["2032"]]
+    end = str(explicit_end(c))
+    e32 = col["ebit"][ix[end]]
     n32 = e32 * (1 - eff(c, e32))
     reinv = float(np.array([col["capex"][ix[y]] - col["dna"][ix[y]] + col["dnwc"][ix[y]] for y in yrs]).sum())
     r_calc = (n32 - n26) / reinv if reinv else float("nan")
-    R, why = bounded_ronic(r_calc, reinv, w, roic_cap) if ronic_override is None else (ronic_override, "지정")
+    if ronic_override is None and overrides_of(c.cfg).get("ronic") is not None:  # P7-X2b workbench: RONIC set by a person
+        ronic_override = float(overrides_of(c.cfg)["ronic"])
+    floor = is_draft(c.cfg) and bool(_x2b()["ronic_floor"])  # P7-X2b: WACC floor after the cap (auto drafts)
+    R, why = bounded_ronic(r_calc, reinv, w, roic_cap, floor) if ronic_override is None else (ronic_override, "지정")
     periods = [
         Period(
             col["label"][i],
@@ -824,11 +963,13 @@ def dcf_value(
         for i in range(len(col["label"]))
     ]
     m = t.attrs.get("margin_end", t.attrs["margin"])  # fade and terminal margin (v1: the normal margin, v2: path end)
-    prev = col["revenue"][ix["2032"]]
-    g32 = col["growth"][ix["2032"]]
-    for y, gy in zip(FADE, fade_path(g32, gT, len(FADE))):
+    prev = col["revenue"][ix[end]]
+    g32 = col["growth"][ix[end]]
+    fade = fade_years(c)
+    ce = t.attrs.get("conv_end")
+    for y, gy in zip(fade, fade_path(g32, gT, len(fade))):
         rev = prev * (1 + gy)
-        ebit = rev * m
+        ebit = rev * (margin_path(t.attrs["m_start"], t.attrs["conv"], y, c.Y, ce) if ce is not None else m)
         nopat = ebit * (1 - eff(c, ebit))
         periods.append(Period(str(y), date(y, 1, 1), date(y, 12, 31), ebit, 0.0, nopat * gy / R, 0.0, tax_base=ebit))
         prev = rev
@@ -872,6 +1013,7 @@ def bridge(c: Company) -> dict:
         id(c.bs_lines),
         id(c.w),
         None if not c.sotp else (id(c.sotp["rows"]), c.sotp["discount"]),
+        None if not c.assoc else (id(c.assoc["rows"]), c.assoc["discount"]),  # P7-X2b
         ov.get("cash_adjust_mn"),
         ov.get("nci_mn"),
         tuple(_w_raw(c, k) for k in ("total_debt", "lease_liabilities", "nci")),
@@ -894,6 +1036,19 @@ def _bridge(c: Company) -> dict:
     return b
 
 
+def _assoc_part(c: Company, lines: pd.DataFrame, remainder: float) -> dict | None:
+    """P7-X2b listed associates: bridge pieces (원) or None (no listed associate in the draft)."""
+    if not c.assoc:
+        return None
+    from src.valuation.associates import assoc_bridge
+
+    return assoc_bridge(lines, c.assoc["rows"], c.assoc["discount"], c.assoc["basis"], remainder)
+
+
+def _assoc_eok(ab: dict) -> dict:
+    return {k: (v / EOK if isinstance(v, float) and k != "discount" else v) for k, v in ab.items()}
+
+
 def _bridge_raw(c: Company) -> dict:
     from src.valuation.peer_p3 import classify
 
@@ -901,7 +1056,7 @@ def _bridge_raw(c: Company) -> dict:
         sp = sotp_parts(c.bs_lines, c.sotp["rows"], c.sotp["discount"])
         debt = val(c, "total_debt", c.Y, c.P) + val(c, "lease_liabilities", c.Y, c.P)
         cash = sp["cl"]["cash_like"] / EOK
-        return {
+        out = {
             "total_debt": debt,
             "cash_like": cash,
             "net_debt": debt - cash,
@@ -911,10 +1066,16 @@ def _bridge_raw(c: Company) -> dict:
             "nonop_detail": sp["cl"]["non_op_detail"],
             "sotp": {k: (v / EOK if isinstance(v, float) and k not in ("discount",) else v) for k, v in sp.items() if k != "cl"},
         }
+        if c.assoc:
+            mask = sub_line_mask(c.bs_lines, sp["book_all"])
+            ab = _assoc_part(c, c.bs_lines[~mask].reset_index(drop=True), sp["remainder"])
+            out["non_operating"] = (sp["non_operating"] + ab["add"]) / EOK
+            out["assoc"] = _assoc_eok(ab)
+        return out
     cl = classify(c.bs_lines)
     debt = val(c, "total_debt", c.Y, c.P) + val(c, "lease_liabilities", c.Y, c.P)
     cash = cl["cash_like"] / EOK
-    return {
+    out = {
         "total_debt": debt,
         "cash_like": cash,
         "net_debt": debt - cash,
@@ -923,6 +1084,11 @@ def _bridge_raw(c: Company) -> dict:
         "cash_detail": cl["cash_like_detail"],
         "nonop_detail": cl["non_op_detail"],
     }
+    if c.assoc:
+        ab = _assoc_part(c, c.bs_lines, 0.0)
+        out["non_operating"] = (cl["non_operating"] + ab["add"]) / EOK
+        out["assoc"] = _assoc_eok(ab)
+    return out
 
 
 def ltm(c: Company, k: str) -> float:
@@ -995,7 +1161,10 @@ def kd_for(c: Company, version: str) -> tuple[float, str, dict]:
             return c.rates["CB3Y_BBBm"], "실제 차입 없음 → BBB- 3년", {}
         return act, f"실제 가중 약정이자율 {act:.3%}", {}
     if c.cfg["kd"].get("method") == "implied" and act is not None:
-        kd = max(act, rf)
+        from src.valuation.common_rules import load_common
+
+        # P7-X2b: the floor rule is read from config/valuation_rules.yaml common_rules.kd.floor ('rf'), not assumed
+        kd = max(act, rf) if load_common()["kd"]["floor"] == "rf" else act
         lab = f"이자비용 ÷ 평균 차입금 {act:.3%}" + (f" → Rf 하한 {rf:.3%}" if kd > act else "")
         return kd, lab, {"BBB- 3년": c.rates["CB3Y_BBBm"]}
     from src.valuation.common_rules import kd_choice

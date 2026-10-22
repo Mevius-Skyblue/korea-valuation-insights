@@ -57,6 +57,7 @@ def fingerprint(s: dict) -> str:
             js,
             [[a.get("v"), a.get("field"), a.get("reason")] for a in s["audit"]],
             s.get("public_inputs") or {},
+            s.get("engagement") or {},  # P7-X2b: purpose / premise / evaluator go into the report and the cover
         ],  # P7-C3: public-mode values follow the user's inputs
         sort_keys=True,
         default=str,

@@ -278,7 +278,7 @@ def diagnostics(c: Ctx):
             ("v1 주당(원, 3년 평균 이익률·5년 CAGR)", v1["per_share"], "won", "DiagV1PS"),
             ("v2 출발 이익률(5년 중앙값)", v2i.get("m0"), "pct", "DiagV2M0"),
             ("v2 피어 이익률 중앙값", v2i.get("peer_margin"), "pct", "DiagV2PM"),
-            ("v2 2032 이동 폭", v2i.get("conv_amt"), "pct", "DiagV2Conv"),
+            (f"v2 {c.d['dcf']['explicit_end']} 이동 폭", v2i.get("conv_amt"), "pct", "DiagV2Conv"),
             ("v2 출발 성장률", v2i.get("g0"), "pct", "DiagV2G0"),
             ("v1 신호(피어/시장)", f"{v1['signals']['light_peer']}/{v1['signals']['light_market']}", "gen", "DiagV1Light"),
         ]
@@ -349,7 +349,7 @@ def diagnostics(c: Ctx):
             ),
             ("(b) 전환 DCF 주당(원, 기본·SRP 열 1)", lo["dcf"], "won", "DiagLossDcf"),
             ("(b) 출발 LTM 영업이익률", lo["ltm_margin"], "pct", "DiagLossM0"),
-            ("(b) 2032년 도달 이익률(피어 중앙값)", lo["target_margin"], "pct", "DiagLossMT"),
+            (f"(b) {c.d['dcf']['explicit_end']}년 도달 이익률(피어 중앙값)", lo["target_margin"], "pct", "DiagLossMT"),
             ("(c) 명시 기간 누적 FCF 최저(백만원)", fu["trough"], "mn", "DiagLossTrough"),
             ("(c) 현금성(백만원)", fu["cash_like"], "mn", "DiagLossCash"),
             ("(c) 추가 자금 필요(희석 위험)", "예" if fu["need"] else "아니오", "gen", "DiagLossNeed"),

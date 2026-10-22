@@ -206,10 +206,14 @@ def peer_inputs(sel, p3, tiers) -> dict:
     number of peers with a βu, and the peers' LTM operating-margin median (normal-margin candidate)."""
     pp = p3[p3.tier.isin(tiers)]
     pm = (pp.op / pp.revenue).replace([np.inf, -np.inf], np.nan).dropna()
+    de = sel.de_avg.dropna() if len(sel) and "de_avg" in sel.columns else []
     return {
         "n_beta": int(sel.bu_avg.notna().sum()) if len(sel) else 0,
         "peer_margin_median": float(pm.median()) if len(pm) else None,
         "peer_margin_n": int(len(pm)),
+        # P7-X2b judgement alternative 'target D/E = peer median' (aggregate; the public cut applies at use)
+        "peer_de_median": float(np.median(de)) if len(de) else None,
+        "peer_de_n": int(len(de)),
     }
 
 
@@ -283,9 +287,11 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         rev["max_abs_error"] = float(max(abs(x) for x in chk)) if chk else None
 
     # composition of the equity value (억원 -> 백만원 at the end)
+    from datetime import date as _date
+
     from src.valuation.dcf import roll_forward
 
-    days = 92
+    days = (_date.fromisoformat(c.cfg["meta"]["as_of"]) - _date.fromisoformat(c.cfg["meta"]["bs_date"])).days  # P7-X2b (was 92)
     rr = v0["r"]
     tv = roll_forward(rr.pv_tv_gordon, w0, days)
     expl = roll_forward(rr.pv_explicit, w0, days)
@@ -303,9 +309,9 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
     comp_share = {k: (v / eq if eq else None) for k, v in comp.items() if k not in ("equity",)}
 
     # anomalies
-    yrs5 = range(2021, 2026)
+    yrs5 = range(c.FY - 4, c.FY + 1)  # FY(Y−5)~FY(Y−1) (P7-X2b: from the config's LTM year)
     margins = [val(c, "operating_income", y) / val(c, "revenue", y) for y in yrs5 if val(c, "revenue", y)]
-    revs = [val(c, "revenue", y) for y in range(2020, 2026)]
+    revs = [val(c, "revenue", y) for y in range(c.FY - 5, c.FY + 1)]
     growths = [b / a - 1 for a, b in zip(revs, revs[1:]) if a and b]
     an = r["anomalies"]
     avg_ops = [val(c, "operating_income", y) for y in c.cfg["params"]["avg_years"]]
@@ -432,6 +438,11 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         }
     if rf_srp and (10, s0) in rf_srp:
         imp["rf"] = {"diff": rf_srp[(10, s0)] - ps0, "alt": "Rf 국고채 10년"}
+    from src.valuation.associates import off as _off
+    from src.valuation.company_dcf import is_draft
+
+    if is_draft(c.cfg) and not _off("judge"):  # P7-X2b (config/p7x2b.yaml judgements): the large assumptions ranked
+        imp.update(x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin, v0))
     # P7-B2b: the v1 path (3-year average margin, 5-year CAGR) next to v2, with its own signals
     v1 = None
     if v2:
@@ -469,11 +480,14 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         market_only=peer.get("valid") is False,
     )
     facts_ = (c.cfg.get("draft_meta") or {}).get("facts") or {}
-    struct_forced = structure_items(facts_.get("structure_guard")) + share_items(
-        facts_.get("sotp_share_check") if c.sotp else None
+    struct_forced = (
+        structure_items(facts_.get("structure_guard"))
+        + share_items(facts_.get("sotp_share_check") if c.sotp else None)
+        + share_items(((facts_.get("associates") or {}).get("share_check")) if getattr(c, "assoc", None) else None, "관계기업")
     )
-    if struct_forced:  # P7-X2a holding guards (config/p7x2a.yaml holding): hold + the structure check first
-        guard["reasons"] += [x.pop("_reason") for x in struct_forced]
+    held_ = [x.pop("_reason") for x in struct_forced if "_reason" in x]
+    if held_:  # P7-X2a holding guards (config/p7x2a.yaml holding): hold + the structure check first
+        guard["reasons"] += held_
         guard.update({"hold": True, "status": "자동 결과 보류", "structure": True})
     # P7-B3 general SOTP: composition and the listed-stake discount sensitivities
     sp = br.get("sotp")
@@ -508,6 +522,10 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
                 {"key": "key_metric_missing", "text": "상장 종속회사 종가 없음", "value": sp["missing_close"]}
             )
             guard.update({"hold": True, "status": "자동 결과 보류"})
+    ab_ = br.get("assoc")
+    if ab_ and ab_.get("missing_close"):  # P7-X2b: a listed associate without a close (suspended, no price on the date)
+        guard["reasons"].append({"key": "key_metric_missing", "text": "상장 관계기업 종가 없음", "value": ab_["missing_close"]})
+        guard.update({"hold": True, "status": "자동 결과 보류"})
     # P7-B3b (config/p7b3b.yaml): SOTP guard, turnaround detection, loss path (funding check, EV/Sales range)
     r3 = rules_3b()
     forced = []
@@ -600,7 +618,9 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
     if loss_path:
         tab = v0["r"].table
         lab_col = "label" if "label" in tab.columns else tab.columns[0]
-        expl = [c.first] + [str(y) for y in range(c.Y + 1, 2033)]
+        from src.valuation.company_dcf import explicit_years
+
+        expl = [c.first] + [str(y) for y in explicit_years(c)]
         fc = [float(tab.loc[tab[lab_col] == lb, "fcff"].iloc[0]) for lb in expl if (tab[lab_col] == lb).any()]
         fn = funding_need(fc, br["cash_like"])
         evs = multiples.get("EV/Sales") or {}
@@ -673,6 +693,155 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
     }
 
 
+def _far(alts: list[tuple]) -> tuple | None:
+    """The alternative with the largest |impact| (value, impact, label)."""
+    ok = [x for x in alts if x[1] is not None and np.isfinite(x[1])]
+    return max(ok, key=lambda x: abs(x[1])) if ok else None
+
+
+def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin, v0) -> dict:
+    """P7-X2b: per-share impacts (alternative − default, base scenario, SRP column 1) of the assumptions the judgement list
+    did not rank (audit packet 4): MRP, target D/E, D&A / CAPEX / working-capital ratios, peer convergence share and year,
+    listed-associate discount and market value, the RONIC floor. Each carries its candidate values ('cands') for the
+    workbench judgement panel. Values of the model do not change here."""
+    from src.valuation.associates import params
+    from src.valuation.company_dcf import dcf_value, discount_rate, explicit_end, five_year_ratios, forecast
+    from src.workbench import pubcut
+
+    P = params()["judgement_alternatives"]
+    out = {}
+
+    def ps_at(hh=None, t=None, w=None, ronic=None):
+        try:
+            return dcf_value(c, hh or h, tb if t is None else t, w0 if w is None else w, cap, ronic_override=ronic)["per_share"]
+        except (ValueError, ZeroDivisionError, OverflowError):
+            return None
+
+    # MRP 7% / 9% (KICPA guidance range, config/valuation_rf.yaml mrp.options)
+    m0 = c.led["mrp"]["value"]
+    alts = []
+    for mv in P["mrp"]:
+        if abs(mv - m0) < 1e-12:
+            continue
+        c.led["mrp"]["value"] = mv
+        try:
+            x = ps_at(w=discount_rate(c, s0, bu0, de_own, kd))
+        finally:
+            c.led["mrp"]["value"] = m0
+        alts.append((mv, None if x is None else x - ps0, f"MRP {mv:.0%}"))
+    far = _far(alts)
+    if far:
+        out["mrp"] = {
+            "diff": far[1],
+            "alt": f"{far[2]}(기본 {m0:.0%}, 한공회 가이던스 7~9%)",
+            "cands": [{"label": lab, "field": "mrp", "value": v} for v, _, lab in alts],
+        }
+    # target D/E = peer median (public mode: the P7-X2a cut, fewer than 5 peers -> not computed)
+    dn, dm = int(pin.get("peer_de_n") or 0), pin.get("peer_de_median")
+    need = pubcut.params()["peer_min_n"] if pubcut.public_scope(c.cfg) else int(P["peer_de_min_n"])
+    if dm is not None and dn >= need and abs(float(dm) - de_own) > 1e-12:
+        x = ps_at(w=discount_rate(c, s0, bu0, float(dm), kd))
+        if x is not None:
+            out["de_target"] = {
+                "diff": x - ps0,
+                "alt": f"피어 D/E 중앙값 {float(dm):.3f}배(기본 자기 평균 {de_own:.3f}배)",
+                "cands": [{"label": f"피어 D/E 중앙값 {float(dm):.3f}배", "field": "de", "value": float(dm)}],
+            }
+    # D&A, CAPEX, working capital: 5-year averages instead of the 3-year ones
+    fy = five_year_ratios(c, int(P["five_year_min_years"]))
+    lab_y = f"FY{fy['years'][0]}~{fy['years'][-1]}" if fy["years"] else ""
+    for k, lab in (("dna_ratio", "D&A ÷ 매출"), ("capex_ratio", "CAPEX ÷ 매출")):
+        v = fy.get(k)
+        if v is None or not np.isfinite(v) or abs(v - h[k]) < 1e-12:
+            continue
+        h2 = {**h, k: v}
+        x = ps_at(hh=h2, t=forecast(c, h2))
+        if x is not None:
+            out[k] = {
+                "diff": x - ps0,
+                "alt": f"{lab} 5년 평균 {v:.2%}({lab_y}, 기본 3년 평균 {h[k]:.2%})",
+                "cands": [{"label": f"{lab} 5년 평균 {v:.2%}", "field": k, "value": float(v)}],
+            }
+    nd = fy.get("nwc_days")
+    if nd and any(abs(nd[k] - h[k]) > 1e-9 for k in ("dso", "dio", "dpo")):
+        h2 = {**h, **nd}
+        x = ps_at(hh=h2, t=forecast(c, h2))
+        if x is not None:
+            txt = f"DSO {nd['dso']:.0f}·DIO {nd['dio']:.0f}·DPO {nd['dpo']:.0f}일"
+            out["nwc_days"] = {
+                "diff": x - ps0,
+                "alt": f"회전일수 5년 평균 {txt}({lab_y}, 기본 DSO {h['dso']:.0f}·DIO {h['dio']:.0f}·DPO {h['dpo']:.0f}일)",
+                "cands": [{"label": f"회전일수 5년 평균 {txt}", "field": "nwc_days", "value": {k: float(nd[k]) for k in nd}}],
+            }
+    # peer convergence: share and the year the margin path reaches its end value
+    v2 = getattr(c, "v2", None)
+    if v2 and v2.get("peer_margin") is not None:
+        s_now = v2["conv_share"]
+        alts = []
+        for s in P["conv_share"]:
+            if abs(s - s_now) < 1e-12:
+                continue
+            c.v2 = {**v2, "conv_share": s, "conv_amt": s * (v2["peer_margin"] - v2["m0"])}
+            try:
+                x = ps_at(t=forecast(c, h))
+            finally:
+                c.v2 = v2
+            alts.append((s, None if x is None else x - ps0, f"수렴 비율 {s:.0%}"))
+        far = _far(alts)
+        if far:
+            out["conv_share"] = {
+                "diff": far[1],
+                "alt": f"{far[2]}(기본 {s_now:.0%}, 피어 이익률 중앙값 {v2['peer_margin']:.1%} 쪽)",
+                "cands": [{"label": lab, "field": "conv_share", "value": s} for s, _, lab in alts],
+            }
+        e0 = int(v2.get("conv_end") or explicit_end(c))
+        alts = []
+        for d in P["conv_end_steps"]:
+            e = e0 + int(d)
+            if e <= c.Y or e > int(params()["assumptions"]["conv_end"]["max"]):
+                continue
+            c.v2 = {**v2, "conv_end": e}
+            try:
+                x = ps_at(t=forecast(c, h))
+            finally:
+                c.v2 = v2
+            alts.append((e, None if x is None else x - ps0, f"도달 연도 {e}"))
+        far = _far(alts)
+        if far:
+            out["conv_end"] = {
+                "diff": far[1],
+                "alt": f"{far[2]}(기본 {e0})",
+                "cands": [{"label": lab, "field": "conv_end", "value": e} for e, _, lab in alts],
+            }
+    # listed associates: discount 30% / 50%, and keeping the book instead of the market value
+    ab = br.get("assoc")
+    if ab and getattr(c, "assoc", None):
+        d0 = ab["discount"]
+        alts = [
+            (dd, (eq - ab["listed"] * (dd - d0)) * EOK / shares - ps0, f"상장 관계기업 지분 할인 {dd:.0%}")
+            for dd in c.assoc["sensitivities"]
+        ]
+        far = _far(alts)
+        if far:
+            out["assoc_discount"] = {
+                "diff": far[1],
+                "alt": f"{far[2]}(기본 {d0:.0%})",
+                "cands": [{"label": lab, "field": "assoc_discount", "value": dd} for dd, _, lab in alts],
+            }
+        out["assoc_market"] = {"diff": -ab["add"] * EOK / shares, "alt": "상장 관계기업을 장부가로 둠(시가 반영 안 함)"}
+    # RONIC floor: the historical-ROIC cap below WACC (the value before the P7-X2b rule)
+    # X2b-F4: only a positive historical ROIC is an alternative (RONIC <= 0 has no meaning in FCF = NOPAT x (1 − g / RONIC))
+    if np.isfinite(cap) and 0 < cap < w0 and str(v0.get("ronic_why", "")).startswith("과거 ROIC"):
+        x = ps_at(ronic=float(cap))
+        if x is not None:
+            out["ronic"] = {
+                "diff": x - ps0,
+                "alt": f"RONIC = 과거 3년 ROIC {cap:.2%}(규칙 전 값, 기본 = WACC {w0:.2%})",
+                "cands": [{"label": f"RONIC 과거 3년 ROIC {cap:.2%}", "field": "ronic", "value": float(cap)}],
+            }
+    return out
+
+
 def _eok(x) -> str:
     return "—" if x is None else f"{x / 1e8:,.0f}억"
 
@@ -705,6 +874,17 @@ def structure_items(sg: dict | None) -> list[dict]:
                 },
             }
         )
+    if sg.get("holding") and not sg.get("a") and sg.get("n_assoc"):  # P7-X2b: guard a narrowed - a judgement, no hold
+        out.append(
+            {
+                "category": "상장 관계기업",
+                "item": f"지주회사({sg.get('holding')}): 상장 관계기업 {sg['n_assoc']}곳을 시가로 반영",
+                "detail": "config/p7x2b.yaml associates.holding_guard_a — 연결 범위 상장 종속회사 0, 상장 관계기업 지분은 보유 주식수 × 종가로 "
+                "더하고 관계기업 줄 장부는 뺌. 지분 할인·지배력·이중 계산(영업이익 안 지분법 손익) 확인",
+                "impact": None,
+                "alternative": "구조 확인(상장 관계기업 시가·지분 할인)",
+            }
+        )
     if sg.get("b"):
         ms = ", ".join(f"{x['name']} 지분 {x['stake']:.1%} 장부 {_eok(x['book'])}" for x in (sg.get("minority_subs") or [])[:5])
         out.append(
@@ -724,22 +904,25 @@ def structure_items(sg: dict | None) -> list[dict]:
     return out
 
 
-def share_items(chk: list[dict] | None) -> list[dict]:
-    """P7-X2a X2a-F1: SOTP listed subsidiaries whose held quantity does not match stake x listed shares (unresolved)."""
+def share_items(chk: list[dict] | None, kind: str = "종속회사") -> list[dict]:
+    """P7-X2a X2a-F1: SOTP listed subsidiaries (P7-X2b: or listed associates) whose held quantity does not match stake x
+    listed shares and no share-count event explains it (config/p7x2b.yaml sotp_quantity) - unresolved."""
     bad = [x for x in chk or [] if not x.get("fixed")]
     if not bad:
         return []
     txt = ", ".join(f"{x['name']} 수량 ÷ (지분율 × 상장주식수) = {x['ratio']:g}" for x in bad[:5])
+    sotp = kind == "종속회사"
     return [
         {
-            "category": "SOTP 보유 수량 확인",
-            "item": "상장 종속회사 보유 수량이 지분율과 맞지 않음",
-            "detail": f"config/p7x2a.yaml fixes X2a-F1 — {txt}. 주식 분할·병합·수량 단위를 원문으로 확인",
+            "category": "SOTP 보유 수량 확인" if sotp else "상장 관계기업 보유 수량 확인",
+            "item": f"상장 {kind} 보유 수량이 지분율과 맞지 않음",
+            "detail": f"config/p7x2a.yaml fixes X2a-F1·config/p7x2b.yaml sotp_quantity — {txt}. 주식 수 변동 공시로 설명되지 않음 — "
+            "분할·병합·수량 단위를 원문으로 확인",
             "impact": None,
             "alternative": "보유 수량 확인",
             "_reason": {
-                "key": "sotp_share_mismatch",
-                "text": "SOTP 상장 종속회사 보유 수량 불일치",
+                "key": "sotp_share_mismatch" if sotp else "assoc_share_mismatch",
+                "text": f"{'SOTP ' if sotp else ''}상장 {kind} 보유 수량 불일치",
                 "value": [x["ratio"] for x in bad],
             },
         }
@@ -754,15 +937,20 @@ def validity_guard(
     from src.valuation.company_dcf import ltm
 
     need = {(y, "FY") for y in c.cfg["params"]["avg_years"]} | {
-        (2025, "FY"),
-        (2025, "H1"),
-        (2026, "H1"),
-    }  # periods the value uses (short history too)
+        (c.FY, "FY"),
+        (c.FY, c.P),
+        (c.Y, c.P),
+    }  # periods the value uses (short history too; P7-X2b: from the config's LTM year)
     have = {(x["year"], x["period"]) for x in dna_rows} if dna_rows else None
     miss_dna = sorted(f"{p}{y}" for y, p in need - have) if have is not None else []
     return guard_reasons(
         ps0, tv_share, peer.get("median"), price, ltm(c, "revenue"), ltm(c, "operating_income"), miss_dna, market_only=market_only
     )
+
+
+def pb41_multiple() -> float:
+    """PB4-1 market-only multiple (config/p7b3b.yaml pre_b4_changes PB4-1; P7-X2b: read here, was p7b2b far_from_both)."""
+    return float(next(x for x in rules_3b()["pre_b4_changes"] if isinstance(x, dict) and x.get("id") == "PB4-1")["multiple"])
 
 
 def guard_reasons(
@@ -771,7 +959,9 @@ def guard_reasons(
     """Pure rule: reasons not to publish the per share as the headline number (pre-registered thresholds)."""
     g = g or yamlio.load((ROOT / "config" / "p7b2b.yaml").read_text(encoding="utf-8"))["validity_guard"]["conditions"]
     reasons = []
-    if ps0 is None or ps0 <= 0:
+    if ps0 is not None and not np.isfinite(ps0):  # P7-X2b X2b-F3: an incomputable per share is never shown as a headline
+        reasons.append({"key": "per_share_nan", "text": "주당가치 계산 불가(입력 결측)", "value": None})
+    elif ps0 is None or ps0 <= 0:
         reasons.append({"key": "equity_nonpositive", "text": "주식가치 ≤ 0", "value": ps0})
     if tv_share is not None and tv_share > g["terminal_heavy"]:
         reasons.append({"key": "terminal_heavy", "text": f"영구가치 비중 > {g['terminal_heavy']:.0%}", "value": tv_share})
@@ -786,11 +976,11 @@ def guard_reasons(
                     "value": [ps0 / med, ps0 / price],
                 }
             )
-    elif market_only and ps0 and ps0 > 0 and price and abs(np.log(ps0 / price)) >= k:  # PB4-1 (pre-B4 rule change)
-        reasons.append(
+    elif market_only and ps0 and ps0 > 0 and price and abs(np.log(ps0 / price)) >= np.log(g.get("pb41", pb41_multiple())):
+        reasons.append(  # PB4-1 (pre-B4 rule change; its own setting since P7-X2b, same value 3.0)
             {
                 "key": "far_from_market",
-                "text": f"피어 범위 해석 불가 + 시장가와 {g['far_from_both']:.0f}배 이상 차이",
+                "text": f"피어 범위 해석 불가 + 시장가와 {g.get('pb41', pb41_multiple()):.0f}배 이상 차이",
                 "value": ps0 / price,
             }
         )
@@ -887,6 +1077,7 @@ KEY_OF = {
     "우선주 처리": "pref",
     "비지배지분": "nci",
     "SOTP": "sotp_discount",
+    "상장 관계기업": "assoc_discount",  # P7-X2b
 }
 AUTO = [
     ("normalize", "정상화(비경상 손익)", "정상 이익률 후보"),
@@ -901,6 +1092,17 @@ AUTO = [
     ("v1", "기본 경로", "기본 경로 v1(대안)"),
     ("sotp_discount", "SOTP", "상장 종속회사 지분 할인"),
     ("shares", "주식 수", "기준일 뒤 주식 수 변동(기준일 상장주식수 사용)"),
+    # P7-X2b (config/p7x2b.yaml judgements): the large assumptions that were not ranked before
+    ("mrp", "할인율", "MRP"),
+    ("de_target", "목표 D/E", "목표 D/E(자기 평균)"),
+    ("dna_ratio", "재투자 비율", "D&A ÷ 매출(3년 평균)"),
+    ("capex_ratio", "재투자 비율", "CAPEX ÷ 매출(3년 평균)"),
+    ("nwc_days", "재투자 비율", "운전자본 회전일수(3년 평균)"),
+    ("conv_share", "이익률 수렴", "피어 쪽 수렴 비율"),
+    ("conv_end", "이익률 수렴", "수렴 도달 연도"),
+    ("assoc_discount", "상장 관계기업", "상장 관계기업 지분 할인"),
+    ("assoc_market", "상장 관계기업", "상장 관계기업 시가 반영"),
+    ("ronic", "RONIC", "영구 구간 RONIC(하한 WACC)"),
 ]
 
 
@@ -922,7 +1124,9 @@ def rank_review(review: list[dict] | None, impacts: dict, base_ps: float | None,
         if key and key not in used:
             used.add(key)
             im = impacts["peers"][key[1]] if key[0] == "peers" else impacts[key[0]]
-            out_c.append({**x, "impact": im["diff"], "alternative": im["alt"]})
+            out_c.append(
+                {**x, "impact": im["diff"], "alternative": im["alt"], **({"cands": im["cands"]} if im.get("cands") else {})}
+            )
         else:
             out_n.append({**x, "impact": None, "alternative": ""})
     for k, cat, item in AUTO:
@@ -934,6 +1138,7 @@ def rank_review(review: list[dict] | None, impacts: dict, base_ps: float | None,
                     "detail": "자동 진단(config/p7b2.yaml ranking)",
                     "impact": impacts[k]["diff"],
                     "alternative": impacts[k]["alt"],
+                    **({"cands": impacts[k]["cands"]} if impacts[k].get("cands") else {}),
                 }
             )
     for nm, im in (impacts.get("peers") or {}).items():

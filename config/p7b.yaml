@@ -1,0 +1,10 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7b.yaml에서 공개 앱이 읽는 최상위 키만 (meta)
+meta:
+  as_of: '2026-09-30'
+  bs_date: '2026-06-30'
+  ltm:
+    year: 2026
+    period: H1
+  source: 사용자 지시(P7-B 프롬프트 2026-10-16)
+  status: 🔸
+  api_budget: DART 700회 이내(수집기 상한 690, 이미 받은 원문·재무 재사용), KRX·ECOS 0회(기준일 DB 값만)

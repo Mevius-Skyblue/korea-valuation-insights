@@ -42,6 +42,13 @@ DIRECT = {
     "상장 종속회사 확인": [],  # P7-X2a holding guard a: a person checks the structure (no single field fixes it)
     "비지배지분 확인": ["nci_mn"],  # P7-X2a holding guard b
     "SOTP 보유 수량 확인": ["sotp_discount"],  # P7-X2a X2a-F1
+    "상장 관계기업 보유 수량 확인": ["assoc_discount"],  # P7-X2b
+    # P7-X2b (config/p7x2b.yaml judgements): the large assumptions ranked by impact
+    "목표 D/E": ["de"],
+    "재투자 비율": ["dna_ratio", "capex_ratio", "nwc_days"],
+    "이익률 수렴": ["conv_share", "conv_end"],
+    "상장 관계기업": ["assoc_discount"],
+    "RONIC": ["ronic"],
 }
 
 
@@ -50,6 +57,8 @@ def candidates(x: dict, summ: dict, ctx) -> list[dict]:
     cat, item = x.get("category"), str(x.get("item") or "")
     dg = summ.get("diagnostics") or {}
     out = []
+    if x.get("cands"):  # P7-X2b: the diagnostics computed this item's alternatives (value and label) with its impact
+        return [{"label": cd["label"], "field": cd["field"], "value": cd["value"]} for cd in x["cands"]]
     if cat in ("비경상 손익", "정상화(비경상 손익)"):
         for cd in dg.get("margin_candidates") or []:
             if cd.get("margin") is not None:

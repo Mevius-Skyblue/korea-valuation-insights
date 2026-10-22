@@ -48,6 +48,21 @@ class DbMarketProvider:
             if own:
                 c.close()
 
+    def listed_shares_at(self, code: str, date: str, con=None) -> int | None:
+        """KRX listed shares on the last trading day on or before `date` (P7-X2b share-event check of the SOTP /
+        associate holdings, config/p7x2b.yaml sotp_quantity)."""
+        c, own = self._con(con)
+        try:
+            r = c.execute(
+                """SELECT list_shrs FROM price_daily WHERE stock_code=? AND bas_dd<=? AND list_shrs>0
+                                ORDER BY bas_dd DESC LIMIT 1""",
+                [code, date],
+            ).fetchone()
+            return int(r[0]) if r else None
+        finally:
+            if own:
+                c.close()
+
     def mktcap_at(self, code: str, date: str, con=None):
         from src.market.beta_table import mktcap_at
 

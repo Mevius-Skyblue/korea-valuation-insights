@@ -80,6 +80,8 @@ def session_config(s: dict, version: int | None = None, mode: str = "pc", user: 
         "code_commit": s["code_commit"],
         "draft_config": s["draft_config"],
     }
+    if s.get("engagement"):  # P7-X2b: purpose / premise / evaluator typed in step 5 (report and Excel cover)
+        cfg2.setdefault("report", {})["engagement"] = dict(s["engagement"])
     if mode == "public":
         cfg2["public_mode"] = {"user": dict(user or {})}
     sid = s["session_id"].replace("-", "")

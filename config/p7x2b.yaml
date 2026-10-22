@@ -1,0 +1,62 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7x2b.yaml에서 공개 앱이 읽는 최상위 키만 (params)
+params:
+  associates:
+    min_stake: 0.2
+    discount_base: 0.0
+    sensitivities:
+    - 0.3
+    - 0.5
+    line_regex: 관계기업|공동기업|지분법
+    equity_regex: 지분법
+    equity_exclude_regex: 매출|수익[(]|자본변동|기타포괄|조정
+  ronic_floor: true
+  quantity_events:
+    regex: 무상증자결정|주식분할결정|주식병합결정|감자결정|액면분할|액면병합
+    tol: 0.1
+  guard_b_abs: true
+  judgement_alternatives:
+    mrp:
+    - 0.07
+    - 0.09
+    conv_share:
+    - 0.0
+    - 0.5
+    - 1.0
+    conv_end_steps:
+    - -2
+    - 2
+    five_year_min_years: 4
+    peer_de_min_n: 3
+  assumptions:
+    dna_ratio:
+      min: 0.0
+      max: 0.5
+    capex_ratio:
+      min: 0.0
+      max: 1.0
+    nwc_days:
+      min: 0.0
+      max: 730.0
+      note: DSO·DIO·DPO 각각(일)
+    conv_share:
+      min: 0.0
+      max: 1.0
+    conv_end:
+      min_after_ltm: 1
+      max: 2040
+      note: 정수 연도
+    assoc_discount:
+      min: 0.0
+      max: 0.9
+    ronic:
+      min: 0.0
+      max: 1.0
+      note: 영구·체감 구간 RONIC
+  structure:
+    explicit_years: 6
+    fade_years: 8
+    fade_to_offset: 4
+  engagement_defaults:
+    report_purpose: 포트폴리오 예시(방법론 시연). 실제 거래·공시·과세 목적이 아님
+    excel_purpose: 방법론 예시·교육(실제 거래·공시용 아님)
+    premise: 계속기업

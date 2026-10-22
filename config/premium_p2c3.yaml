@@ -1,4 +1,4 @@
-# 공개 축약본(P7-C3): 비공개 저장소 config/premium_p2c3.yaml에서 공개 앱이 읽는 최상위 키만 (application_rule, quantile_regression)
+# 공개 축약본(P7-C3): 비공개 저장소 config/premium_p2c3.yaml에서 공개 앱이 읽는 최상위 키만 (application_rule, neighbours, quantile_regression)
 quantile_regression:
   quantiles:
   - 0.25
@@ -15,6 +15,11 @@ quantile_regression:
     - 'mean pinball loss per quantile: model vs unconditional quantile of the training fold'
     - coverage of the predicted 25-75% interval in the test folds (expected about 50%)
     - number of crossing predictions (q25 > q50 or q50 > q75) in the test folds
+neighbours:
+  k: 50
+  distance: '|mktcap_pct difference|'
+  rule: same market first; if the market has fewer than 50 deals, fill with the nearest deals of the other market
+  report: median, 25%, 75%, n
 application_rule:
   decision: D6 (user, 2026-10-03)
   order:

@@ -153,6 +153,9 @@ def krx_values(cfg_path: str, user: dict | None = None) -> list[dict]:
     for r in (d.get("sotp") or {}).get("rows") or []:
         if r.get("close"):
             out.append({"what": f"상장 종속회사 종가 {r.get('name')}(원)", "v": r["close"], "unit": "won"})
+    for r in (d.get("associates") or {}).get("rows") or []:  # P7-X2b
+        if r.get("close"):
+            out.append({"what": f"상장 관계기업 종가 {r.get('name')}(원)", "v": r["close"], "unit": "won"})
     typed = user_values(user, d)
     return [x for x in out if x["v"] is not None and not any(abs(_won(x) - t) < 0.5 for t in typed)]
 

@@ -54,6 +54,8 @@ def apply_overrides(cfg: dict, led: dict, ov: dict) -> tuple[dict, dict]:
         cfg["structure"]["discount"]["base"] = float(ov["sotp_discount"])
     if "premium" in ov:
         cfg["params"]["premium"] = {**cfg["params"]["premium"], **ov["premium"]}
+    if "assoc_discount" in ov and isinstance(((cfg.get("structure") or {}).get("associates") or {}).get("discount"), dict):
+        cfg["structure"]["associates"]["discount"]["base"] = float(ov["assoc_discount"])  # P7-X2b
     hook = {k: ov[k] for k in HOOK if ov.get(k) is not None}
     if hook:
         cfg["overrides"] = hook
@@ -76,6 +78,7 @@ class Ctx:
         self.base_cfg, self.base_led = copy.deepcopy(c.cfg), copy.deepcopy(c.led)
         self.base_v2 = copy.deepcopy(c.v2)
         self.base_sotp_discount = None if not c.sotp else c.sotp["discount"]
+        self.base_assoc_discount = None if not c.assoc else c.assoc["discount"]  # P7-X2b
         self.h = history(c)
         self.cap = hist_roic(c, self.h)
         name = Path(cfg_path).stem.replace("valuation_", "")
@@ -218,6 +221,18 @@ def recalc(cfg_path: str, ov: dict, ctx: Ctx | None = None) -> dict:
     c.__dict__["_bridge_cache"] = {}
     if c.sotp:
         c.sotp["discount"] = float(cfg["structure"]["discount"]["base"]) if "sotp_discount" in ov else x.base_sotp_discount
+    if c.assoc:  # P7-X2b listed associates
+        c.assoc["discount"] = (
+            float(cfg["structure"]["associates"]["discount"]["base"]) if "assoc_discount" in ov else x.base_assoc_discount
+        )
+        miss = [r.get("name") for r in c.assoc["rows"] if r.get("shares") and not r.get("close")]
+        if miss and (x.bt is None or x.public):  # public mode: the associate's close is a user input (like a subsidiary's)
+            return {
+                "per_share": None,
+                "error": "상장 관계기업 종가 입력 필요: " + ", ".join(map(str, miss)),
+                "scenarios": {},
+                "seconds": round(time.time() - t0, 3),
+            }
     names = [p["name"] for p in cfg.get("peers", [])]
     if c.sotp and x.bt is None:  # P7-C3 public deployment: a listed subsidiary without the user's close
         miss = [r.get("name") for r in c.sotp["rows"] if r.get("listed") and r.get("direct") and not r.get("close")]
@@ -230,6 +245,16 @@ def recalc(cfg_path: str, ov: dict, ctx: Ctx | None = None) -> dict:
             }
     c.v2 = v2_for_peers(x.base_v2, names, overrides_of(cfg))
     hk = overrides_of(cfg)
+    if hk.get("conv_end") is not None and int(hk["conv_end"]) <= c.Y:  # P7-X2b: the year must come after the LTM year
+        return {
+            "per_share": None,
+            "error": f"도달 연도는 {c.Y + 1}년 이후",
+            "scenarios": {},
+            "seconds": round(time.time() - t0, 3),
+        }
+    from src.valuation.company_dcf import hist_overrides
+
+    hh = hist_overrides(x.h, hk)  # P7-X2b: confirmed D&A / CAPEX / working-capital ratios
     if hk.get("beta_u") is not None:
         bu0, src = float(hk["beta_u"]), "override"
     elif x.bt is None:  # P7-C3 public snapshot: the recorded βu holds for the draft's peer set only
@@ -252,7 +277,7 @@ def recalc(cfg_path: str, ov: dict, ctx: Ctx | None = None) -> dict:
         return out
     for k in cfg["excel"]["scenarios"]:
         shf = cfg["scenarios"]["human"][k]
-        v = dcf_value(c, x.h, forecast(c, x.h, shf["growth_shift"], shf["margin_shift"]), w, x.cap)
+        v = dcf_value(c, hh, forecast(c, hh, shf["growth_shift"], shf["margin_shift"]), w, x.cap)
         out["scenarios"][k] = v["per_share"]
         if k == "base":
             out.update(

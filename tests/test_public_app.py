@@ -104,7 +104,8 @@ def _keys(o, acc):
 AGG_KEYS = {"beta_u0", "r2_median", "n", "stats", "st5", "n_beta", "peer_margin_median", "peer_margin_n", "n_peers", "beta_n",
             "peers", "multiples", "ev_sales", "ev_ebitda", "per", "pbr", "q25", "median", "q75", "med", "name", "tier", "include",
             "fs_div", "EV/Sales", "EV/EBITDA", "PER", "PBR", "EV/EBITDA(보완 전)",
-            "public_cut"}  # P7-X2a: the flag of a cell hidden because of few peers
+            "public_cut",  # P7-X2a: the flag of a cell hidden because of few peers
+            "peer_de_median", "peer_de_n", "peer_de_cut"}  # P7-X2b: peer D/E median (judgement alternative), 5+ peers only
 
 
 def test_no_market_data_keys_in_snapshots():
@@ -227,6 +228,8 @@ def test_few_peer_and_few_deal_cells_hidden():
                         bad.append((x["code"], kind, nm, st["n"]))
                 if kind == "agg_engine" and v.get("n_beta", 0) < 5 and (v.get("beta_u0") or [None, None])[1] == "peer":
                     bad.append((x["code"], "beta", v["n_beta"]))
+                if kind == "agg_engine" and 0 < (v.get("peer_de_n") or 0) < 5 and _num(v.get("peer_de_median")):
+                    bad.append((x["code"], "peer_de", v["peer_de_n"]))
             elif kind == "de_points" and v.get("n", 5) < 5 and not v.get("public_cut"):
                 bad.append((x["code"], "de", v["n"]))
             elif kind == "premium_range":

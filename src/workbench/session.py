@@ -108,8 +108,10 @@ def git_state() -> dict:
     if is_public():  # P7-C3: the bundle's source commit (no git on the server)
         b = bundle_info()
         return {"commit": b.get("source_commit", "public"), "tree_clean": True}
-    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
-    st = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    # P7-X2b: git prints non-ASCII paths in UTF-8 (a modified docs/기획안.md broke the cp949 decode -> stdout None)
+    kw = {"cwd": ROOT, "capture_output": True, "text": True, "encoding": "utf-8", "errors": "replace"}
+    head = (subprocess.run(["git", "rev-parse", "HEAD"], **kw).stdout or "").strip()
+    st = (subprocess.run(["git", "status", "--porcelain"], **kw).stdout or "").strip()
     return {"commit": head, "tree_clean": st == ""}
 
 
@@ -291,6 +293,12 @@ def pending(s: dict) -> int:
     return sum(1 for j in (s.get("judgements") or {}).values() if j.get("status") == "미처리")
 
 
+def _explicit_end(c) -> int:
+    from src.valuation.company_dcf import explicit_end
+
+    return explicit_end(c)
+
+
 def _auto_value(field: str, cfg: dict, led: dict, r0: dict, x) -> object:
     """The auto-draft value of an assumption (for the audit and the Judgements table)."""
     m = {
@@ -309,6 +317,14 @@ def _auto_value(field: str, cfg: dict, led: dict, r0: dict, x) -> object:
         "kd": r0.get("kd"),
         "cash_adjust_mn": 0.0,
         "nci_mn": None,
+        # P7-X2b
+        "assoc_discount": (((cfg.get("structure") or {}).get("associates") or {}).get("discount") or {}).get("base"),
+        "dna_ratio": x.h.get("dna_ratio") if x is not None else None,
+        "capex_ratio": x.h.get("capex_ratio") if x is not None else None,
+        "nwc_days": {k: x.h.get(k) for k in ("dso", "dio", "dpo")} if x is not None else None,
+        "conv_share": (x.base_v2 or {}).get("conv_share") if x is not None else None,
+        "conv_end": ((x.base_v2 or {}).get("conv_end") or _explicit_end(x.c)) if x is not None and x.base_v2 else None,
+        "ronic": r0.get("ronic"),
     }
     return m.get(field)
 
@@ -412,6 +428,33 @@ def revert(s: dict, version: int, reason: str | None = None) -> dict:
         )
     save(s)
     return {"ok": True, "reason": "", "session": s, "result": r}
+
+
+def set_engagement(s: dict, fields: dict, reason: str | None = None) -> dict:
+    """P7-X2b (config/p7x2b.yaml display.engagement): purpose, premise and evaluator of the report and the Excel cover.
+    Empty text = the default wording. One audit entry (before -> after); no new version (values of the model unchanged)."""
+    keys = ("purpose", "premise", "evaluator")
+    new = {k: str(fields.get(k) or "").strip()[:200] for k in keys}
+    old = {k: str((s.get("engagement") or {}).get(k) or "") for k in keys}
+    if new == old:
+        return {"ok": True, "reason": "", "session": s, "noop": True}
+    s["engagement"] = {k: v for k, v in new.items() if v}
+    s["audit"].append(
+        {
+            "at": _now(),
+            "v": current(s)["v"],
+            "field": None,
+            "label": "평가 목적·전제·평가자",
+            "before": old,
+            "after": new,
+            "before_text": " / ".join(f"{k}={v}" for k, v in old.items() if v),
+            "after_text": " / ".join(f"{k}={v}" for k, v in new.items() if v),
+            "reason": reason or "",
+            "judgement": None,
+        }
+    )
+    save(s)
+    return {"ok": True, "reason": "", "session": s}
 
 
 def set_public_inputs(s: dict, user: dict) -> dict:

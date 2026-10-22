@@ -1,7 +1,7 @@
 {
  "format": "kvi-public-bundle/1",
- "source_commit": "65a05a3",
- "snapshot_set": "171b13ffcfc3432221e9bba21caac5ec06afcb8bf99ec277f784cc0ed5944094",
+ "source_commit": "a96aff2",
+ "snapshot_set": "c1571dcf3721d59756d40509428836e072562634b0c84d754a6a212ae62cd170",
  "companies": {
   "evaluable": 158,
   "out_of_scope": 32

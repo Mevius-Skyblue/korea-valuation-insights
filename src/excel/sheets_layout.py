@@ -18,16 +18,34 @@ def eff_of(x: str) -> str:
     return f"IF({x}>0,{tax_of(x)}/{x},0)"
 
 
+def _floor() -> bool:
+    """config/p7x2b.yaml params.ronic_floor (the audit switch KVI_X2B_OFF=ronic turns it off, as in the engine)."""
+    from src.valuation.associates import params
+
+    return bool(params()["ronic_floor"])
+
+
 def ronic_formula(d: dict, reinv: str, rc: str, w: str, g: str) -> str:
     """RF (rf_dcf2): calc <= 0 or <= g -> WACC. Mechanical (company_dcf.bounded_ronic): reinvestment <= 0 -> WACC,
     else clip to [WACC, historical ROIC cap]."""
     if d["type"] == "mechanical":
+        if (d.get("overrides") or {}).get("ronic") is not None:  # P7-X2b: RONIC confirmed by a person
+            return "=RonicOverride"
+        if (d.get("meta") or {}).get("draft") and _floor():  # P7-X2b auto drafts: the WACC floor wins (cap below WACC)
+            return f"=IF({reinv}<=0,{w},IF({rc}<{w},{w},IF({rc}>RonicCap,MAX(RonicCap,{w}),{rc})))"
         return f"=IF({reinv}<=0,{w},IF({rc}<{w},{w},IF({rc}>RonicCap,RonicCap,{rc})))"
     return f"=IF(OR({reinv}<=0,{rc}<=0,{rc}<={g}),{w},{rc})"
 
 
 def ronic_flag(d: dict, reinv: str, rc: str, w: str, g: str) -> str:
     if d["type"] == "mechanical":
+        if (d.get("overrides") or {}).get("ronic") is not None:
+            return '="사람 확정값(평가 세션)"'
+        if (d.get("meta") or {}).get("draft") and _floor():
+            return (
+                f'=IF({reinv}<=0,"재투자 ≤ 0 → WACC",IF({rc}<{w},"계산값 < WACC → 하한",'
+                f'IF({rc}>RonicCap,IF(RonicCap<{w},"과거 ROIC < WACC → WACC(하한 우선)","계산값 > 상한(과거 ROIC)"),"계산값 사용")))'
+            )
         return (
             f'=IF({reinv}<=0,"재투자 ≤ 0 → WACC",IF({rc}<{w},"계산값 < WACC → 하한",'
             f'IF({rc}>RonicCap,"계산값 > 상한(과거 ROIC)","계산값 사용")))'
