@@ -6,6 +6,6 @@ venv/
 .env.*
 .streamlit/secrets.toml
 *.duckdb
-data/
-outputs/
-logs/
+/data/
+/outputs/
+/logs/
