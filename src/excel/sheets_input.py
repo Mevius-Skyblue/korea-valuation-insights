@@ -58,6 +58,17 @@ class Rows:
         return ref
 
 
+def cover_target(m: dict) -> str:
+    """Cover '평가대상': name (market code, corp code). Market = config target.market (P7-D2 D-F6; was a fixed 'KOSDAQ')."""
+    return f"{m['name']} ({m.get('market') or '시장 미확인'} {m['stock_code']}, 법인 {m['corp_code']})"
+
+
+def beta_title(m: dict) -> str:
+    """Table B title with the regression index of the config (P7-D2 D-F6; was a fixed 'KOSDAQ 지수')."""
+    ix = m.get("beta_index")
+    return f"표 B. 피어 베타 회귀 결과 (주간 2년, {f'{ix} 지수' if ix else '지수 미확인'}, 한국거래소 통계정보 기반 계산값 · 시계열 없음)"
+
+
 def cover(c: Ctx):
     d, s = c.d, c.sheet("Cover")
     m = d["meta"]
@@ -73,7 +84,7 @@ def cover(c: Ctx):
     if d.get("example_label"):  # P7-D public mode with the screen's round example prices
         s.text(3, 1, d["example_label"], "bold", font_color="#C00000")
     rows = [
-        ("평가대상", f"{m['name']} (KOSDAQ {m['stock_code']}, 법인 {m['corp_code']})"),
+        ("평가대상", cover_target(m)),
         ("평가기준일", m["as_of"]),
         ("재무 기준일", f"{m['bs_date']} (반기보고서)"),
         ("기준가치", "주당 내재가치 추정(가치산정, 가정 하의 예시). '공정가치'(K-IFRS 1113·자본시장법 공정가액)가 아님"),
@@ -1640,7 +1651,7 @@ def _peer_public(c: Ctx, s, r):
 def _beta_table(c: Ctx, s, r):
     if c.d.get("public"):
         return _beta_public(c, s, r)
-    s.text(r, 0, "표 B. 피어 베타 회귀 결과 (주간 2년, KOSDAQ 지수, 한국거래소 통계정보 기반 계산값 · 시계열 없음)", "subtitle")
+    s.text(r, 0, beta_title(c.d["meta"]), "subtitle")
     cols = ["회사", "등급(tier)", "포함(1/0)", "원 β", "표준오차", "R²", "관측 수", "기간평균 D/E"]
     _hdr(s, r + 1, cols + ["출처"])
     rows = []

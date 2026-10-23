@@ -295,6 +295,7 @@ def scenario_capex_data(led: dict) -> dict:
             "stock_code": code,
             "corp_code": corp,
             "market": meta["target"]["market"],
+            "beta_index": led["beta"]["regression"]["index"],  # P7-D2: the beta table title
             "as_of": as_of,
             "bs_date": meta["bs_date"],
             "cf_start": led["dcf"]["cash_flow_start"],
@@ -670,6 +671,7 @@ def mechanical_data(cfg_path: str) -> dict:
             "stock_code": code,
             "corp_code": corp,
             "market": cfg["target"]["market"],
+            "beta_index": (cfg.get("beta") or {}).get("index"),  # P7-D2: the beta table title (PC table only)
             "as_of": as_of,
             "bs_date": bs_date,
             "cf_start": (date.fromisoformat(bs_date) + timedelta(days=1)).isoformat(),

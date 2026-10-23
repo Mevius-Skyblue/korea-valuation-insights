@@ -1,10 +1,10 @@
 {
  "target": "<workspace>/sessions/035610_20260930_001/v1_public/valuation_035610_035610_20260930_001v1p.yaml",
- "started": "2026-10-23T08:57:43",
+ "started": "2026-10-23T11:07:06",
  "steps": {
   "engine": {
    "ok": true,
-   "sec": 0.5
+   "sec": 0.4
   },
   "first_draft": {
    "ok": true,
@@ -12,11 +12,11 @@
   },
   "excel": {
    "ok": true,
-   "sec": 57.0
+   "sec": 54.9
   },
   "report": {
    "ok": true,
-   "sec": 1.5
+   "sec": 1.4
   },
   "report_check": {
    "ok": true,
@@ -25,13 +25,13 @@
  },
  "errors": [],
  "timing": {
-  "engine": 0.46,
+  "engine": 0.43,
   "first_draft": 0.0,
-  "excel": 57.02,
-  "excel_build": 12.52,
-  "excel_reconcile": 44.5,
-  "report": 1.51,
-  "report_check": 0.55
+  "excel": 54.87,
+  "excel_build": 11.49,
+  "excel_reconcile": 43.38,
+  "report": 1.41,
+  "report_check": 0.51
  },
  "fast": false,
  "code": "035610",
@@ -1212,9 +1212,9 @@
   "xlsx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_model_2026-09-30.xlsx",
   "docx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_report_draft.docx"
  },
- "excel_ready_seconds": 13.1,
+ "excel_ready_seconds": 12.0,
  "result": "완료",
- "seconds": 60.3,
+ "seconds": 58.0,
  "api_calls": {
   "DART": 0,
   "KRX": 0,

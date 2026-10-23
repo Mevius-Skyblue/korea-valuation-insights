@@ -38,11 +38,11 @@ jobs:
         uses: gitleaks/gitleaks-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # GitHub가 주는 기본 토큰(저장소 비밀값을 새로 만들지 않음)
-      - name: no data / DB / key files
-        shell: bash
-        run: |
-          ! git ls-files | grep -E '(^|/)(data|outputs|logs)/|\.duckdb$|(^|/)\.env'
-          ! git grep -n -E '[A-Z]+_API_[K]EY|DATA_GO_KR_[K]EY'      # key names (written so the pattern itself is not one)
+      # P7-D2 (D-F5): one command whose exit code decides. The lines before were `! git ls-files | grep ...` + a second
+      # line; bash -e does not stop on a `!` command, so only the last line counted. Rules and cases: .github/ci_guard.py,
+      # tests/test_ci_guard.py (top-level data/ outputs/ logs/, *.duckdb, .env anywhere, key names; every commit too)
+      - name: no data / DB / key files (tree and whole history)
+        run: python .github/ci_guard.py --history
       - name: tests (snapshots, replay, session files, workspaces, screens)
         env:
           PYTHONPATH: .
