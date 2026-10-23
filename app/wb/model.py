@@ -356,6 +356,40 @@ def public_missing(o: Opened, s: dict) -> list[str]:
     return miss
 
 
+def example_prices() -> dict:
+    """P7-D round example prices (config/p7d.yaml example_prices, via app/data/validation.json): not a real close."""
+    return json.loads((APP_DATA / "validation.json").read_text(encoding="utf-8"))["example_prices"]
+
+
+def example_inputs(o: Opened) -> dict:
+    """Public-mode inputs filled with the example prices: target close / 20-day VWAP, every listed subsidiary, associate
+    and preferred close; preferred listed shares = DART issued - treasury split over the listed codes (as the bundle
+    smoke). Marked example=True, so the screen, the Excel cover and the report say '예시 입력(실제 종가 아님)'."""
+    ex = example_prices()
+    sh = o.cfg.get("shares") or {}
+    n_pref = max((sh.get("pref_issued") or 0) - (sh.get("pref_treasury") or 0), 0)
+    other = float(ex["other_close"])
+    return {
+        "close": float(ex["target_close"]),
+        "vwap20": float(ex["target_vwap20"]),
+        "sub_close": {x["stock_code"]: other for x in [*o.subs, *getattr(o, "assocs", [])]},
+        "pref": {p: {"close": other, "listed": max(n_pref // max(len(o.prefs), 1), 1)} for p in o.prefs},
+        "example": True,
+    }
+
+
+def is_example(o: Opened, user: dict) -> bool:
+    """The typed values are exactly the example values (the flag survives a save without changes)."""
+    ex = example_inputs(o)
+    pref = {k: {"close": float(v["close"]), "listed": int(v["listed"])} for k, v in (user.get("pref") or {}).items()}
+    return (
+        user.get("close") == ex["close"]
+        and user.get("vwap20") == ex["vwap20"]
+        and (user.get("sub_close") or {}) == ex["sub_close"]
+        and pref == ex["pref"]
+    )
+
+
 def public_ctx(o: Opened, s: dict):
     miss = public_missing(o, s)
     if miss:

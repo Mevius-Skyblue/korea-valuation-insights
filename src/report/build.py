@@ -302,6 +302,11 @@ def build_report(
         italic=True,
         size=9,
     )
+    from src.report.engagement import example_label
+
+    ex_label = example_label(cfg)  # P7-D: public mode with the screen's round example prices
+    if ex_label:
+        D.p(L(ex_label))
 
     # ---------------------------------------------------------------- summary (numbers only)
     D.h("요약")
@@ -367,6 +372,7 @@ def build_report(
             ["평가 전제", L(eng["premise"])],
             ["목적", L(eng["report_purpose"])],
             *([["평가자", L(eng["evaluator"])]] if eng["evaluator"] else []),
+            *([["시세 입력", L(ex_label)]] if ex_label else []),
             [
                 "평가 구조",
                 L(f"SOTP: 모회사 사업 DCF + 상장 종속회사({sub_name}) 지분 시가 + 모회사 순현금·비영업자산")

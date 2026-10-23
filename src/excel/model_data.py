@@ -65,6 +65,9 @@ def _load_model_data(cfg_path: str, with_engine: bool) -> dict:
     from src.report.engagement import engagement
 
     data["engagement"] = engagement(raw)  # P7-X2b: purpose / premise / evaluator (defaults = the earlier texts)
+    from src.report.engagement import example_label
+
+    data["example_label"] = example_label(raw)  # P7-D: round example prices of the public screen
     from src.valuation.company_dcf import _close, _con
     from src.workbench.public_deploy import p5b_excel_data  # P6-A: P5-B reference aggregates (display only)
 

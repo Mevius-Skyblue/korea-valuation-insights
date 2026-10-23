@@ -33,9 +33,14 @@ def _nav(c: nav.Ctx) -> None:
 
 def render(c: nav.Ctx) -> None:
     _nav(c)
-    {"ref_rates": _rates, "ref_accuracy": _accuracy, "ref_premium": _premium, "ref_method": _method, "ref_guide": _guide}[c.page](
-        c
-    )
+    {
+        "ref_rates": _rates,
+        "ref_accuracy": _accuracy,
+        "ref_premium": _premium,
+        "ref_method": _method,
+        "ref_valid": _valid,
+        "ref_guide": _guide,
+    }[c.page](c)
     st.markdown(
         f"<div class='wb-foot'>투자 권유가 아닙니다. 공개 공시를 집계한 예시입니다. 개별 거래·회사·평가기관은 표시하지 않습니다. "
         f"n &lt; 10인 칸은 옅게 표시합니다(일반화 주의). 기준일 {M.AS_OF}.</div>",
@@ -384,3 +389,104 @@ def _method(c: nav.Ctx) -> None:
         )
         st.markdown("<h2 class='wb-ref-h2'>용어</h2>", unsafe_allow_html=True)
         ui.table(["용어", "뜻"], [[k, v] for k, v in tx.GLOSSARY.items()])
+
+
+def _valid(c: nav.Ctx) -> None:
+    """검증 결과 (P7-D, config/p7d.yaml): the final-check holdout scorecard, how it was measured, known issues and why a
+    result can be held. Numbers come from app/data/validation.json (made from config/p7d.yaml by scripts/public_docs.py,
+    the same file the README and VALIDATION.md use)."""
+    import json
+
+    v = json.loads((M.APP_DATA / "validation.json").read_text(encoding="utf-8"))
+    ho, sm, hr = v["holdout"], v["summary"], v["hold_reasons"]
+    rows = {r["no"]: r for r in v["rows"]}
+    st.markdown(
+        f"<p class='wb-eyebrow'>최종 확인 홀드아웃 · {v['date']} · 처음 보는 상장사 {ho['drawn']}곳</p>"
+        "<h1 class='wb-ref-title'>검증 결과</h1><p class='wb-ref-lead'>이 도구를 얼마나 믿을 수 있는지, 개발에 쓰지 않은 회사로 "
+        "미리 정한 규칙대로 <b>한 번만</b> 시험한 결과를 숫자 그대로 보여 드립니다. 금융 "
+        f"{ho['financial']}곳·자동 평가 범위 밖 {ho['out_of_scope']}곳을 뺀 {ho['denominator']}곳이 분모입니다. 13개 지표 중 "
+        f"<b>통과 {sm['passed']} · 미달 {sm['failed']} · 미측정 {sm['not_measured']}</b>.</p>",
+        unsafe_allow_html=True,
+    )
+    with ui.card("valid_find", None, plain=True):
+        st.markdown(
+            f"<div class='wb-find'><div><b>{ui.esc(rows[1]['result'].split(' [')[0])}</b><span>초안을 만든 회사(분모 전체)</span></div>"
+            f"<div><b>{ui.esc(rows[2]['result'].split('(')[0])}</b><span>멈춤(처리 안 된 예외)</span></div>"
+            f"<div><b>{ui.esc(rows[4]['result'].split('(')[0])}</b><span>출처를 거슬러 올라갈 수 없는 숫자</span></div></div>",
+            unsafe_allow_html=True,
+        )
+    st.markdown("<h2 class='wb-ref-h2'>점수표</h2>", unsafe_allow_html=True)
+    with ui.card("valid_score", None, plain=True):
+        ui.table(
+            ["#", "지표", "기준", "결과", "판정"],
+            [
+                [
+                    r["no"] or "—",
+                    r["metric"],
+                    r["target"],
+                    r["result"],
+                    ("html", f"<b>{ui.esc(r['verdict'])}</b>") if r["verdict"].startswith(("미달", "미측정")) else r["verdict"],
+                ]
+                for r in v["rows"]
+            ],
+            min_width=720,
+            caption="숫자는 최종 확인 보고서의 칸 그대로입니다(다시 계산하거나 반올림을 바꾸지 않음). 속도는 개발 PC 값입니다.",
+        )
+    st.markdown("<h2 class='wb-ref-h2'>미달·미측정 이유</h2>", unsafe_allow_html=True)
+    with ui.card("valid_miss", None, plain=True):
+        st.markdown(
+            "<div class='wb-method'><p>미달 4건은 고치지 않고 그대로 공개합니다. 가치 계산의 오류가 아니라 허용오차 정의·파서·대리 지표·"
+            "제품 특성이고, 고치면 확인용 표본을 다시 써야 하기 때문입니다.</p><ul>"
+            + "".join(
+                f"<li><b>{ui.esc(r['metric'])}</b> ({ui.esc(r['verdict'])}): {ui.esc(r['reason'])}</li>"
+                for r in v["rows"]
+                if r["verdict"].startswith(("미달", "미측정"))
+            )
+            + "</ul></div>",
+            unsafe_allow_html=True,
+        )
+    st.markdown("<h2 class='wb-ref-h2'>검증 방식</h2>", unsafe_allow_html=True)
+    with ui.card("valid_flow", None, plain=True):
+        box = (
+            "flex:1 1 150px;border:1px solid #D9D9D5;border-top:3px solid #F07224;border-radius:6px;padding:10px 12px;"
+            "background:#FFFFFF"
+        )
+        st.markdown(
+            "<div style='display:flex;flex-wrap:wrap;gap:10px;align-items:stretch'>"
+            + "<span style='align-self:center;color:#8A8D93'>→</span>".join(
+                f"<div style='{box}'><b style='font-size:14px'>{i}. {ui.esc(x['step'])}</b>"
+                f"<div class='wb-kpi-note' style='margin-top:4px'>{ui.esc(x['detail'])}</div></div>"
+                for i, x in enumerate(v["flow"], start=1)
+            )
+            + "</div>",
+            unsafe_allow_html=True,
+        )
+        ui.table(
+            ["단계", "날짜", "무엇", "핵심 숫자"],
+            [[h["stage"], h["date"], h["what"], "; ".join(h["key"])] for h in v["history"]],
+            min_width=640,
+            caption="한 번 쓴 홀드아웃 표본은 규칙을 고치면 '사용됨'이 되어, 다음 확인은 새로 뽑은 표본으로 합니다.",
+        )
+    st.markdown("<h2 class='wb-ref-h2'>보류가 뜨는 이유 — 틀린 숫자보다 평가 불가</h2>", unsafe_allow_html=True)
+    with ui.card("valid_hold", None, plain=True):
+        st.markdown(
+            "<div class='wb-method'><p>자동 결과를 믿기 어려우면 대표값 대신 <b>'자동 결과 보류 + 사유'</b>를 보여 줍니다. 그래도 초안·"
+            "가치 구성·역산과 1순위 판단은 만들어, 사람이 고치고 확정하면 그 값이 대표값이 됩니다. "
+            f"확인 표본에서는 초안 {hr['n_drafts']}곳 중 {hr['n_hold']}곳이 보류였습니다(한 회사에 사유가 여럿일 수 있음).</p></div>",
+            unsafe_allow_html=True,
+        )
+        ui.table(["보류 사유", "회사 수", "쉬운 말"], [[x["reason"], x["n"], x["plain"]] for x in hr["rows"]], num_cols=(1,))
+    st.markdown("<h2 class='wb-ref-h2'>알려진 한계</h2>", unsafe_allow_html=True)
+    with ui.card("valid_known", None, plain=True):
+        ui.table(
+            ["무엇", "영향", "지금 막는 장치"],
+            [[x["title"], x["effect"], x["safeguard"]] for x in v["known_issues"]],
+            min_width=640,
+            caption="회사 이름이 나오는 항목은 이 도구의 판정 문제이며 그 회사에 대한 의견이 아닙니다.",
+        )
+        st.markdown(
+            f"<p class='wb-kpi-note'>검증 기록·알려진 한계 전체: <a href='{REPO_URL}/blob/main/VALIDATION.md' target='_blank' "
+            f"rel='noopener'>VALIDATION.md</a> · <a href='{REPO_URL}/blob/main/KNOWN_ISSUES.md' target='_blank' rel='noopener'>"
+            "KNOWN_ISSUES.md</a></p>",
+            unsafe_allow_html=True,
+        )

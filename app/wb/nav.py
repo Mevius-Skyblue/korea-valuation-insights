@@ -21,6 +21,7 @@ REFS = [
     ("ref_accuracy", "추정 vs 실적"),
     ("ref_premium", "경영권 프리미엄"),
     ("ref_method", "방법론"),
+    ("ref_valid", "검증 결과"),
     ("ref_guide", "이용 안내"),
 ]
 TITLES = dict(STEPS + REFS)
@@ -173,6 +174,8 @@ def header(c: Ctx, title: str) -> None:
         + " "
         + ui.badge(f"미처리 판단 {M.S.pending(s)}건", "warn" if M.S.pending(s) else "ok")
     )
+    if c.mode == "public" and (s.get("public_inputs") or {}).get("example"):  # P7-D round example prices
+        right += " " + ui.badge(M.example_prices()["short_label"], "warn")
     st.markdown(
         f'<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end">'
         f'<div><p class="wb-eyebrow">{ui.esc(eyebrow)}</p><h1 class="wb-title">{ui.esc(o.name)} {ui.esc(title)}</h1></div>'
@@ -197,6 +200,23 @@ def public_inputs(c: Ctx, key: str) -> None:
         "시세 직접 입력(공개 모드)",
         "공개 모드에서는 한국거래소 시세를 쓰지 않습니다. 아래 값을 넣으면 평가 숫자를 계산합니다(넣은 값만 화면에 표시).",
     ):
+        ex = M.example_prices()
+        if u.get("example"):  # P7-D: round example values, not a real close
+            st.markdown(
+                f'<p class="wb-kpi-note wb-warn"><b>{ui.esc(ex["short_label"])}</b> — 결과는 가정 하의 추정 내재가치 예시입니다. '
+                "실제 값을 쓰려면 아래 칸을 고쳐 저장하세요.</p>",
+                unsafe_allow_html=True,
+            )
+        elif st.button(
+            "예시 값으로 채우기",
+            key=f"pub_example_{key}",
+            help=f"처음 써 볼 때: 대상 종가 {ex['target_close']:,}원, 20일 VWAP {ex['target_vwap20']:,}원, 상장 종속회사·관계기업·"
+            f"우선주 종가 {ex['other_close']:,}원(둥근 예시 값, 실제 종가 아님)",
+        ):
+            for k in [k for k in st.session_state if str(k).startswith("pub_") and str(k).endswith(f"_{key}")]:
+                del st.session_state[k]  # the form's widgets show the stored values again
+            M.S.set_public_inputs(s, M.example_inputs(o))
+            st.rerun()
         with st.form(f"pubform_{key}", border=False):
             a, b = st.columns(2)
             close = a.text_input("대상 종가(원)", value=f"{u['close']:.0f}" if u.get("close") else "", key=f"pub_close_{key}")
@@ -253,6 +273,8 @@ def public_inputs(c: Ctx, key: str) -> None:
                         if num(v["close"]) and num(v["listed"])
                     },
                 }
+                if M.is_example(o, user):  # P7-D: saved without changes -> still the example values
+                    user["example"] = True
                 M.S.set_public_inputs(s, user)
                 st.success("저장했습니다. 평가 숫자를 사용자 시세로 다시 계산합니다.")
                 st.rerun()

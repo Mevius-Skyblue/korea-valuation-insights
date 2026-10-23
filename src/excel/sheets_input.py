@@ -70,6 +70,8 @@ def cover(c: Ctx):
         "bold",
         font_color="#C00000",
     )
+    if d.get("example_label"):  # P7-D public mode with the screen's round example prices
+        s.text(3, 1, d["example_label"], "bold", font_color="#C00000")
     rows = [
         ("평가대상", f"{m['name']} (KOSDAQ {m['stock_code']}, 법인 {m['corp_code']})"),
         ("평가기준일", m["as_of"]),

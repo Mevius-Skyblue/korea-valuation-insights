@@ -479,6 +479,8 @@ def set_public_inputs(s: dict, user: dict) -> dict:
     }
     if pref:
         out["pref"] = pref
+    if user.get("example") is True:  # P7-D: the screen's round example values (shown as '예시 입력', not a real close)
+        out["example"] = True
     s["public_inputs"] = out
     save(s)
     return s

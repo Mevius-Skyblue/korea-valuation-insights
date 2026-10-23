@@ -58,5 +58,6 @@ def run(public: bool = False) -> None:
             "ref_accuracy": ref.render,
             "ref_premium": ref.render,
             "ref_method": ref.render,
+            "ref_valid": ref.render,
             "ref_guide": ref.render,
         }[c.page](c)

@@ -105,7 +105,12 @@ def _kpis(c: nav.Ctx) -> None:
                 "label": "시장가 (사용자 입력)",
                 "value": F.won(mk["close"], unit=False) if mk["close"] else "입력 전",
                 "unit": "원" if mk["close"] else "",
-                "note": f"VWAP {F.won(mk['vwap'])} · 사용자 입력" if mk["vwap"] else "공개 모드: 직접 입력",
+                "note": (
+                    f"VWAP {F.won(mk['vwap'])} · "
+                    + (M.example_prices()["short_label"] if (s.get("public_inputs") or {}).get("example") else "사용자 입력")
+                )
+                if mk["vwap"]
+                else "공개 모드: 직접 입력",
             }
         )
     ui.kpis(items)

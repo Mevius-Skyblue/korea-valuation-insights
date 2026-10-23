@@ -132,7 +132,12 @@ def run(sid: str, mode: str = "pc", user: dict | None = None, clicked: float | N
         last["scan"] = {"hits": len(hits), "detail": hits[:20], "krx_values": len(krx), "at": S._now()}
         S.save(s3)
         rec["scan"] = last["scan"]
-    from src.db.lockwait import STATS
+    import os
+
+    if os.environ.get("KVI_PUBLIC") == "1":  # P7-D fix D-F3: the public bundle has no DB and no lockwait module
+        STATS = None
+    else:
+        from src.db.lockwait import STATS
 
     print(
         json.dumps(

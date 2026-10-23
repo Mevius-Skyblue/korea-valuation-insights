@@ -1,0 +1,994 @@
+{
+ "target": "<workspace>/sessions/036200_20260930_001/v1_public/valuation_036200_036200_20260930_001v1p.yaml",
+ "started": "2026-10-23T08:56:40",
+ "steps": {
+  "engine": {
+   "ok": true,
+   "sec": 1.0
+  },
+  "first_draft": {
+   "ok": true,
+   "sec": 0.0
+  },
+  "excel": {
+   "ok": true,
+   "sec": 56.4
+  },
+  "report": {
+   "ok": true,
+   "sec": 1.5
+  },
+  "report_check": {
+   "ok": true,
+   "sec": 0.5
+  }
+ },
+ "errors": [],
+ "timing": {
+  "engine": 1.05,
+  "first_draft": 0.0,
+  "excel": 56.38,
+  "excel_build": 12.37,
+  "excel_reconcile": 44.01,
+  "report": 1.47,
+  "report_check": 0.54
+ },
+ "fast": false,
+ "code": "036200",
+ "mode": "draft",
+ "config": "<workspace>/sessions/036200_20260930_001/v1_public/valuation_036200_036200_20260930_001v1p.yaml",
+ "out_dir": "<workspace>\\outputs\\036200_20260930_001\\v1_public",
+ "name": "유니셈",
+ "gate": {
+  "passed": true,
+  "stage_a": [],
+  "notes": [],
+  "stage_a_p7b": [],
+  "stage_b": [],
+  "usable_peers": [
+   "싸이맥스",
+   "에스티아이",
+   "지앤비에스 에코",
+   "뉴파워프라즈마",
+   "디바이스",
+   "씨앤지하이테크",
+   "프로텍",
+   "워트"
+  ],
+  "note": "평가 세션 확정: 자동 초안의 게이트 B 통과 기록 사용(베타·피어 표 = 초안 표를 확정 피어로 거른 것)"
+ },
+ "facts": {
+  "acc_mt": "12",
+  "fs_div": "CFS",
+  "gate_a_p7b2_passed": true,
+  "gate_a_p7b2b_passed": true,
+  "gate_a_p7b3_passed": true,
+  "ksic": "29271",
+  "listed_sub": false,
+  "listed_sub_p7b": false,
+  "listed_subs": [],
+  "loss_path": false,
+  "multi_fs": "CFS",
+  "nci_book": 177206648.0,
+  "nci_path": false,
+  "op": {
+   "2023": 17388081940.0,
+   "2024": 9974310432.0,
+   "2025": 10901847307.0
+  },
+  "revenue_2025": 273330435300.0,
+  "sotp": false,
+  "sotp_unsupported": [],
+  "structure_source": "사업보고서 연결대상 종속회사 표(4곳) 20260313001168"
+ },
+ "peer_screen": {
+  "relax_step": null,
+  "levels": [
+   {
+    "candidates": 22,
+    "dropped_holding": [],
+    "dropped_profit": [
+     "미래컴퍼니(049950)",
+     "제우스(079370)",
+     "젬백스(082270)",
+     "엘오티베큠(083310)",
+     "유니테스트(086390)",
+     "코세스(089890)",
+     "엑시콘(092870)",
+     "티로보틱스(117730)",
+     "예스티(122640)",
+     "넥스틴(348210)",
+     "레이저쎌(412350)",
+     "저스템(417840)"
+    ],
+    "ksic": "29271",
+    "ksic_digits": 5,
+    "pass": 10
+   }
+  ]
+ },
+ "values": {
+  "per_share_base_srp0": 7002.664468500492,
+  "wacc_base_srp0": 0.11974176891309479,
+  "ronic": 0.11974176891309479,
+  "tv_share": 0.4285652185570548,
+  "ev930_mn": 135010.7008866273,
+  "close": 20000.0,
+  "grid": {
+   "pessimistic|SRP0%": 5345.077547961827,
+   "pessimistic|SRP1%": 4955.207884882252,
+   "pessimistic|SRP2%": 4628.393636578287,
+   "base|SRP0%": 7002.664468500492,
+   "base|SRP1%": 6477.754062647854,
+   "base|SRP2%": 6035.580005626011,
+   "optimistic|SRP0%": 8801.431083570602,
+   "optimistic|SRP1%": 8129.771286977811,
+   "optimistic|SRP2%": 7562.23241694469
+  },
+  "beta_u": 0.966807811708803,
+  "kd": 0.116498,
+  "de_own": 0.011671861102111377,
+  "block": {
+   "q25": 19923.442814740745,
+   "q50": 23854.18682653757,
+   "q75": 29965.375257345157
+  },
+  "premium_method": "neighbours",
+  "relative_median_ps": {
+   "EV/Sales": 12826.060215306248,
+   "EV/EBITDA": 6561.230037235491,
+   "PER": 6817.13001586491,
+   "PBR": 12524.18048900947
+  },
+  "relative_n": {
+   "EV/Sales": 8,
+   "EV/EBITDA": 8,
+   "PER": 8,
+   "PBR": 7
+  }
+ },
+ "checks": {
+  "S4_recon": {
+   "bad": [],
+   "counts": {
+    "exact": 35
+   },
+   "found_share": 1.0,
+   "pass": true,
+   "rows": 35,
+   "years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "S5_human_list": {
+   "pass": true,
+   "n": 22,
+   "missing_categories": [],
+   "by_category": {
+    "우선주 처리": 1,
+    "피어 유사성": 8,
+    "Kd 근거": 1,
+    "기준일 뒤 주요 공시": 1,
+    "비경상 손익": 2,
+    "시나리오 폭": 1,
+    "보고서 사람 작성 칸": 6,
+    "블록 프리미엄 입력": 1,
+    "영구성장률": 1
+   }
+  },
+  "S2_excel_engine": {
+   "pass": true,
+   "master": "OK",
+   "combos": 9,
+   "bad_combos": [],
+   "other_bad": [],
+   "max_per_share_diff": 4.18367562815547e-11,
+   "formula_errors": 0,
+   "hardcoded": 0,
+   "krx_outside_inputs": 0,
+   "verdict_live_vs_engine": [
+    "수렴",
+    "수렴"
+   ],
+   "checks_warn": [
+    "RONIC 계산값 사용(대체 없음)"
+   ]
+  },
+  "S3_report": {
+   "pass": true,
+   "n_excel_numbers": 450,
+   "bad_values": [],
+   "stray_tokens": [],
+   "forbidden": [],
+   "josa_errors": [],
+   "human_boxes": 6,
+   "human_boxes_not_empty": [],
+   "header_all_pages": true
+  },
+  "S1_end_to_end": {
+   "pass": true
+  }
+ },
+ "human_review": [
+  {
+   "category": "우선주 처리",
+   "detail": "주식의 총수 표에 우선주 없음 — 확인만",
+   "item": "우선주 없음"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "싸이맥스"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "에스티아이"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "지앤비에스 에코"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "뉴파워프라즈마"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "디바이스"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "씨앤지하이테크"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "프로텍"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "워트"
+  },
+  {
+   "category": "Kd 근거",
+   "detail": "이자비용 ÷ 평균 차입금 = 11.65%(이자 3.2억, 평균 차입 27.4억, 이자의 지급(현금흐름표)); 하한 Rf. 신용평가 등급·약정이자율(차입금 주석) 확인",
+   "item": "신용등급 자동 탐색 안 함"
+  },
+  {
+   "category": "기준일 뒤 주요 공시",
+   "detail": "반기보고서 (2026.06); 주식등의대량보유상황보고서(약식)",
+   "item": "2026-07-01~기준일 공시 3건(제목만, 주요 단어 0건)"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2024 세전이익 − 영업이익 = 81억(영업이익 100억의 30% 초과): 영업외 손익 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2021~2025 영업이익률 범위 4.0%~14.8%(폭 5%p 초과): 일회성 손익 여부 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "시나리오 폭",
+   "detail": "과거 매출 성장률 표준편차 20.7%(n=5), 영업이익률 범위 4.0%~14.8% — 회사 변동성에 맞는 폭인지 판단",
+   "item": "±2%p(성장·이익률) 기본값, g 2%"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "평가방법 선택 근거·채택·가중치"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "정상화 조정(비경상 손익)"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "우발채무·비영업자산 명세 확인"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "DLOM·경영권 프리미엄 조정 여부와 근거"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "주요 가정의 합리성"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "평가상 한계 보완"
+  },
+  {
+   "category": "블록 프리미엄 입력",
+   "detail": "기본값 — 평가 목적에 맞는지 확인",
+   "item": "지분 구간 25~50%, 인수자 전략적, 2015~2026"
+  },
+  {
+   "category": "영구성장률",
+   "detail": "산업·물가 전망과 비교",
+   "item": "g 2%(사람 값 기본)"
+  }
+ ],
+ "diagnostics": {
+  "signals": {
+   "dcf": 7002.664468500492,
+   "peer_basis": "EV/EBITDA",
+   "q25": 5260.596670699277,
+   "q75": 7286.707794228767,
+   "peer_median": 6561.230037235491,
+   "peer_n": 8,
+   "price": 20000.0,
+   "ratio_market": 0.3501332234250246,
+   "light_peer": "초록",
+   "light_market": "빨강",
+   "light": "빨강",
+   "peer_valid": true,
+   "peer_invalid": []
+  },
+  "reverse": {
+   "target": 6561.230037235491,
+   "basis": "EV/EBITDA",
+   "margin": 0.047998731077240606,
+   "margin_base": 0.053505928262515545,
+   "start_growth": -0.008089723663892892,
+   "start_growth_base": 0.067855882642325,
+   "wacc": 0.12793358199113158,
+   "wacc_base": 0.11974176891309479,
+   "max_abs_error": 1.8189894035458565e-12
+  },
+  "composition": {
+   "ev": 135010.7008866273,
+   "tv": 57860.89053301859,
+   "explicit": 77149.81035360871,
+   "cash_like": 62197.645863000005,
+   "non_operating": 12011.071574,
+   "debt": -3051.4625290000004,
+   "nci": -177.206648,
+   "equity": 205990.74914662732
+  },
+  "composition_share": {
+   "ev": 0.6554211849121664,
+   "tv": 0.2808907233588064,
+   "explicit": 0.3745304615533599,
+   "cash_like": 0.3019438791337507,
+   "non_operating": 0.05830879116542432,
+   "debt": -0.01481359013276816,
+   "nci": -0.000860265078573318
+  },
+  "anomalies": [
+   {
+    "key": "loss_year_in_margin",
+    "text": "정상 이익률 계산 연도(FY2023~2025)에 영업손실 연도 포함",
+    "on": false,
+    "value": "174억, 100억, 109억"
+   },
+   {
+    "key": "margin_volatility",
+    "text": "FY2021~2025 영업이익률 표준편차 > 2 × 시나리오 이익률 폭(2%p) = 4%p",
+    "on": true,
+    "value": 0.04602420646773778
+   },
+   {
+    "key": "growth_volatility",
+    "text": "FY2021~2025 매출 성장률 표준편차 > 2 × 시나리오 성장률 폭(2%p) = 4%p",
+    "on": true,
+    "value": 0.2311880866363687
+   },
+   {
+    "key": "roic_below_wacc",
+    "text": "과거 3년 ROIC(RONIC 상한) < 기본 WACC",
+    "on": true,
+    "value": -0.020822194739383862
+   },
+   {
+    "key": "terminal_heavy",
+    "text": "영구가치 비중 > 75% 또는 < 0%",
+    "on": false,
+    "value": 0.4285652185570548
+   },
+   {
+    "key": "bridge_heavy",
+    "text": "브리지 항목 하나의 절댓값 > 주식가치의 50%",
+    "on": false,
+    "value": 0.3019438791337507
+   },
+   {
+    "key": "negative_equity_scenario",
+    "text": "시나리오 × SRP 9칸 중 주당 < 0인 칸이 있음",
+    "on": false,
+    "value": 0
+   }
+  ],
+  "margin_candidates": [
+   {
+    "id": "ex_loss_3y",
+    "label": "손실 연도 제외 3년 평균(FY2023~2025 중 영업이익 > 0인 해)",
+    "margin": 0.053505928262515545,
+    "per_share": 7002.664468500492,
+    "diff": 0.0
+   },
+   {
+    "id": "median_5y",
+    "label": "5년 중앙값(FY2021~2025)",
+    "margin": 0.07491254735451337,
+    "per_share": 8714.435549679818,
+    "diff": 1711.7710811793258
+   },
+   {
+    "id": "peer_median",
+    "label": "피어 LTM 영업이익률 중앙값(포함 피어)",
+    "margin": 0.14949342410730082,
+    "per_share": 14671.464495798522,
+    "diff": 7668.80002729803
+   }
+  ],
+  "sensitivities": {
+   "customer_funds": {
+    "liabilities": 0.88,
+    "items": [
+     {
+      "amount": 0.88,
+      "label": "선수금",
+      "source": "주석"
+     }
+    ],
+    "operating_cash": 0.88,
+    "per_share": 7002.634552862252,
+    "diff": -0.029915638240113316
+   },
+   "nci": {
+    "book": 177.206648,
+    "total_equity": 252898.449519,
+    "share_book": 0.0007007027853948415,
+    "peer_pbr": 1.4577799351609002,
+    "a_per_share": 7003.777608564374,
+    "b_per_share": 6999.906734557346,
+    "a_diff": 1.113140063880478,
+    "b_diff": -2.7577339431471164
+   }
+  },
+  "v1": {
+   "per_share": 4132.803226139056,
+   "tv_share": 0.5844571021177446,
+   "signals": {
+    "dcf": 4132.803226139056,
+    "peer_basis": "EV/EBITDA",
+    "q25": 5260.596670699277,
+    "q75": 7286.707794228767,
+    "peer_median": 6561.230037235491,
+    "peer_n": 8,
+    "price": 20000.0,
+    "ratio_market": 0.2066401613069528,
+    "light_peer": "노랑",
+    "light_market": "빨강",
+    "light": "빨강",
+    "peer_valid": true,
+    "peer_invalid": []
+   }
+  },
+  "v2": {
+   "m0": 0.053505928262515545,
+   "m0_src": "사람 확정값(평가 세션)",
+   "m0_years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ],
+   "start": "median5",
+   "peer_margin": 0.14949342410730082,
+   "peer_margin_n": 8,
+   "conv_share": 0.5,
+   "conv_amt": 0.04799374792239264,
+   "own_cagr": 0.049053173811201445,
+   "peer_growth": 0.08665859147344857,
+   "peer_growth_n": 8,
+   "weight_own": 0.5,
+   "clip": [
+    -0.1,
+    0.25
+   ],
+   "g0": 0.067855882642325,
+   "m0_auto": 0.07491254735451337,
+   "g0_auto": 0.067855882642325
+  },
+  "guard": {
+   "hold": false,
+   "status": "표시",
+   "reasons": []
+  },
+  "dna": [
+   {
+    "year": 2021,
+    "period": "FY",
+    "total": 1681.162595,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2022,
+    "period": "FY",
+    "total": 1754.913339,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2023,
+    "period": "FY",
+    "total": 2044.045903,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2024,
+    "period": "FY",
+    "total": 2593.300826,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2025,
+    "period": "FY",
+    "total": 1869.327385,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2025,
+    "period": "H1",
+    "total": 1437.439165,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2026,
+    "period": "H1",
+    "total": 953.01586,
+    "source": "원문/XBRL",
+    "estimated": false
+   }
+  ],
+  "sotp": null,
+  "turnaround": null,
+  "loss": null,
+  "ltm_margin": 0.05035097063828727
+ },
+ "review_ranked": {
+  "computed": [
+   {
+    "category": "비경상 손익",
+    "detail": "FY2024 세전이익 − 영업이익 = 81억(영업이익 100억의 30% 초과): 영업외 손익 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": 7668.80002729803,
+    "alternative": "정상 이익률 피어 LTM 영업이익률 중앙값(포함 피어) 14.95%(기본 5.35%)",
+    "rank": 1,
+    "top5": true,
+    "impact_pct": 1.0951260140756365
+   },
+   {
+    "category": "이익률 수렴",
+    "item": "피어 쪽 수렴 비율",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -2876.925833883918,
+    "alternative": "수렴 비율 0%(기본 50%, 피어 이익률 중앙값 14.9% 쪽)",
+    "cands": [
+     {
+      "label": "수렴 비율 0%",
+      "field": "conv_share",
+      "value": 0.0
+     },
+     {
+      "label": "수렴 비율 100%",
+      "field": "conv_share",
+      "value": 1.0
+     }
+    ],
+    "rank": 2,
+    "top5": true,
+    "impact_pct": -0.4108330260324418
+   },
+   {
+    "category": "기본 경로",
+    "item": "기본 경로 v1(대안)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -2869.861242361436,
+    "alternative": "기본 경로 v1(3년 평균 이익률 5.35%, 매출 CAGR 4.91%)",
+    "rank": 3,
+    "top5": true,
+    "impact_pct": -0.4098241826765649
+   },
+   {
+    "category": "시나리오 폭",
+    "detail": "과거 매출 성장률 표준편차 20.7%(n=5), 영업이익률 범위 4.0%~14.8% — 회사 변동성에 맞는 폭인지 판단",
+    "item": "±2%p(성장·이익률) 기본값, g 2%",
+    "impact": 1798.7666150701098,
+    "alternative": "낙관(+2%p)",
+    "rank": 4,
+    "top5": true,
+    "impact_pct": 0.2568688851452691
+   },
+   {
+    "category": "할인율",
+    "item": "SRP 열",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -967.0844628744808,
+    "alternative": "SRP 2%",
+    "rank": 5,
+    "top5": true,
+    "impact_pct": -0.1381023562137865
+   },
+   {
+    "category": "재투자 비율",
+    "item": "CAPEX ÷ 매출(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 649.0722288358038,
+    "alternative": "CAPEX ÷ 매출 5년 평균 4.35%(FY2021~2025, 기본 3년 평균 5.59%)",
+    "cands": [
+     {
+      "label": "CAPEX ÷ 매출 5년 평균 4.35%",
+      "field": "capex_ratio",
+      "value": 0.04349806712824148
+     }
+    ],
+    "rank": 6,
+    "top5": false,
+    "impact_pct": 0.09268932300775967
+   },
+   {
+    "category": "할인율",
+    "item": "MRP",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 613.8117434862406,
+    "alternative": "MRP 7%(기본 8%, 한공회 가이던스 7~9%)",
+    "cands": [
+     {
+      "label": "MRP 7%",
+      "field": "mrp",
+      "value": 0.07
+     },
+     {
+      "label": "MRP 9%",
+      "field": "mrp",
+      "value": 0.09
+     }
+    ],
+    "rank": 7,
+    "top5": false,
+    "impact_pct": 0.08765402744159732
+   },
+   {
+    "category": "재투자 비율",
+    "item": "운전자본 회전일수(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 444.52936746422074,
+    "alternative": "회전일수 5년 평균 DSO 0·DIO 67·DPO 0일(FY2021~2025, 기본 DSO 0·DIO 83·DPO 0일)",
+    "cands": [
+     {
+      "label": "회전일수 5년 평균 DSO 0·DIO 67·DPO 0일",
+      "field": "nwc_days",
+      "value": {
+       "dso": 0.0,
+       "dio": 66.5397556284702,
+       "dpo": 0.0
+      }
+     }
+    ],
+    "rank": 8,
+    "top5": false,
+    "impact_pct": 0.06348003241677658
+   },
+   {
+    "category": "이익률 수렴",
+    "item": "수렴 도달 연도",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 292.33258032795766,
+    "alternative": "도달 연도 2030(기본 2032)",
+    "cands": [
+     {
+      "label": "도달 연도 2030",
+      "field": "conv_end",
+      "value": 2030
+     },
+     {
+      "label": "도달 연도 2034",
+      "field": "conv_end",
+      "value": 2034
+     }
+    ],
+    "rank": 9,
+    "top5": false,
+    "impact_pct": 0.04174590709621076
+   },
+   {
+    "category": "RONIC",
+    "item": "영구 구간 RONIC(하한 WACC)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -175.2997633786954,
+    "alternative": "RONIC = 과거 3년 ROIC 9.89%(규칙 전 값, 기본 = WACC 11.97%)",
+    "cands": [
+     {
+      "label": "RONIC 과거 3년 ROIC 9.89%",
+      "field": "ronic",
+      "value": 0.09891957417371093
+     }
+    ],
+    "rank": 10,
+    "top5": false,
+    "impact_pct": -0.02503329470764048
+   },
+   {
+    "category": "목표 D/E",
+    "item": "목표 D/E(자기 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -145.91937517711176,
+    "alternative": "피어 D/E 중앙값 0.102배(기본 자기 평균 0.012배)",
+    "cands": [
+     {
+      "label": "피어 D/E 중앙값 0.102배",
+      "field": "de",
+      "value": 0.10190995379939999
+     }
+    ],
+    "rank": 11,
+    "top5": false,
+    "impact_pct": -0.020837693399917825
+   },
+   {
+    "category": "할인율",
+    "item": "Rf 만기",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -114.8087815487188,
+    "alternative": "Rf 국고채 10년",
+    "rank": 12,
+    "top5": false,
+    "impact_pct": -0.01639501393578882
+   },
+   {
+    "category": "재투자 비율",
+    "item": "D&A ÷ 매출(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -59.93326258545858,
+    "alternative": "D&A ÷ 매출 5년 평균 0.80%(FY2021~2025, 기본 3년 평균 0.92%)",
+    "cands": [
+     {
+      "label": "D&A ÷ 매출 5년 평균 0.80%",
+      "field": "dna_ratio",
+      "value": 0.008028152737248703
+     }
+    ],
+    "rank": 13,
+    "top5": false,
+    "impact_pct": -0.008558636909572268
+   },
+   {
+    "category": "영구성장률",
+    "detail": "산업·물가 전망과 비교",
+    "item": "g 2%(사람 값 기본)",
+    "impact": 28.218796919713895,
+    "alternative": "g 3%",
+    "rank": 14,
+    "top5": false,
+    "impact_pct": 0.004029722835736052
+   },
+   {
+    "category": "Kd 근거",
+    "detail": "이자비용 ÷ 평균 차입금 = 11.65%(이자 3.2억, 평균 차입 27.4억, 이자의 지급(현금흐름표)); 하한 Rf. 신용평가 등급·약정이자율(차입금 주석) 확인",
+    "item": "신용등급 자동 탐색 안 함",
+    "impact": 5.975793469320706,
+    "alternative": "세전 Kd 10.51%(BBB- 3년, 기본 11.65%)",
+    "rank": 15,
+    "top5": false,
+    "impact_pct": 0.0008533599597983203
+   },
+   {
+    "category": "비지배지분",
+    "item": "비지배지분 차감 방법",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -2.7577339431471164,
+    "alternative": "비지배 장부 × 피어 P/B 중앙값 1.46배",
+    "rank": 16,
+    "top5": false,
+    "impact_pct": -0.00039381209189045163
+   },
+   {
+    "category": "비영업·현금성 분류",
+    "item": "고객 자금 성격 현금",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -0.029915638240113316,
+    "alternative": "영업용 현금 0억을 브리지에서 뺌",
+    "rank": 17,
+    "top5": false,
+    "impact_pct": -4.272036504773342e-06
+   }
+  ],
+  "other": [
+   {
+    "category": "우선주 처리",
+    "detail": "주식의 총수 표에 우선주 없음 — 확인만",
+    "item": "우선주 없음",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "싸이맥스",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "에스티아이",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "지앤비에스 에코",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "뉴파워프라즈마",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "디바이스",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "씨앤지하이테크",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "프로텍",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 29271(앞 5자리 29271), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "워트",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "기준일 뒤 주요 공시",
+    "detail": "반기보고서 (2026.06); 주식등의대량보유상황보고서(약식)",
+    "item": "2026-07-01~기준일 공시 3건(제목만, 주요 단어 0건)",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2021~2025 영업이익률 범위 4.0%~14.8%(폭 5%p 초과): 일회성 손익 여부 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "평가방법 선택 근거·채택·가중치",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "정상화 조정(비경상 손익)",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "우발채무·비영업자산 명세 확인",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "DLOM·경영권 프리미엄 조정 여부와 근거",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "주요 가정의 합리성",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "평가상 한계 보완",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "블록 프리미엄 입력",
+    "detail": "기본값 — 평가 목적에 맞는지 확인",
+    "item": "지분 구간 25~50%, 인수자 전략적, 2015~2026",
+    "impact": null,
+    "alternative": ""
+   }
+  ],
+  "share_top5": 0.8646643109869251
+ },
+ "review_share": 0.8646643109869251,
+ "headline": {
+  "status": "확정",
+  "per_share": 7002.664468500492,
+  "auto_status": "표시",
+  "auto_hold_reasons": [],
+  "guard_now": [],
+  "changes": 1
+ },
+ "debt_reclass": [],
+ "beta_src": "peer",
+ "workbench": {
+  "session_id": "036200_20260930_001",
+  "version": 1,
+  "mode": "public",
+  "pending": 34,
+  "auto_status": "표시",
+  "auto_hold_reasons": []
+ },
+ "convergence": {
+  "verdict": "수렴",
+  "dcf": 7002.664468500492,
+  "q25": 5260.596670699277,
+  "q75": 7286.707794228767
+ },
+ "reconcile": {
+  "status": "일치",
+  "max_per_share_diff": 4.18367562815547e-11
+ },
+ "first_draft_seconds": 1.1,
+ "outputs": {
+  "xlsx": "<workspace>\\outputs\\036200_20260930_001\\v1_public\\036200_model_2026-09-30.xlsx",
+  "docx": "<workspace>\\outputs\\036200_20260930_001\\v1_public\\036200_report_draft.docx"
+ },
+ "excel_ready_seconds": 13.6,
+ "result": "완료",
+ "seconds": 60.2,
+ "api_calls": {
+  "DART": 0,
+  "KRX": 0,
+  "ECOS": 0
+ },
+ "success": true
+}

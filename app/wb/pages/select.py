@@ -182,6 +182,8 @@ def render(c: nav.Ctx) -> None:
                     "<li>12월 결산이 아님</li><li>지원하지 않는 지배구조</li></ul>"
                     "<p class='wb-kpi-note'>제외되면 숫자를 내지 않고 사유만 보여 줍니다. "
                     + nav.link("ref_method", "방법론 보기", c)
+                    + " · "
+                    + nav.link("ref_valid", "검증 결과 보기", c)
                     + "</p>",
                     unsafe_allow_html=True,
                 )

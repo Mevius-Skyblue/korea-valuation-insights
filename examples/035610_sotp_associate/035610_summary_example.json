@@ -1,0 +1,1224 @@
+{
+ "target": "<workspace>/sessions/035610_20260930_001/v1_public/valuation_035610_035610_20260930_001v1p.yaml",
+ "started": "2026-10-23T08:57:43",
+ "steps": {
+  "engine": {
+   "ok": true,
+   "sec": 0.5
+  },
+  "first_draft": {
+   "ok": true,
+   "sec": 0.0
+  },
+  "excel": {
+   "ok": true,
+   "sec": 57.0
+  },
+  "report": {
+   "ok": true,
+   "sec": 1.5
+  },
+  "report_check": {
+   "ok": true,
+   "sec": 0.5
+  }
+ },
+ "errors": [],
+ "timing": {
+  "engine": 0.46,
+  "first_draft": 0.0,
+  "excel": 57.02,
+  "excel_build": 12.52,
+  "excel_reconcile": 44.5,
+  "report": 1.51,
+  "report_check": 0.55
+ },
+ "fast": false,
+ "code": "035610",
+ "mode": "draft",
+ "config": "<workspace>/sessions/035610_20260930_001/v1_public/valuation_035610_035610_20260930_001v1p.yaml",
+ "out_dir": "<workspace>\\outputs\\035610_20260930_001\\v1_public",
+ "name": "솔본",
+ "gate": {
+  "passed": true,
+  "stage_a": [],
+  "notes": [
+   {
+    "reason": "구조 규칙(config/valuation_rules.yaml structure)이 SOTP를 켬: 일반 경로(연결 DCF − 비지배)는 SOTP를 지원하지 않음",
+    "rule": "G6_sotp_path",
+    "value": "SOTP 경로(비지배지분/주식가치 108.9% ≥ 10%)"
+   }
+  ],
+  "stage_a_p7b": [
+   {
+    "reason": "구조 규칙(config/valuation_rules.yaml structure)이 SOTP를 켬: 일반 경로(연결 DCF − 비지배)는 SOTP를 지원하지 않음",
+    "rule": "G6_structure",
+    "value": "비지배지분/주식가치 85.7% ≥ 10%"
+   }
+  ],
+  "stage_b": [],
+  "usable_peers": [
+   "KT나스미디어",
+   "HS애드",
+   "에코아이",
+   "인크로스",
+   "오리콤",
+   "레뷰코퍼레이션"
+  ],
+  "note": "평가 세션 확정: 자동 초안의 게이트 B 통과 기록 사용(베타·피어 표 = 초안 표를 확정 피어로 거른 것)"
+ },
+ "facts": {
+  "acc_mt": "12",
+  "associates": {
+   "n": 1,
+   "names": [
+    "키네마스터(주)(139670, 지분 30.5%)"
+   ],
+   "report_date": "2026-06-30",
+   "share_check": [],
+   "skipped": []
+  },
+  "fin_structure": {
+   "hit": false,
+   "liab_share": 0.1686859435647017,
+   "op_share": 0.09953862141016127
+  },
+  "fs_div": "CFS",
+  "gate_a_p7b2_passed": true,
+  "gate_a_p7b2b_passed": false,
+  "gate_a_p7b3_passed": true,
+  "gate_a_p7b3b_passed": true,
+  "gate_a_p7b5_passed": true,
+  "holding_ratio": "별도 매출 ÷ 연결 매출 3% < 25%(지주형)",
+  "holding_scope": false,
+  "investees_source": "타법인 출자현황 2026 반기",
+  "ksic": "715",
+  "listed_sub": true,
+  "listed_sub_p7b": false,
+  "listed_subs": [
+   "(주)인피니트헬스케어(*1)(071200, 지분 48.7%)"
+  ],
+  "loss_path": false,
+  "multi_fs": "CFS",
+  "nci_book": 116743405572.0,
+  "nci_path": false,
+  "op": {
+   "2023": 29930787582.0,
+   "2024": 21158651978.0,
+   "2025": 24620979407.0
+  },
+  "revenue_2025": 120651025450.0,
+  "sotp": true,
+  "sotp_share_check": [],
+  "sotp_unsupported": [],
+  "structure_guard": {
+   "a": false,
+   "b": false,
+   "equity_total": 358607649037.0,
+   "holding": "별도 매출 ÷ 연결 매출 3% < 25%(지주형)",
+   "listed_investees": [
+    {
+     "book": 21031000000.0,
+     "name": "㈜인피니트헬스케어",
+     "stake": 0.48700000000000004,
+     "stock_code": "071200"
+    },
+    {
+     "book": 11252000000.0,
+     "name": "키네마스터(주)",
+     "stake": 0.305,
+     "stock_code": "139670"
+    }
+   ],
+   "minority_subs": [
+    {
+     "book": 21031000000.0,
+     "name": "(주)인피니트헬스케어(*1)",
+     "stake": 0.48700000000000004
+    }
+   ],
+   "n_assoc": 1,
+   "nci_equity": 0.3255463342332522,
+   "scope_rcept": "20260323000001"
+  },
+  "structure_source": "사업보고서 연결대상 종속회사 표(14곳) 20260323000001"
+ },
+ "peer_screen": {
+  "relax_step": 0,
+  "levels": [
+   {
+    "band": [
+     0.3,
+     3.0
+    ],
+    "candidates": 5,
+    "dropped_holding": [
+     "유수홀딩스(000700) 별도 매출 ÷ 연결 매출 3% < 25%(지주형)",
+     "제일파마홀딩스(002620) 별도 매출 ÷ 연결 매출 2% < 25%(지주형)",
+     "INVENI(015360) 별도 매출 ÷ 연결 매출 13% < 25%(지주형)",
+     "대성홀딩스(016710) 별도 매출 ÷ 연결 매출 1% < 25%(지주형)",
+     "심텍홀딩스(036710) 별도 매출 ÷ 연결 매출 1% < 25%(지주형)"
+    ],
+    "dropped_profit": [
+     "제일파마홀딩스(002620)",
+     "심텍홀딩스(036710)"
+    ],
+    "ksic": "715",
+    "ksic_digits": 3,
+    "pass": 0,
+    "step": 0
+   },
+   {
+    "band": [
+     0.3,
+     3.0
+    ],
+    "candidates": 14,
+    "dropped_holding": [
+     "유수홀딩스(000700) 별도 매출 ÷ 연결 매출 3% < 25%(지주형)",
+     "제일파마홀딩스(002620) 별도 매출 ÷ 연결 매출 2% < 25%(지주형)",
+     "INVENI(015360) 별도 매출 ÷ 연결 매출 13% < 25%(지주형)",
+     "대성홀딩스(016710) 별도 매출 ÷ 연결 매출 1% < 25%(지주형)",
+     "심텍홀딩스(036710) 별도 매출 ÷ 연결 매출 1% < 25%(지주형)",
+     "아이디스홀딩스(054800) 별도 매출 ÷ 연결 매출 1% < 25%(지주형)"
+    ],
+    "dropped_profit": [
+     "제일파마홀딩스(002620)",
+     "심텍홀딩스(036710)",
+     "SM C&C(048550)",
+     "케어랩스(263700)"
+    ],
+    "ksic": "71",
+    "ksic_digits": 2,
+    "pass": 6,
+    "step": 0
+   }
+  ]
+ },
+ "values": {
+  "per_share_base_srp0": 8733.864451149073,
+  "wacc_base_srp0": 0.09212124321403854,
+  "ronic": 0.09212124321403854,
+  "tv_share": 0.34395923591621225,
+  "ev930_mn": 2729.9032495291626,
+  "close": 20000.0,
+  "grid": {
+   "pessimistic|SRP0%": 8702.440593663363,
+   "pessimistic|SRP1%": 8695.786603291956,
+   "pessimistic|SRP2%": 8690.328172529382,
+   "base|SRP0%": 8733.864451149073,
+   "base|SRP1%": 8724.324976387044,
+   "base|SRP2%": 8716.493142480786,
+   "optimistic|SRP0%": 8767.506543663276,
+   "optimistic|SRP1%": 8754.832997861162,
+   "optimistic|SRP2%": 8744.426073758972
+  },
+  "beta_u": 0.623993707645853,
+  "kd": 0.10506,
+  "de_own": 0.004259655528318662,
+  "block": {
+   "q25": 18206.613181500954,
+   "q50": 21386.95114288616,
+   "q75": 27034.98457945315
+  },
+  "premium_method": "regression",
+  "relative_median_ps": {
+   "EV/Sales": null,
+   "EV/EBITDA": null,
+   "PER": null,
+   "PBR": 2566.1477972484095
+  },
+  "relative_n": {
+   "EV/Sales": 3,
+   "EV/EBITDA": 3,
+   "PER": 5,
+   "PBR": 6
+  }
+ },
+ "checks": {
+  "S4_recon": {
+   "bad": [],
+   "counts": {
+    "exact": 35
+   },
+   "found_share": 1.0,
+   "pass": true,
+   "rows": 35,
+   "years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ]
+  },
+  "S5_human_list": {
+   "pass": true,
+   "n": 29,
+   "missing_categories": [],
+   "by_category": {
+    "우선주 처리": 1,
+    "피어 유사성": 6,
+    "SOTP": 2,
+    "상장 관계기업": 1,
+    "Kd 근거": 1,
+    "기준일 뒤 주요 공시": 1,
+    "비경상 손익": 6,
+    "시나리오 폭": 1,
+    "보고서 사람 작성 칸": 6,
+    "구조(추가)": 2,
+    "블록 프리미엄 입력": 1,
+    "영구성장률": 1
+   }
+  },
+  "S2_excel_engine": {
+   "pass": true,
+   "master": "OK",
+   "combos": 9,
+   "bad_combos": [],
+   "other_bad": [],
+   "max_per_share_diff": 3.637978807091713e-12,
+   "formula_errors": 0,
+   "hardcoded": 0,
+   "krx_outside_inputs": 0,
+   "verdict_live_vs_engine": [
+    "판정 불가(대상 지표 ≤ 0)",
+    "판정 불가(대상 지표 ≤ 0)"
+   ],
+   "checks_warn": [
+    "피어 표본 수: EV/Sales",
+    "피어 표본 수: EV/EBITDA",
+    "RONIC 계산값 사용(대체 없음)"
+   ]
+  },
+  "S3_report": {
+   "pass": true,
+   "n_excel_numbers": 463,
+   "bad_values": [],
+   "stray_tokens": [],
+   "forbidden": [],
+   "josa_errors": [],
+   "human_boxes": 6,
+   "human_boxes_not_empty": [],
+   "header_all_pages": true
+  },
+  "S1_end_to_end": {
+   "pass": true
+  }
+ },
+ "human_review": [
+  {
+   "category": "우선주 처리",
+   "detail": "주식의 총수 표에 우선주 없음 — 확인만",
+   "item": "우선주 없음"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "KT나스미디어"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "HS애드"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 716(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "에코아이"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "인크로스"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "오리콤"
+  },
+  {
+   "category": "피어 유사성",
+   "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+   "item": "레뷰코퍼레이션"
+  },
+  {
+   "category": "SOTP",
+   "detail": "지주회사 할인 30%·50% 민감도 — 평가 목적에 맞는 할인을 사람이 정함",
+   "item": "상장 종속회사 지분 할인(기본 0%)"
+  },
+  {
+   "category": "SOTP",
+   "detail": "장부가(취득원가 기준일 수 있음) — 공정가치와 다를 수 있음(P/B 민감도 참고)",
+   "item": "비상장 종속회사 장부가"
+  },
+  {
+   "category": "상장 관계기업",
+   "detail": "보유 주식수 × 기준일 종가로 더함(키네마스터(주) 30.5%) — 지분 할인 30%·50% 민감도, 할인 여부는 사람이 정함",
+   "item": "상장 관계기업 지분 할인(기본 0%)"
+  },
+  {
+   "category": "Kd 근거",
+   "detail": "이자·차입으로 계산 불가 → 무등급 공통 규칙(BBB- 3년). 차입 구조 확인",
+   "item": "신용등급 자동 탐색 안 함"
+  },
+  {
+   "category": "기준일 뒤 주요 공시",
+   "detail": "반기보고서 (2026.06); 임원ㆍ주요주주특정증권등소유상황보고서; 주식등의대량보유상황보고서(일반)",
+   "item": "2026-07-01~기준일 공시 7건(제목만, 주요 단어 0건)"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2021 세전이익 − 영업이익 = 166억(영업이익 14억의 30% 초과): 영업외 손익 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2022 세전이익 − 영업이익 = -110억(영업이익 -3억의 30% 초과): 영업외 손익 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2023 세전이익 − 영업이익 = 34억(영업이익 15억의 30% 초과): 영업외 손익 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2024 세전이익 − 영업이익 = -54억(영업이익 1억의 30% 초과): 영업외 손익 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2025 세전이익 − 영업이익 = -31억(영업이익 -18억의 30% 초과): 영업외 손익 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "비경상 손익",
+   "detail": "FY2021~2025 영업이익률 범위 -48.7%~41.4%(폭 5%p 초과): 일회성 손익 여부 확인",
+   "item": "정상화 조정 필요 여부"
+  },
+  {
+   "category": "시나리오 폭",
+   "detail": "과거 매출 성장률 표준편차 21.9%(n=5), 영업이익률 범위 -48.7%~41.4% — 회사 변동성에 맞는 폭인지 판단",
+   "item": "±2%p(성장·이익률) 기본값, g 2%"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "평가방법 선택 근거·채택·가중치"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "정상화 조정(비경상 손익)"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "우발채무·비영업자산 명세 확인"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "DLOM·경영권 프리미엄 조정 여부와 근거"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "주요 가정의 합리성"
+  },
+  {
+   "category": "보고서 사람 작성 칸",
+   "detail": "보고서 초안의 [사람 작성 칸]",
+   "item": "평가상 한계 보완"
+  },
+  {
+   "category": "구조(추가)",
+   "detail": "사실상 지배(연결) 여부 확인 — 구조 규칙은 지분 > 50%만 상장 종속회사로 봄",
+   "item": "상장 피투자회사 ㈜인피니트헬스케어 48.7%"
+  },
+  {
+   "category": "구조(추가)",
+   "detail": "사실상 지배(연결) 여부 확인 — 구조 규칙은 지분 > 50%만 상장 종속회사로 봄",
+   "item": "상장 피투자회사 키네마스터(주) 30.5%"
+  },
+  {
+   "category": "블록 프리미엄 입력",
+   "detail": "기본값 — 평가 목적에 맞는지 확인",
+   "item": "지분 구간 25~50%, 인수자 전략적, 2015~2026"
+  },
+  {
+   "category": "영구성장률",
+   "detail": "산업·물가 전망과 비교",
+   "item": "g 2%(사람 값 기본)"
+  }
+ ],
+ "diagnostics": {
+  "signals": {
+   "dcf": 8733.864451149073,
+   "peer_basis": "EV/EBITDA",
+   "q25": null,
+   "q75": null,
+   "peer_median": null,
+   "peer_n": 3,
+   "price": 20000.0,
+   "ratio_market": 0.43669322255745363,
+   "light_peer": "회색",
+   "light_market": "빨강",
+   "light": "빨강",
+   "peer_valid": true,
+   "peer_invalid": []
+  },
+  "reverse": {
+   "target": null,
+   "basis": "EV/EBITDA"
+  },
+  "composition": {
+   "ev": 2729.9032495291626,
+   "tv": 938.9754358332358,
+   "explicit": 1790.927813695927,
+   "cash_like": 1111.450347,
+   "non_operating": 235050.336897,
+   "debt": -55.459413999999995,
+   "nci": -0.0,
+   "equity": 238836.23107952916
+  },
+  "composition_share": {
+   "ev": 0.011430021471994099,
+   "tv": 0.00393146145201299,
+   "explicit": 0.007498560019981108,
+   "cash_like": 0.004653608633733223,
+   "non_operating": 0.9841485767656896,
+   "debt": -0.0002322068714169785,
+   "nci": -0.0
+  },
+  "anomalies": [
+   {
+    "key": "loss_year_in_margin",
+    "text": "정상 이익률 계산 연도(FY2023~2025)에 영업손실 연도 포함",
+    "on": true,
+    "value": "15억, 1억, -18억"
+   },
+   {
+    "key": "margin_volatility",
+    "text": "FY2021~2025 영업이익률 표준편차 > 2 × 시나리오 이익률 폭(2%p) = 4%p",
+    "on": true,
+    "value": 0.35876018013512034
+   },
+   {
+    "key": "growth_volatility",
+    "text": "FY2021~2025 매출 성장률 표준편차 > 2 × 시나리오 성장률 폭(2%p) = 4%p",
+    "on": true,
+    "value": 0.2450248187690814
+   },
+   {
+    "key": "roic_below_wacc",
+    "text": "과거 3년 ROIC(RONIC 상한) < 기본 WACC",
+    "on": true,
+    "value": -0.6519826686951469
+   },
+   {
+    "key": "terminal_heavy",
+    "text": "영구가치 비중 > 75% 또는 < 0%",
+    "on": false,
+    "value": 0.34395923591621225
+   },
+   {
+    "key": "bridge_heavy",
+    "text": "브리지 항목 하나의 절댓값 > 주식가치의 50%",
+    "on": true,
+    "value": 0.9841485767656896
+   },
+   {
+    "key": "negative_equity_scenario",
+    "text": "시나리오 × SRP 9칸 중 주당 < 0인 칸이 있음",
+    "on": false,
+    "value": 0
+   }
+  ],
+  "margin_candidates": [
+   {
+    "id": "ex_loss_3y",
+    "label": "손실 연도 제외 3년 평균(FY2023~2025 중 영업이익 > 0인 해)",
+    "margin": 0.1671707551194683,
+    "per_share": 8944.42710003526,
+    "diff": 210.56264888618716
+   },
+   {
+    "id": "median_5y",
+    "label": "5년 중앙값(FY2021~2025)",
+    "margin": 0.014549550368848854,
+    "per_share": 8733.864451149073,
+    "diff": 0.0
+   },
+   {
+    "id": "peer_median",
+    "label": "피어 LTM 영업이익률 중앙값(포함 피어)",
+    "margin": 0.12355134166382818,
+    "per_share": 8885.450996452631,
+    "diff": 151.58654530355852
+   }
+  ],
+  "sensitivities": {
+   "customer_funds": {
+    "liabilities": 8.484,
+    "items": [
+     {
+      "amount": 8.484,
+      "label": "예수금",
+      "source": "주석"
+     }
+    ],
+    "operating_cash": 8.484,
+    "per_share": 8733.55420464389,
+    "diff": -0.3102465051831901
+   },
+   "nci": {
+    "book": 0.0,
+    "total_equity": 119163.88672099999,
+    "share_book": 0.0,
+    "peer_pbr": 0.5888853737157016,
+    "a_per_share": 8733.864451149073,
+    "b_per_share": 8733.864451149073,
+    "a_diff": 0.0,
+    "b_diff": 0.0
+   }
+  },
+  "v1": {
+   "per_share": 8559.683880982495,
+   "tv_share": 0.3965822264393344,
+   "signals": {
+    "dcf": 8559.683880982495,
+    "peer_basis": "EV/EBITDA",
+    "q25": null,
+    "q75": null,
+    "peer_median": null,
+    "peer_n": 3,
+    "price": 20000.0,
+    "ratio_market": 0.42798419404912474,
+    "light_peer": "회색",
+    "light_market": "빨강",
+    "light": "빨강",
+    "peer_valid": true,
+    "peer_invalid": []
+   }
+  },
+  "v2": {
+   "m0": 0.014549550368848854,
+   "m0_src": "FY2021~2025 영업이익률 중앙값(5년)",
+   "m0_years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ],
+   "start": "median5",
+   "peer_margin": 0.12355134166382818,
+   "peer_margin_n": 5,
+   "conv_share": 0.5,
+   "conv_amt": 0.05450089564748967,
+   "own_cagr": 0.008119484164499813,
+   "peer_growth": 0.020720899037499185,
+   "peer_growth_n": 5,
+   "weight_own": 0.5,
+   "clip": [
+    -0.1,
+    0.25
+   ],
+   "g0": 0.014420191600999499,
+   "m0_auto": 0.014549550368848854,
+   "g0_auto": 0.014420191600999499
+  },
+  "guard": {
+   "hold": false,
+   "status": "표시",
+   "reasons": []
+  },
+  "dna": [
+   {
+    "year": 2021,
+    "period": "FY",
+    "total": 129.868,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2022,
+    "period": "FY",
+    "total": 114.227,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2023,
+    "period": "FY",
+    "total": 103.232,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2024,
+    "period": "FY",
+    "total": 93.911,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2025,
+    "period": "FY",
+    "total": 116.591,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2025,
+    "period": "H1",
+    "total": 50.33,
+    "source": "원문/XBRL",
+    "estimated": false
+   },
+   {
+    "year": 2026,
+    "period": "H1",
+    "total": 70.66,
+    "source": "원문/XBRL",
+    "estimated": false
+   }
+  ],
+  "sotp": {
+   "parent_ev": 2729.9032495291626,
+   "listed": 142764.0,
+   "unlisted": 29988.0,
+   "remainder": 19728.005697,
+   "sub_lines": 70894.005697,
+   "book_all": 51166.0,
+   "discount": 0.3,
+   "unit_ok": true,
+   "missing_close": [],
+   "equity": 238836.23107952916,
+   "sens": [
+    {
+     "discount": 0.3,
+     "per_share": 8733.864451149073
+    },
+    {
+     "discount": 0.5,
+     "per_share": 7689.733567934244
+    }
+   ],
+   "listed_share": 0.4184239533018049,
+   "parent_share": 0.4560172072187092,
+   "guard": []
+  },
+  "turnaround": {
+   "ltm_margin": -1.0139704532897058,
+   "m0": 0.014549550368848854,
+   "gap": -1.0285200036585547,
+   "conv_amt": 0.568760897476767,
+   "per_share": 7655.715082908794,
+   "diff": -1078.1493682402788,
+   "default": "v2(5년 중앙값) 그대로"
+  },
+  "loss": null,
+  "ltm_margin": -1.0139704532897058
+ },
+ "review_ranked": {
+  "computed": [
+   {
+    "category": "상장 관계기업",
+    "item": "지주회사(별도 매출 ÷ 연결 매출 3% < 25%(지주형)): 상장 관계기업 1곳을 시가로 반영",
+    "detail": "config/p7x2b.yaml associates.holding_guard_a — 연결 범위 상장 종속회사 0, 상장 관계기업 지분은 보유 주식수 × 종가로 더하고 관계기업 줄 장부는 뺌. 지분 할인·지배력·이중 계산(영업이익 안 지분법 손익) 확인",
+    "impact": null,
+    "alternative": "구조 확인(상장 관계기업 시가·지분 할인)",
+    "rank": 1,
+    "top5": true,
+    "impact_pct": null
+   },
+   {
+    "category": "실적 전환",
+    "item": "LTM 영업이익률 -101.4% vs 5년 중앙값 1.5%",
+    "detail": "config/p7b3b.yaml turnaround — 최근 실적이 과거 분포를 벗어남. 어느 쪽이 정상 이익률인지 판단",
+    "impact": -1078.1493682402788,
+    "alternative": "LTM 이익률 출발 → 주당 7,656원",
+    "rank": 2,
+    "top5": true,
+    "impact_pct": -0.12344471044526364
+   },
+   {
+    "category": "SOTP",
+    "item": "상장 종속회사 지분 할인",
+    "detail": "config/p7b3b.yaml sotp_guard.discount_review",
+    "impact": -1044.1308832148288,
+    "alternative": "상장 종속회사 지분 할인 50%(기본 30%)",
+    "rank": 3,
+    "top5": true,
+    "impact_pct": -0.11954970094337307
+   },
+   {
+    "category": "상장 관계기업",
+    "item": "상장 관계기업 시가 반영",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -1450.8156349172423,
+    "alternative": "상장 관계기업을 장부가로 둠(시가 반영 안 함)",
+    "rank": 4,
+    "top5": true,
+    "impact_pct": -0.16611382544714962
+   },
+   {
+    "category": "상장 관계기업",
+    "detail": "보유 주식수 × 기준일 종가로 더함(키네마스터(주) 30.5%) — 지분 할인 30%·50% 민감도, 할인 여부는 사람이 정함",
+    "item": "상장 관계기업 지분 할인(기본 0%)",
+    "impact": -949.6088220882939,
+    "alternative": "상장 관계기업 지분 할인 50%(기본 0%)",
+    "cands": [
+     {
+      "label": "상장 관계기업 지분 할인 30%",
+      "field": "assoc_discount",
+      "value": 0.3
+     },
+     {
+      "label": "상장 관계기업 지분 할인 50%",
+      "field": "assoc_discount",
+      "value": 0.5
+     }
+    ],
+    "rank": 5,
+    "top5": true,
+    "impact_pct": -0.10872722234238
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2021 세전이익 − 영업이익 = 166억(영업이익 14억의 30% 초과): 영업외 손익 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": 210.56264888618716,
+    "alternative": "정상 이익률 손실 연도 제외 3년 평균(FY2023~2025 중 영업이익 > 0인 해) 16.72%(기본 1.45%)",
+    "rank": 6,
+    "top5": false,
+    "impact_pct": 0.024108760797001427
+   },
+   {
+    "category": "기본 경로",
+    "item": "기본 경로 v1(대안)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -174.18057016657804,
+    "alternative": "기본 경로 v1(3년 평균 이익률 -5.08%, 매출 CAGR 0.81%)",
+    "rank": 7,
+    "top5": false,
+    "impact_pct": -0.01994312725378534
+   },
+   {
+    "category": "재투자 비율",
+    "item": "운전자본 회전일수(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -118.75648418784294,
+    "alternative": "회전일수 5년 평균 DSO 432·DIO 4·DPO 5831일(FY2021~2025, 기본 DSO 120·DIO 2·DPO 4890일)",
+    "cands": [
+     {
+      "label": "회전일수 5년 평균 DSO 432·DIO 4·DPO 5831일",
+      "field": "nwc_days",
+      "value": {
+       "dso": 432.21166514706886,
+       "dio": 4.337130221382184,
+       "dpo": 5830.690435425858
+      }
+     }
+    ],
+    "rank": 8,
+    "top5": false,
+    "impact_pct": -0.013597243791918331
+   },
+   {
+    "category": "이익률 수렴",
+    "item": "피어 쪽 수렴 비율",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -63.58306853807153,
+    "alternative": "수렴 비율 0%(기본 50%, 피어 이익률 중앙값 12.4% 쪽)",
+    "cands": [
+     {
+      "label": "수렴 비율 0%",
+      "field": "conv_share",
+      "value": 0.0
+     },
+     {
+      "label": "수렴 비율 100%",
+      "field": "conv_share",
+      "value": 1.0
+     }
+    ],
+    "rank": 9,
+    "top5": false,
+    "impact_pct": -0.00728006129402503
+   },
+   {
+    "category": "시나리오 폭",
+    "detail": "과거 매출 성장률 표준편차 21.9%(n=5), 영업이익률 범위 -48.7%~41.4% — 회사 변동성에 맞는 폭인지 판단",
+    "item": "±2%p(성장·이익률) 기본값, g 2%",
+    "impact": 33.642092514202886,
+    "alternative": "낙관(+2%p)",
+    "rank": 10,
+    "top5": false,
+    "impact_pct": 0.0038519137436094234
+   },
+   {
+    "category": "할인율",
+    "item": "SRP 열",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -17.371308668287384,
+    "alternative": "SRP 2%",
+    "rank": 11,
+    "top5": false,
+    "impact_pct": -0.001988960186576049
+   },
+   {
+    "category": "할인율",
+    "item": "MRP",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 7.106185666556485,
+    "alternative": "MRP 7%(기본 8%, 한공회 가이던스 7~9%)",
+    "cands": [
+     {
+      "label": "MRP 7%",
+      "field": "mrp",
+      "value": 0.07
+     },
+     {
+      "label": "MRP 9%",
+      "field": "mrp",
+      "value": 0.09
+     }
+    ],
+    "rank": 12,
+    "top5": false,
+    "impact_pct": 0.0008136359003856028
+   },
+   {
+    "category": "이익률 수렴",
+    "item": "수렴 도달 연도",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 5.00898388254609,
+    "alternative": "도달 연도 2030(기본 2032)",
+    "cands": [
+     {
+      "label": "도달 연도 2030",
+      "field": "conv_end",
+      "value": 2030
+     },
+     {
+      "label": "도달 연도 2034",
+      "field": "conv_end",
+      "value": 2034
+     }
+    ],
+    "rank": 13,
+    "top5": false,
+    "impact_pct": 0.0005735128946141455
+   },
+   {
+    "category": "재투자 비율",
+    "item": "D&A ÷ 매출(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 3.7138789229793474,
+    "alternative": "D&A ÷ 매출 5년 평균 2.92%(FY2021~2025, 기본 3년 평균 2.42%)",
+    "cands": [
+     {
+      "label": "D&A ÷ 매출 5년 평균 2.92%",
+      "field": "dna_ratio",
+      "value": 0.029221169607119884
+     }
+    ],
+    "rank": 14,
+    "top5": false,
+    "impact_pct": 0.0004252274515768023
+   },
+   {
+    "category": "재투자 비율",
+    "item": "CAPEX ÷ 매출(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": 3.470542958279111,
+    "alternative": "CAPEX ÷ 매출 5년 평균 0.84%(FY2021~2025, 기본 3년 평균 1.31%)",
+    "cands": [
+     {
+      "label": "CAPEX ÷ 매출 5년 평균 0.84%",
+      "field": "capex_ratio",
+      "value": 0.008394648458047793
+     }
+    ],
+    "rank": 15,
+    "top5": false,
+    "impact_pct": 0.0003973662492348972
+   },
+   {
+    "category": "할인율",
+    "item": "Rf 만기",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -2.111033840203163,
+    "alternative": "Rf 국고채 10년",
+    "rank": 16,
+    "top5": false,
+    "impact_pct": -0.0002417067326852576
+   },
+   {
+    "category": "목표 D/E",
+    "item": "목표 D/E(자기 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -0.43567571198036603,
+    "alternative": "피어 D/E 중앙값 0.015배(기본 자기 평균 0.004배)",
+    "cands": [
+     {
+      "label": "피어 D/E 중앙값 0.015배",
+      "field": "de",
+      "value": 0.014626867946096514
+     }
+    ],
+    "rank": 17,
+    "top5": false,
+    "impact_pct": -4.988349824035181e-05
+   },
+   {
+    "category": "비영업·현금성 분류",
+    "item": "고객 자금 성격 현금",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -0.3102465051831901,
+    "alternative": "영업용 현금 0억을 브리지에서 뺌",
+    "rank": 18,
+    "top5": false,
+    "impact_pct": -3.552224870428032e-05
+   },
+   {
+    "category": "영구성장률",
+    "detail": "산업·물가 전망과 비교",
+    "item": "g 2%(사람 값 기본)",
+    "impact": 0.286985117394579,
+    "alternative": "g 3%",
+    "rank": 19,
+    "top5": false,
+    "impact_pct": 3.285889299058468e-05
+   },
+   {
+    "category": "Kd 근거",
+    "detail": "이자·차입으로 계산 불가 → 무등급 공통 규칙(BBB- 3년). 차입 구조 확인",
+    "item": "신용등급 자동 탐색 안 함",
+    "impact": 0.23326832555540022,
+    "alternative": "세전 Kd 4.70%(AA- 3년, 기본 10.51%)",
+    "rank": 20,
+    "top5": false,
+    "impact_pct": 2.6708489335978902e-05
+   }
+  ],
+  "other": [
+   {
+    "category": "우선주 처리",
+    "detail": "주식의 총수 표에 우선주 없음 — 확인만",
+    "item": "우선주 없음",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "KT나스미디어",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "HS애드",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 716(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "에코아이",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "인크로스",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "오리콤",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "피어 유사성",
+    "detail": "자동: KSIC 71310(앞 2자리 71), 시가총액 대상의 (공개 비표시)배, FY2023~2025 영업이익 흑자 — 사업 유사성 사람 검토 | 사업 개요: 2단계 피어 카드의 공시 인용 참고",
+    "item": "레뷰코퍼레이션",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "SOTP",
+    "detail": "지주회사 할인 30%·50% 민감도 — 평가 목적에 맞는 할인을 사람이 정함",
+    "item": "상장 종속회사 지분 할인(기본 0%)",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "SOTP",
+    "detail": "장부가(취득원가 기준일 수 있음) — 공정가치와 다를 수 있음(P/B 민감도 참고)",
+    "item": "비상장 종속회사 장부가",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "기준일 뒤 주요 공시",
+    "detail": "반기보고서 (2026.06); 임원ㆍ주요주주특정증권등소유상황보고서; 주식등의대량보유상황보고서(일반)",
+    "item": "2026-07-01~기준일 공시 7건(제목만, 주요 단어 0건)",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2022 세전이익 − 영업이익 = -110억(영업이익 -3억의 30% 초과): 영업외 손익 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2023 세전이익 − 영업이익 = 34억(영업이익 15억의 30% 초과): 영업외 손익 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2024 세전이익 − 영업이익 = -54억(영업이익 1억의 30% 초과): 영업외 손익 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2025 세전이익 − 영업이익 = -31억(영업이익 -18억의 30% 초과): 영업외 손익 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "비경상 손익",
+    "detail": "FY2021~2025 영업이익률 범위 -48.7%~41.4%(폭 5%p 초과): 일회성 손익 여부 확인",
+    "item": "정상화 조정 필요 여부",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "평가방법 선택 근거·채택·가중치",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "정상화 조정(비경상 손익)",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "우발채무·비영업자산 명세 확인",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "DLOM·경영권 프리미엄 조정 여부와 근거",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "주요 가정의 합리성",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "보고서 사람 작성 칸",
+    "detail": "보고서 초안의 [사람 작성 칸]",
+    "item": "평가상 한계 보완",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "구조(추가)",
+    "detail": "사실상 지배(연결) 여부 확인 — 구조 규칙은 지분 > 50%만 상장 종속회사로 봄",
+    "item": "상장 피투자회사 ㈜인피니트헬스케어 48.7%",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "구조(추가)",
+    "detail": "사실상 지배(연결) 여부 확인 — 구조 규칙은 지분 > 50%만 상장 종속회사로 봄",
+    "item": "상장 피투자회사 키네마스터(주) 30.5%",
+    "impact": null,
+    "alternative": ""
+   },
+   {
+    "category": "블록 프리미엄 입력",
+    "detail": "기본값 — 평가 목적에 맞는지 확인",
+    "item": "지분 구간 25~50%, 인수자 전략적, 2015~2026",
+    "impact": null,
+    "alternative": ""
+   }
+  ],
+  "share_top5": 0.9166820597528649
+ },
+ "review_share": 0.9166820597528649,
+ "headline": {
+  "status": "확정",
+  "per_share": 8733.864451149073,
+  "auto_status": "표시",
+  "auto_hold_reasons": [],
+  "guard_now": [],
+  "changes": 1
+ },
+ "debt_reclass": [],
+ "beta_src": "peer",
+ "workbench": {
+  "session_id": "035610_20260930_001",
+  "version": 1,
+  "mode": "public",
+  "pending": 43,
+  "auto_status": "표시",
+  "auto_hold_reasons": []
+ },
+ "convergence": {
+  "verdict": "판정 불가(대상 지표 ≤ 0)",
+  "dcf": 8733.864451149073,
+  "q25": null,
+  "q75": null
+ },
+ "reconcile": {
+  "status": "일치",
+  "max_per_share_diff": 3.637978807091713e-12
+ },
+ "first_draft_seconds": 0.5,
+ "outputs": {
+  "xlsx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_model_2026-09-30.xlsx",
+  "docx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_report_draft.docx"
+ },
+ "excel_ready_seconds": 13.1,
+ "result": "완료",
+ "seconds": 60.3,
+ "api_calls": {
+  "DART": 0,
+  "KRX": 0,
+  "ECOS": 0
+ },
+ "success": true
+}

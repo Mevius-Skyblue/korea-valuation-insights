@@ -281,7 +281,7 @@ def test_workspaces_do_not_mix(tmp_path):
 # ---------------------------------------------------------------- 5 screens
 
 @pytest.mark.parametrize("page", ["select", "data", "assume", "result", "export", "ref_rates", "ref_accuracy", "ref_premium",
-                                  "ref_method", "ref_guide"])
+                                  "ref_method", "ref_valid", "ref_guide"])
 def test_pages_render_plain_words(page, tmp_path_factory):
     from streamlit.testing.v1 import AppTest
 
