@@ -102,7 +102,7 @@ def cover(c: Ctx):
             "출처 표시",
             "재무: DART 접수번호 / 금리: ECOS 817Y002 / 시세·시가총액·VWAP·베타: 한국거래소 통계정보(기준일 단일 값·집계만)",
         ),
-        ("생성", f"src/excel/build.py ← {d['cfg_path']} (P4, 엔진 형태 {d['type']}). 결과 확인: Checks 시트의 master check"),
+        ("생성", f"src/excel/build.py ← {d['cfg_label']} (P4, 엔진 형태 {d['type']}). 결과 확인: Checks 시트의 master check"),
     ]
     for i, (k, v) in enumerate(rows):
         s.text(4 + i, 1, k, "bold")
@@ -202,7 +202,7 @@ def inputs(c: Ctx):
         s.text(3, j, h, "header")
     m, rt, mk = d["meta"], d["rates"], d["market"]
     asof = m["as_of"]
-    cfgp = d["cfg_path"]
+    cfgp = d["cfg_label"]
     w = Rows(c, "Inputs", 3)
     labels = d["excel"]["scenario_labels"]
 
@@ -1333,7 +1333,7 @@ def _shift_table(c: Ctx, s, r):
         for j, k in enumerate(keys):
             s.inp(rr, 1 + j, d["scenarios"][k][pk], "pct")
         rows[pk] = rr
-    s.text(r + 2, len(keys) + 2, f"{d['cfg_path']} scenarios.human · 상태 ⚠️(±2%p 사용자 지시)", "wrap")
+    s.text(r + 2, len(keys) + 2, f"{d['cfg_label']} scenarios.human · 상태 ⚠️(±2%p 사용자 지시)", "wrap")
     c.layout["scen_table"] = {"rows": rows, "keys": keys, "col0": 1}
     return r + 5
 
@@ -1567,7 +1567,7 @@ def _scenario_table(c: Ctx, s, r):
                 v = case[pk]
             s.inp(rr, 1 + j, v, kind)
         rows[pk] = rr
-    s.text(r + 2, 1 + len(keys) + 1, f"{d['cfg_path']} parent_scenarios.cases · 상태 ⚠️(프로젝트 가정)", "wrap")
+    s.text(r + 2, 1 + len(keys) + 1, f"{d['cfg_label']} parent_scenarios.cases · 상태 ⚠️(프로젝트 가정)", "wrap")
     s.text(r + 3, 1 + len(keys) + 1, "2028~2032는 시작값에서 끝값으로 직선 체감", "note")
     c.layout["scen_table"] = {"rows": rows, "keys": keys, "col0": 1}
     return r + 3 + len(SCEN_PARAMS)

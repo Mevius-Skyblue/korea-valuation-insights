@@ -103,6 +103,8 @@ def excel_check(res: dict) -> dict:
         "bad_combos": bad,
         "other_bad": other_bad,
         "max_per_share_diff": max_diff,
+        # P7-E K1: ratio cells whose denominator is ~0 on both sides (not compared)
+        "nm_ratio_cells": sum(len(r.get("nm_cells") or []) for r in res["combos"]),
         "formula_errors": len(res["errors"]),
         "hardcoded": len(sc["hardcoded"]),
         "krx_outside_inputs": len(sc["krx_outside_inputs"]),

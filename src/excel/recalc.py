@@ -56,13 +56,16 @@ class Model:
         self.path = Path(path)
         self.names = names
         self.sheet_case = {s.upper(): s for s in sheets}
-        src = self.path
         if has_data_tables(self.path):  # formulas cannot read data tables -> a copy without them (values cached)
             import tempfile
 
-            src = Path(tempfile.mkdtemp()) / self.path.name
-            strip_data_tables(self.path, src)
-        self.xl = formulas.ExcelModel().loads(str(src)).finish()
+            # P7-X4 E-F3: the copy is only read while parsing -> its folder is removed right after (also on an error)
+            with tempfile.TemporaryDirectory(prefix="kvi_recalc_") as d:
+                src = Path(d) / self.path.name
+                strip_data_tables(self.path, src)
+                self.xl = formulas.ExcelModel().loads(str(src)).finish()
+        else:
+            self.xl = formulas.ExcelModel().loads(str(self.path)).finish()
 
     def _key(self, ref: str) -> str:
         if ref in self.names:

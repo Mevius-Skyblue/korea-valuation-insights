@@ -36,3 +36,18 @@ def _f(x) -> float | None:
 
 def load_rules_5() -> dict:
     return yamlio.load((ROOT / "config" / "p7b5.yaml").read_text(encoding="utf-8"))
+
+
+def p7e_params() -> dict:
+    """P7-E rule numbers (config/p7e.yaml params). Audit switch (not for normal runs): environment variable KVI_P7E_OFF =
+    comma list of rules turned off for the attribution of changed results (k5, k6, k11) - scripts/audit/inv_p7e.py."""
+    import os
+
+    p = yamlio.load((ROOT / "config" / "p7e.yaml").read_text(encoding="utf-8"))["params"]
+    off = {x.strip() for x in os.environ.get("KVI_P7E_OFF", "").split(",") if x.strip()}
+    return {**p, "off": sorted(off)} if off else p
+
+
+def p7e_off(rule: str) -> bool:
+    """True when an audit run turned the P7-E rule off (KVI_P7E_OFF)."""
+    return rule in (p7e_params().get("off") or [])

@@ -1343,11 +1343,15 @@ try {{
   $d.Close(0)
 }} finally {{ if ($w.Documents.Count -eq 0) {{ $w.Quit() }} }}
 """
-    s = Path(tempfile.mkdtemp()) / "pdf.ps1"
-    s.write_text(ps, encoding="utf-8-sig")
-    r = subprocess.run(
-        ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(s)], capture_output=True, text=True, timeout=600
-    )
+    with tempfile.TemporaryDirectory(prefix="kvi_pdf_") as d:  # P7-X4 E-F3: removed when done (also on an error)
+        s = Path(d) / "pdf.ps1"
+        s.write_text(ps, encoding="utf-8-sig")
+        r = subprocess.run(
+            ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(s)],
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
     return pdf if r.returncode == 0 and pdf.exists() else None
 
 

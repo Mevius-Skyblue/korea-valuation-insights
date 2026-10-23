@@ -23,6 +23,7 @@ import pandas as pd
 from src import yamlio
 from src.collect.core import ROOT
 from src.db.build import DB_PATH
+from src.pathtext import label
 from src.valuation.assumptions import load_ledger
 from src.workbench.snapdata import seam
 
@@ -62,6 +63,7 @@ def _load_model_data(cfg_path: str, with_engine: bool) -> dict:
         raise NotImplementedError(f"forecast_type {ftype!r}")
     data["type"] = ftype
     data["cfg_path"] = cfg_path
+    data["cfg_label"] = label(cfg_path)  # P7-E: the path text the sheets print (no absolute workspace path)
     from src.report.engagement import engagement
 
     data["engagement"] = engagement(raw)  # P7-X2b: purpose / premise / evaluator (defaults = the earlier texts)

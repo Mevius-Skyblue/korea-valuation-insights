@@ -53,7 +53,20 @@ DIRECT = {
 
 
 def candidates(x: dict, summ: dict, ctx) -> list[dict]:
-    """Candidate values of one item from the draft's diagnostics (labels say what each is)."""
+    """Candidate values of one item from the draft's diagnostics (labels say what each is). P7-E K11 (config/p7e.yaml
+    k11_candidates): only values the screen accepts (spec.check, the same ranges as a direct input)."""
+    from src.pipeline.diagnose import in_range
+
+    out = _candidates(x, summ, ctx)
+    return [
+        cd
+        for cd in out
+        if (cd["field"] == "peers" and spec.check("peers", cd["value"], ctx.peers_all())[0])
+        or (cd["field"] != "peers" and in_range(cd["field"], cd["value"]))
+    ]
+
+
+def _candidates(x: dict, summ: dict, ctx) -> list[dict]:
     cat, item = x.get("category"), str(x.get("item") or "")
     dg = summ.get("diagnostics") or {}
     out = []

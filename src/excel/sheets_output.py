@@ -14,6 +14,17 @@ from src.excel.context import Ctx
 from src.excel.writer import a1, col
 
 
+def num_match(pairs, tol) -> str:
+    """P7-D3 D3-F1: status of a live-vs-engine comparison whose cells can hold N/M text or a blank (no '=').
+    Every pair numeric -> 'OK' if all |a − b| <= tol else 'DIFF'; every pair non-numeric on both sides -> 'N/M' (a match);
+    a pair with a number on one side only -> 'DIFF'. Never an Excel error value (ABS("N/M") was #VALUE!)."""
+    both = ",".join(f"ISNUMBER({a}),ISNUMBER({b})" for a, b in pairs)
+    none = ",".join(f"NOT(ISNUMBER({a})),NOT(ISNUMBER({b}))" for a, b in pairs)
+    gap = ",".join(f"ABS({a}-{b})" for a, b in pairs)
+    gap = gap if len(pairs) == 1 else f"MAX({gap})"
+    return f'IF(AND({both}),IF({gap}<={tol},"OK","DIFF"),IF(AND({none}),"N/M","DIFF"))'
+
+
 def _v(s, r, label, formula, kind, unit="", name=None, note="", bold=False, c0=0):
     s.text(r, c0, label, "bold" if bold else "label")
     if unit:
@@ -699,7 +710,7 @@ def convergence(c: Ctx):
         ),
         (
             "수렴 시험: 살아 있는 기본 DCF = 엔진 C3 주당",
-            f'=IF(ABS({lv[0]["ps"]}-{cells[1]["ps"]})<=1,"OK","DIFF")',
+            "=" + num_match([(lv[0]["ps"], cells[1]["ps"])], 1),
             f"={lv[0]['ps']}",
             f"={cells[1]['ps']}",
         ),
@@ -737,7 +748,8 @@ def checks(c: Ctx):
     s.text(
         1,
         0,
-        "ERR가 하나라도 있으면 master check = ERR. WARN은 주의 표시, INFO는 엔진 값 대조(입력을 바꾸면 달라지는 것이 정상)",
+        "ERR(또는 이 표 안 수식 오류)가 하나라도 있으면 master check = ERR. WARN은 주의 표시, INFO는 엔진 값 대조(입력을 바꾸면 "
+        "달라지는 것이 정상). N/M = 양쪽 모두 숫자가 아님(일치), 한쪽만 N/M이면 DIFF",
         "note",
     )
     for j, h in enumerate(["#", "항목", "상태", "값", "기준·비교", "종류", "설명"]):
@@ -912,13 +924,15 @@ def checks(c: Ctx):
         "Football",
         "Convergence",
     ]
+    # D3-F1: ISERROR(range)*1, not --ISERROR(range): the second counts 0 in the `formulas` recalculation (Excel counts
+    # both), so these checks were blind in the engine reconciliation
     for sh in err_sheets:
         ws = c.sheet(sh).ws
         rng = f"{sh}!$A$1:{a1(max(ws.dim_rowmax or 1, 1), max(ws.dim_colmax or 1, 1), True)}"
         add(
             f"수식 오류 0개: {sh}",
-            f'=IF(SUMPRODUCT(--ISERROR({rng}))=0,"OK","ERR")',
-            f"=SUMPRODUCT(--ISERROR({rng}))",
+            f'=IF(SUMPRODUCT(ISERROR({rng})*1)=0,"OK","ERR")',
+            f"=SUMPRODUCT(ISERROR({rng})*1)",
             "0",
             note="#REF!·#DIV/0!·#NAME?·#VALUE! 등",
         )
@@ -960,9 +974,9 @@ def checks(c: Ctx):
             "implied_g": "pct",
             "tv_share_exit": "pct1",
         }[m]
-        cmp_ = f'IF(RfTenor<>5,"N/A",IF(ABS({live}-{sel.format(rng=rng)})<={tol[kind]},"OK","DIFF"))'
-        if d.get("public"):  # P7-X2a: an Exit value is N/M when the peer median is hidden (both sides not a number)
-            cmp_ = f'IF(AND(NOT(ISNUMBER({live})),NOT(ISNUMBER({sel.format(rng=rng)}))),"N/A",{cmp_})'
+        # D3-F1: N/M on both sides (implied multiple when the terminal EBITDA <= 0, an Exit value with the peer median
+        # hidden in the public mode) is a match 'N/M', N/M on one side only is 'DIFF' - not ABS("N/M") = #VALUE!
+        cmp_ = f'IF(RfTenor<>5,"N/A",{num_match([(live, sel.format(rng=rng))], tol[kind])})'
         add(
             f"엔진 대조(선택 칸): {lab}",
             "=" + cmp_,
@@ -989,7 +1003,7 @@ def checks(c: Ctx):
     )
     add("Rf 만기 선택이 5 또는 10", '=IF(OR(RfTenor=5,RfTenor=10),"OK","ERR")', "=RfTenor")
     be_u = c.layout["beta_u_engine"]
-    add("엔진 대조: βu 중앙값", f'=IF(ABS(BetaU-{be_u})<1E-9,"OK","DIFF")', "=BetaU", f"={be_u}", "info")
+    add("엔진 대조: βu 중앙값", "=" + num_match([("BetaU", be_u)], "1E-9"), "=BetaU", f"={be_u}", "info")
     for nm in ("EV/Sales", "EV/EBITDA", "PER", "PBR"):
         rr = po[nm]["row"]
         # P7-B2: N/M (own metric <= 0) on both sides is a match, not an error
@@ -1007,7 +1021,7 @@ def checks(c: Ctx):
         be = c.layout["block_engine"]
         add(
             "엔진 대조: 블록 1주당 띠",
-            f'=IF(MAX(ABS(Block_q1-{be[0]}),ABS(Block_q2-{be[1]}),ABS(Block_q3-{be[2]}))<=1,"OK","DIFF")',
+            "=" + num_match([("Block_q1", be[0]), ("Block_q2", be[1]), ("Block_q3", be[2])], 1),
             "=Block_q2",
             f"={be[1]}",
             "info",
@@ -1034,7 +1048,7 @@ def checks(c: Ctx):
         if dt["center"]:
             add(
                 f"데이터 표 {dt['key']}: 중심 칸 = 살아 있는 모델 주당(기본·SRP 0%일 때만)",
-                f'=IF({base_sel},IF(ABS({dt["center"]}-PerShare)<=1,"OK","DIFF"),"N/A")',
+                f'=IF({base_sel},{num_match([(dt["center"], "PerShare")], 1)},"N/A")',
                 f"={dt['center']}",
                 "=PerShare",
                 "info",
@@ -1053,7 +1067,7 @@ def checks(c: Ctx):
     if c.layout.get("cross_engine"):
         add(
             "엔진 대조: 연결 교차 확인 주당(기본·SRP 0%일 때만)",
-            f'=IF({base_sel},IF(ABS(CrossPerShare-{c.layout["cross_engine"]})<=1,"OK","DIFF"),"N/A")',
+            f'=IF({base_sel},{num_match([("CrossPerShare", c.layout["cross_engine"])], 1)},"N/A")',
             "=CrossPerShare",
             f"={c.layout['cross_engine']}",
             "info",
@@ -1061,17 +1075,18 @@ def checks(c: Ctx):
     if c.layout.get("c2_engine"):
         add(
             "엔진 대조: C2 재현(RONIC mixed·기본·SRP 0%일 때만)",
-            f'=IF(AND(ScenSel="{base_lab}",SRP_Sel=SRP_1,RonicStart="mixed",RfTenor=5),IF(ABS(PerShare-{c.layout["c2_engine"]})<=1,"OK","DIFF"),"N/A")',
+            f'=IF(AND(ScenSel="{base_lab}",SRP_Sel=SRP_1,RonicStart="mixed",RfTenor=5),{num_match([("PerShare", c.layout["c2_engine"])], 1)},"N/A")',
             "=PerShare",
             f"={c.layout['c2_engine']}",
             "info",
         )
     if c.layout.get("waccg_center"):
+        grid_base = f'INDEX(ScenGridPS,MATCH("{base_lab}",ScenNames,0),1)'
         add(
             "엔진 표 중심값(WACC×g) = 살아 있는 표 기본·SRP 0%",
-            f'=IF(RfTenor<>5,"N/A",IF(ABS({c.layout["waccg_center"]}-INDEX(ScenGridPS,MATCH("{base_lab}",ScenNames,0),1))<=1,"OK","DIFF"))',
+            f'=IF(RfTenor<>5,"N/A",{num_match([(c.layout["waccg_center"], grid_base)], 1)})',
             f"={c.layout['waccg_center']}",
-            f'=INDEX(ScenGridPS,MATCH("{base_lab}",ScenNames,0),1)',
+            f"={grid_base}",
             "info",
         )
     r0 = 5
@@ -1096,13 +1111,25 @@ def checks(c: Ctx):
     r1 = r0 + len(items) - 1
     stat = f"$C${r0 + 1}:$C${r1 + 1}"
     s.text(2, 1, "MASTER CHECK", "bold")
-    s.fx(2, 2, f'=IF(COUNTIF({stat},"ERR")=0,"OK","ERR")', "gen", name="MasterCheck", bold=True)
-    s.fx(2, 3, f'="ERR "&COUNTIF({stat},"ERR")&" / WARN "&COUNTIF({stat},"WARN")&" / INFO 차이 "&COUNTIF({stat},"DIFF")', "gen")
+    # D3-F1: COUNTIF skips error values, so a check cell that is itself #VALUE! used to leave the master OK -> an error
+    # value anywhere in the status / value / basis columns is an ERR too
+    tab = f"$C${r0 + 1}:$E${r1 + 1}"
+    s.fx(
+        2, 2, f'=IF(AND(COUNTIF({stat},"ERR")=0,SUMPRODUCT(ISERROR({tab})*1)=0),"OK","ERR")', "gen", name="MasterCheck", bold=True
+    )
+    s.fx(
+        2,
+        3,
+        f'="ERR "&COUNTIF({stat},"ERR")&" / WARN "&COUNTIF({stat},"WARN")&" / INFO 차이 "&COUNTIF({stat},"DIFF")'
+        f'&IF(SUMPRODUCT(ISERROR({tab})*1)>0," / 수식 오류 "&SUMPRODUCT(ISERROR({tab})*1),"")',
+        "gen",
+    )
     green = c.book.wb.add_format({"bg_color": "#C6EFCE", "font_color": "#006100"})
     red = c.book.wb.add_format({"bg_color": "#FFC7CE", "font_color": "#9C0006"})
     amber = c.book.wb.add_format({"bg_color": "#FFEB9C", "font_color": "#9C5700"})
     for rng in ("C3:C3", f"C{r0 + 1}:C{r1 + 1}"):
         s.ws.conditional_format(rng, {"type": "cell", "criteria": "==", "value": '"OK"', "format": green})
+        s.ws.conditional_format(rng, {"type": "cell", "criteria": "==", "value": '"N/M"', "format": green})
         s.ws.conditional_format(rng, {"type": "cell", "criteria": "==", "value": '"ERR"', "format": red})
         s.ws.conditional_format(rng, {"type": "cell", "criteria": "==", "value": '"WARN"', "format": amber})
         s.ws.conditional_format(rng, {"type": "cell", "criteria": "==", "value": '"DIFF"', "format": amber})

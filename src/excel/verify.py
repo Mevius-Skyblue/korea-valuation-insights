@@ -47,6 +47,25 @@ LIVE = {
 # the cells one scenario x SRP run compares (C4-F7: only these and what they depend on are recalculated)
 COMBO_OUT = [*LIVE.values(), "MasterCheck"]
 
+# P7-E K1 (config/p7e.yaml k1_tolerance): quotients of model amounts get a tolerance relative to their size, and a
+# denominator near zero (|value| > RATIO_NM) makes the cell N/M on both sides. Amount cells keep the absolute tolerance.
+RATIO = ("tv_share", "tv_share_exit", "implied_multiple", "implied_g")
+RATIO_NM = 1e6
+
+
+def cell_ok(key: str, xl, en) -> tuple[bool, str]:
+    """(match, kind) of one compared cell: kind 'value', 'missing' (both not numbers) or 'N/M' (ratio, denominator ~ 0).
+    Ratio cells: |xl − en| <= TOL × max(1, |en|) - the absolute rule while |en| <= 1, a relative one above it."""
+    if missing(xl) and missing(en):
+        return True, "missing"
+    if missing(xl) or missing(en):
+        return False, "value"
+    if key in RATIO:
+        if abs(en) > RATIO_NM and abs(xl) > RATIO_NM:
+            return True, "N/M"
+        return abs(xl - en) <= TOL[key] * max(1.0, abs(en)), "value"
+    return abs(xl - en) <= TOL[key], "value"
+
 
 def missing(x) -> bool:
     """A value that is not a number on either side: Excel 'N/M' / 'n/a' text, None or NaN (P7-B2: a missing value on
@@ -67,13 +86,16 @@ def combos(m: recalc.Model, d: dict) -> list[dict]:
     for k in d["excel"]["scenarios"]:
         for s in d["rates"]["srp_list"]:
             v = m.calc({"ScenSel": labels[k], "SRP_Sel": s}, outputs=COMBO_OUT)
-            row = {"scenario": k, "srp": s}
+            row = {"scenario": k, "srp": s, "nm_cells": []}
             ok = True
             for key, nm in LIVE.items():
                 xl, en = m.value(v, nm), eg[(k, s)][key]
                 diff = _diff(xl, en)
                 row[f"{key}_xl"], row[f"{key}_engine"], row[f"{key}_diff"] = xl, en, diff
-                ok &= diff <= TOL[key]
+                hit, kind = cell_ok(key, xl, en)
+                if kind == "N/M":
+                    row["nm_cells"].append(key)
+                ok &= hit
             row["master"] = m.value(v, "MasterCheck")
             row["ok"] = bool(ok and row["master"] == "OK")
             rows.append(row)

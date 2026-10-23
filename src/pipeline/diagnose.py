@@ -233,6 +233,25 @@ def _customer_funds_of(corp: str, fs: str) -> dict:
     return run(corp, fs)
 
 
+def in_range(field: str, value) -> bool:
+    """P7-E K11 (config/p7e.yaml k11_candidates): a judgement candidate value the work screen accepts - the same check and
+    ranges as an input (src.workbench.spec.check). Out-of-range candidates are left out of the impacts and the ranking."""
+    from src.pipeline.draft_common import p7e_off
+
+    if p7e_off("k11"):
+        return True
+    from src.workbench.spec import check
+
+    return bool(check(field, value)[0])
+
+
+def oor_text(pairs: list[tuple[str, object]]) -> str:
+    """'후보 없음(범위 밖: value, ...)' for candidates out of the screen's range."""
+    from src.workbench.spec import fmt
+
+    return "후보 없음(범위 밖: " + ", ".join(fmt(f, v) for f, v in pairs) + ")"
+
+
 def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3, grid, rf_srp, tiers, public=None) -> dict:
     """Diagnostics for a company_dcf company. c: Company, h: history(), grid: engine_ref grid (base, SRP) -> dict.
     public (P7-C3 public snapshot): peer_inputs() recorded on the PC instead of the per-peer tables; the leave-one-peer-out
@@ -387,13 +406,21 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
 
     # impacts of the other choices (per share minus the default, base scenario, SRP 0%)
     imp = {}
-    cd_ = [x for x in cands if x["diff"] is not None]
+    oor = {}  # P7-E K11: impact key -> '후보 없음(범위 밖: …)' when every alternative is out of the screen's range
+    cd_ = [x for x in cands if x["diff"] is not None and in_range("normal_margin", x["margin"])]
+    bad_ = [x for x in cands if x["diff"] is not None and not in_range("normal_margin", x["margin"])]
+    if bad_ and not cd_:
+        oor["normalize"] = oor_text([("normal_margin", x["margin"]) for x in bad_])
     if cd_:
         best = max(cd_, key=lambda x: abs(x["diff"]))
         imp["normalize"] = {"diff": best["diff"], "alt": f"정상 이익률 {best['label']} {best['margin']:.2%}(기본 {m_base:.2%})"}
     if op_cash > 0:
         imp["customer_funds"] = {"diff": sens["customer_funds"]["diff"], "alt": f"영업용 현금 {op_cash:,.0f}억을 브리지에서 뺌"}
-    nd = [(k, sens["nci"][f"{k}_diff"]) for k in ("a", "b") if sens["nci"][f"{k}_diff"] is not None]
+    nci_val = {"a": pre * nci / teq if teq else None, "b": nci * pbr if alt_b is not None else None}  # 억원, the candidate
+    nd_all = [(k, sens["nci"][f"{k}_diff"]) for k in ("a", "b") if sens["nci"][f"{k}_diff"] is not None]
+    nd = [(k, d_) for k, d_ in nd_all if nci_val[k] is not None and in_range("nci_mn", nci_val[k] * 100.0)]
+    if nci and nd_all and not nd:
+        oor["nci"] = oor_text([("nci_mn", nci_val[k] * 100.0) for k, _ in nd_all if nci_val[k] is not None])
     if nci and nd:
         k, d_ = max(nd, key=lambda x: abs(x[1]))
         imp["nci"] = {
@@ -402,10 +429,13 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         }
     bbb, aa = c.rates["CB3Y_BBBm"], c.rates["CB3Y_AAm"]
     kd_alt = aa if abs(kd - bbb) < 1e-12 else bbb
-    imp["kd"] = {
-        "diff": dcf_value(c, h, tb, discount_rate(c, s0, bu0, de_own, kd_alt), cap)["per_share"] - ps0,
-        "alt": f"세전 Kd {kd_alt:.2%}({'AA-' if kd_alt == aa else 'BBB-'} 3년, 기본 {kd:.2%})",
-    }
+    if in_range("kd", kd_alt):
+        imp["kd"] = {
+            "diff": dcf_value(c, h, tb, discount_rate(c, s0, bu0, de_own, kd_alt), cap)["per_share"] - ps0,
+            "alt": f"세전 Kd {kd_alt:.2%}({'AA-' if kd_alt == aa else 'BBB-'} 3년, 기본 {kd:.2%})",
+        }
+    else:
+        oor["kd"] = oor_text([("kd", kd_alt)])
     gp, go = grid[("pessimistic", s0)]["per_share"] - ps0, grid[("optimistic", s0)]["per_share"] - ps0
     imp["scenario"] = {"diff": gp if abs(gp) >= abs(go) else go, "alt": "비관(−2%p)" if abs(gp) >= abs(go) else "낙관(+2%p)"}
     g1, g3 = (dcf_value(c, h, tb, w0, cap, g=g)["per_share"] - ps0 for g in (0.01, 0.03))
@@ -442,7 +472,9 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
     from src.valuation.company_dcf import is_draft
 
     if is_draft(c.cfg) and not _off("judge"):  # P7-X2b (config/p7x2b.yaml judgements): the large assumptions ranked
-        imp.update(x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin, v0))
+        xi = x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin, v0)
+        oor.update(xi.pop("_oor", {}))
+        imp.update(xi)
     # P7-B2b: the v1 path (3-year average margin, 5-year CAGR) next to v2, with its own signals
     v1 = None
     if v2:
@@ -453,7 +485,15 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
             c.v2 = v2
         v1_ps = v1v["per_share"]
         v1 = {"per_share": v1_ps, "tv_share": v1v["tv_share"], "signals": signals(v1_ps, peer, price, r)}
-        imp["v1"] = {"diff": v1_ps - ps0, "alt": f"기본 경로 v1(3년 평균 이익률 {h['margin']:.2%}, 매출 CAGR {h['cagr']:.2%})"}
+        if in_range("normal_margin", h["margin"]) and in_range("g_start", h["cagr"]):
+            imp["v1"] = {
+                "diff": v1_ps - ps0,
+                "alt": f"기본 경로 v1(3년 평균 이익률 {h['margin']:.2%}, 매출 CAGR {h['cagr']:.2%})",
+            }
+        else:  # P7-E K11: the v1 path needs both values inside the screen's ranges
+            oor["v1"] = oor_text(
+                [(f_, v_) for f_, v_ in (("normal_margin", h["margin"]), ("g_start", h["cagr"])) if not in_range(f_, v_)]
+            )
     dna_rec = getattr(c, "dna_rec", None)
     dna_rows = (
         []
@@ -604,14 +644,17 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
             "diff": tps - ps0,
             "default": "v2(5년 중앙값) 그대로",
         }
+        ok_ = in_range("normal_margin", lt_m)  # P7-E K11: the LTM start is a candidate only inside the screen's range
+        if not ok_:
+            turn["candidate_out_of_range"] = True
         forced.insert(
             0,
             {
                 "category": "실적 전환",
                 "item": f"LTM 영업이익률 {lt_m:.1%} vs 5년 중앙값 {v2['m0']:.1%}",
                 "detail": "config/p7b3b.yaml turnaround — 최근 실적이 과거 분포를 벗어남. 어느 쪽이 정상 이익률인지 판단",
-                "impact": tps - ps0,
-                "alternative": f"LTM 이익률 출발 → 주당 {tps:,.0f}원",
+                "impact": tps - ps0 if ok_ else None,
+                "alternative": f"LTM 이익률 출발 → 주당 {tps:,.0f}원" if ok_ else oor_text([("normal_margin", lt_m)]),
             },
         )
     loss = None
@@ -688,6 +731,7 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
         "margin_candidates": cands,
         "sensitivities": _mn(sens),
         "impacts": imp,
+        **({"out_of_range": oor} if oor else {}),
         "base_per_share": ps0,
         "kd_alt": kd_alt,
     }
@@ -710,6 +754,7 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
 
     P = params()["judgement_alternatives"]
     out = {}
+    oor = {}  # P7-E K11: alternatives outside the screen's range are not candidates
 
     def ps_at(hh=None, t=None, w=None, ronic=None):
         try:
@@ -722,6 +767,9 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
     alts = []
     for mv in P["mrp"]:
         if abs(mv - m0) < 1e-12:
+            continue
+        if not in_range("mrp", mv):
+            oor.setdefault("mrp", []).append(("mrp", mv))
             continue
         c.led["mrp"]["value"] = mv
         try:
@@ -739,7 +787,9 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
     # target D/E = peer median (public mode: the P7-X2a cut, fewer than 5 peers -> not computed)
     dn, dm = int(pin.get("peer_de_n") or 0), pin.get("peer_de_median")
     need = pubcut.params()["peer_min_n"] if pubcut.public_scope(c.cfg) else int(P["peer_de_min_n"])
-    if dm is not None and dn >= need and abs(float(dm) - de_own) > 1e-12:
+    if dm is not None and dn >= need and abs(float(dm) - de_own) > 1e-12 and not in_range("de", float(dm)):
+        oor["de_target"] = [("de", float(dm))]
+    elif dm is not None and dn >= need and abs(float(dm) - de_own) > 1e-12:
         x = ps_at(w=discount_rate(c, s0, bu0, float(dm), kd))
         if x is not None:
             out["de_target"] = {
@@ -754,6 +804,9 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
         v = fy.get(k)
         if v is None or not np.isfinite(v) or abs(v - h[k]) < 1e-12:
             continue
+        if not in_range(k, float(v)):
+            oor[k] = [(k, float(v))]
+            continue
         h2 = {**h, k: v}
         x = ps_at(hh=h2, t=forecast(c, h2))
         if x is not None:
@@ -763,7 +816,13 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
                 "cands": [{"label": f"{lab} 5년 평균 {v:.2%}", "field": k, "value": float(v)}],
             }
     nd = fy.get("nwc_days")
-    if nd and any(abs(nd[k] - h[k]) > 1e-9 for k in ("dso", "dio", "dpo")):
+    if (
+        nd
+        and any(abs(nd[k] - h[k]) > 1e-9 for k in ("dso", "dio", "dpo"))
+        and not in_range("nwc_days", {k: float(nd[k]) for k in ("dso", "dio", "dpo")})
+    ):
+        oor["nwc_days"] = [("nwc_days", {k: float(nd[k]) for k in ("dso", "dio", "dpo")})]
+    elif nd and any(abs(nd[k] - h[k]) > 1e-9 for k in ("dso", "dio", "dpo")):
         h2 = {**h, **nd}
         x = ps_at(hh=h2, t=forecast(c, h2))
         if x is not None:
@@ -780,6 +839,9 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
         alts = []
         for s in P["conv_share"]:
             if abs(s - s_now) < 1e-12:
+                continue
+            if not in_range("conv_share", s):
+                oor.setdefault("conv_share", []).append(("conv_share", s))
                 continue
             c.v2 = {**v2, "conv_share": s, "conv_amt": s * (v2["peer_margin"] - v2["m0"])}
             try:
@@ -799,6 +861,9 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
         for d in P["conv_end_steps"]:
             e = e0 + int(d)
             if e <= c.Y or e > int(params()["assumptions"]["conv_end"]["max"]):
+                continue
+            if not in_range("conv_end", e):
+                oor.setdefault("conv_end", []).append(("conv_end", e))
                 continue
             c.v2 = {**v2, "conv_end": e}
             try:
@@ -820,6 +885,7 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
         alts = [
             (dd, (eq - ab["listed"] * (dd - d0)) * EOK / shares - ps0, f"상장 관계기업 지분 할인 {dd:.0%}")
             for dd in c.assoc["sensitivities"]
+            if in_range("assoc_discount", dd)
         ]
         far = _far(alts)
         if far:
@@ -831,7 +897,14 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
         out["assoc_market"] = {"diff": -ab["add"] * EOK / shares, "alt": "상장 관계기업을 장부가로 둠(시가 반영 안 함)"}
     # RONIC floor: the historical-ROIC cap below WACC (the value before the P7-X2b rule)
     # X2b-F4: only a positive historical ROIC is an alternative (RONIC <= 0 has no meaning in FCF = NOPAT x (1 − g / RONIC))
-    if np.isfinite(cap) and 0 < cap < w0 and str(v0.get("ronic_why", "")).startswith("과거 ROIC"):
+    if (
+        np.isfinite(cap)
+        and 0 < cap < w0
+        and str(v0.get("ronic_why", "")).startswith("과거 ROIC")
+        and not in_range("ronic", float(cap))
+    ):
+        oor["ronic"] = [("ronic", float(cap))]
+    elif np.isfinite(cap) and 0 < cap < w0 and str(v0.get("ronic_why", "")).startswith("과거 ROIC"):
         x = ps_at(ronic=float(cap))
         if x is not None:
             out["ronic"] = {
@@ -839,6 +912,9 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
                 "alt": f"RONIC = 과거 3년 ROIC {cap:.2%}(규칙 전 값, 기본 = WACC {w0:.2%})",
                 "cands": [{"label": f"RONIC 과거 3년 ROIC {cap:.2%}", "field": "ronic", "value": float(cap)}],
             }
+    oor = {k: v for k, v in oor.items() if k not in out}
+    if oor:
+        out["_oor"] = {k: oor_text(v) for k, v in oor.items()}
     return out
 
 
@@ -1106,7 +1182,9 @@ AUTO = [
 ]
 
 
-def rank_review(review: list[dict] | None, impacts: dict, base_ps: float | None, forced: list[dict] | None = None) -> dict:
+def rank_review(
+    review: list[dict] | None, impacts: dict, base_ps: float | None, forced: list[dict] | None = None, oor: dict | None = None
+) -> dict:
     """Merge the draft's list with the computed impacts; computed items by |impact|, then the rest in their order.
     Each computed key is attached once (the first matching item); a key without a draft item becomes its own item."""
     review = [dict(x) for x in (review or [])]
@@ -1128,8 +1206,23 @@ def rank_review(review: list[dict] | None, impacts: dict, base_ps: float | None,
                 {**x, "impact": im["diff"], "alternative": im["alt"], **({"cands": im["cands"]} if im.get("cands") else {})}
             )
         else:
-            out_n.append({**x, "impact": None, "alternative": ""})
+            k_ = KEY_OF.get(cat)  # P7-E K11: every alternative out of the screen's range
+            txt = (oor or {}).get(k_, "") if k_ and (k_, None) not in used else ""
+            if txt:
+                used.add((k_, None))
+            out_n.append({**x, "impact": None, "alternative": txt})
     for k, cat, item in AUTO:
+        if k not in impacts and k in (oor or {}) and (k, None) not in used:
+            used.add((k, None))
+            out_n.append(
+                {
+                    "category": cat,
+                    "item": item,
+                    "detail": "자동 진단(config/p7b2.yaml ranking)",
+                    "impact": None,
+                    "alternative": oor[k],
+                }
+            )
         if k in impacts and (k, None) not in used:
             out_c.append(
                 {

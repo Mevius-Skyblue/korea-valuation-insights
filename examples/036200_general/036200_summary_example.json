@@ -1,6 +1,6 @@
 {
  "target": "<workspace>/sessions/036200_20260930_001/v1_public/valuation_036200_036200_20260930_001v1p.yaml",
- "started": "2026-10-23T11:06:06",
+ "started": "2026-10-24T02:01:26",
  "steps": {
   "engine": {
    "ok": true,
@@ -12,7 +12,7 @@
   },
   "excel": {
    "ok": true,
-   "sec": 54.3
+   "sec": 55.3
   },
   "report": {
    "ok": true,
@@ -25,13 +25,13 @@
  },
  "errors": [],
  "timing": {
-  "engine": 1.09,
+  "engine": 1.06,
   "first_draft": 0.01,
-  "excel": 54.34,
-  "excel_build": 12.14,
-  "excel_reconcile": 42.2,
-  "report": 1.4,
-  "report_check": 0.51
+  "excel": 55.28,
+  "excel_build": 11.59,
+  "excel_reconcile": 43.68,
+  "report": 1.37,
+  "report_check": 0.53
  },
  "fast": false,
  "code": "036200",
@@ -187,6 +187,7 @@
    "bad_combos": [],
    "other_bad": [],
    "max_per_share_diff": 4.18367562815547e-11,
+   "nm_ratio_cells": 0,
    "formula_errors": 0,
    "hardcoded": 0,
    "krx_outside_inputs": 0,
@@ -982,9 +983,9 @@
   "xlsx": "<workspace>\\outputs\\036200_20260930_001\\v1_public\\036200_model_2026-09-30.xlsx",
   "docx": "<workspace>\\outputs\\036200_20260930_001\\v1_public\\036200_report_draft.docx"
  },
- "excel_ready_seconds": 13.4,
+ "excel_ready_seconds": 12.8,
  "result": "완료",
- "seconds": 58.1,
+ "seconds": 59.1,
  "api_calls": {
   "DART": 0,
   "KRX": 0,

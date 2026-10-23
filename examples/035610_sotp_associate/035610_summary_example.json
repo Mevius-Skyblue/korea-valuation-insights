@@ -1,10 +1,10 @@
 {
  "target": "<workspace>/sessions/035610_20260930_001/v1_public/valuation_035610_035610_20260930_001v1p.yaml",
- "started": "2026-10-23T11:07:06",
+ "started": "2026-10-24T02:02:28",
  "steps": {
   "engine": {
    "ok": true,
-   "sec": 0.4
+   "sec": 0.5
   },
   "first_draft": {
    "ok": true,
@@ -12,11 +12,11 @@
   },
   "excel": {
    "ok": true,
-   "sec": 54.9
+   "sec": 57.5
   },
   "report": {
    "ok": true,
-   "sec": 1.4
+   "sec": 1.5
   },
   "report_check": {
    "ok": true,
@@ -25,13 +25,13 @@
  },
  "errors": [],
  "timing": {
-  "engine": 0.43,
+  "engine": 0.47,
   "first_draft": 0.0,
-  "excel": 54.87,
-  "excel_build": 11.49,
-  "excel_reconcile": 43.38,
-  "report": 1.41,
-  "report_check": 0.51
+  "excel": 57.5,
+  "excel_build": 12.41,
+  "excel_reconcile": 45.09,
+  "report": 1.48,
+  "report_check": 0.54
  },
  "fast": false,
  "code": "035610",
@@ -278,6 +278,7 @@
    "bad_combos": [],
    "other_bad": [],
    "max_per_share_diff": 3.637978807091713e-12,
+   "nm_ratio_cells": 0,
    "formula_errors": 0,
    "hardcoded": 0,
    "krx_outside_inputs": 0,
@@ -718,7 +719,8 @@
    "conv_amt": 0.568760897476767,
    "per_share": 7655.715082908794,
    "diff": -1078.1493682402788,
-   "default": "v2(5년 중앙값) 그대로"
+   "default": "v2(5년 중앙값) 그대로",
+   "candidate_out_of_range": true
   },
   "loss": null,
   "ltm_margin": -1.0139704532897058
@@ -739,11 +741,11 @@
     "category": "실적 전환",
     "item": "LTM 영업이익률 -101.4% vs 5년 중앙값 1.5%",
     "detail": "config/p7b3b.yaml turnaround — 최근 실적이 과거 분포를 벗어남. 어느 쪽이 정상 이익률인지 판단",
-    "impact": -1078.1493682402788,
-    "alternative": "LTM 이익률 출발 → 주당 7,656원",
+    "impact": null,
+    "alternative": "후보 없음(범위 밖: -101.40%)",
     "rank": 2,
     "top5": true,
-    "impact_pct": -0.12344471044526364
+    "impact_pct": null
    },
    {
     "category": "SOTP",
@@ -808,27 +810,6 @@
     "impact_pct": -0.01994312725378534
    },
    {
-    "category": "재투자 비율",
-    "item": "운전자본 회전일수(3년 평균)",
-    "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -118.75648418784294,
-    "alternative": "회전일수 5년 평균 DSO 432·DIO 4·DPO 5831일(FY2021~2025, 기본 DSO 120·DIO 2·DPO 4890일)",
-    "cands": [
-     {
-      "label": "회전일수 5년 평균 DSO 432·DIO 4·DPO 5831일",
-      "field": "nwc_days",
-      "value": {
-       "dso": 432.21166514706886,
-       "dio": 4.337130221382184,
-       "dpo": 5830.690435425858
-      }
-     }
-    ],
-    "rank": 8,
-    "top5": false,
-    "impact_pct": -0.013597243791918331
-   },
-   {
     "category": "이익률 수렴",
     "item": "피어 쪽 수렴 비율",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
@@ -846,7 +827,7 @@
       "value": 1.0
      }
     ],
-    "rank": 9,
+    "rank": 8,
     "top5": false,
     "impact_pct": -0.00728006129402503
    },
@@ -856,7 +837,7 @@
     "item": "±2%p(성장·이익률) 기본값, g 2%",
     "impact": 33.642092514202886,
     "alternative": "낙관(+2%p)",
-    "rank": 10,
+    "rank": 9,
     "top5": false,
     "impact_pct": 0.0038519137436094234
    },
@@ -866,7 +847,7 @@
     "detail": "자동 진단(config/p7b2.yaml ranking)",
     "impact": -17.371308668287384,
     "alternative": "SRP 2%",
-    "rank": 11,
+    "rank": 10,
     "top5": false,
     "impact_pct": -0.001988960186576049
    },
@@ -888,7 +869,7 @@
       "value": 0.09
      }
     ],
-    "rank": 12,
+    "rank": 11,
     "top5": false,
     "impact_pct": 0.0008136359003856028
    },
@@ -910,7 +891,7 @@
       "value": 2034
      }
     ],
-    "rank": 13,
+    "rank": 12,
     "top5": false,
     "impact_pct": 0.0005735128946141455
    },
@@ -927,7 +908,7 @@
       "value": 0.029221169607119884
      }
     ],
-    "rank": 14,
+    "rank": 13,
     "top5": false,
     "impact_pct": 0.0004252274515768023
    },
@@ -944,7 +925,7 @@
       "value": 0.008394648458047793
      }
     ],
-    "rank": 15,
+    "rank": 14,
     "top5": false,
     "impact_pct": 0.0003973662492348972
    },
@@ -954,7 +935,7 @@
     "detail": "자동 진단(config/p7b2.yaml ranking)",
     "impact": -2.111033840203163,
     "alternative": "Rf 국고채 10년",
-    "rank": 16,
+    "rank": 15,
     "top5": false,
     "impact_pct": -0.0002417067326852576
    },
@@ -971,7 +952,7 @@
       "value": 0.014626867946096514
      }
     ],
-    "rank": 17,
+    "rank": 16,
     "top5": false,
     "impact_pct": -4.988349824035181e-05
    },
@@ -981,7 +962,7 @@
     "detail": "자동 진단(config/p7b2.yaml ranking)",
     "impact": -0.3102465051831901,
     "alternative": "영업용 현금 0억을 브리지에서 뺌",
-    "rank": 18,
+    "rank": 17,
     "top5": false,
     "impact_pct": -3.552224870428032e-05
    },
@@ -991,7 +972,7 @@
     "item": "g 2%(사람 값 기본)",
     "impact": 0.286985117394579,
     "alternative": "g 3%",
-    "rank": 19,
+    "rank": 18,
     "top5": false,
     "impact_pct": 3.285889299058468e-05
    },
@@ -1001,7 +982,7 @@
     "item": "신용등급 자동 탐색 안 함",
     "impact": 0.23326832555540022,
     "alternative": "세전 Kd 4.70%(AA- 3년, 기본 10.51%)",
-    "rank": 20,
+    "rank": 19,
     "top5": false,
     "impact_pct": 2.6708489335978902e-05
    }
@@ -1174,11 +1155,18 @@
     "item": "지분 구간 25~50%, 인수자 전략적, 2015~2026",
     "impact": null,
     "alternative": ""
+   },
+   {
+    "category": "재투자 비율",
+    "item": "운전자본 회전일수(3년 평균)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": null,
+    "alternative": "후보 없음(범위 밖: DSO 432일·DIO 4일·DPO 5831일)"
    }
   ],
-  "share_top5": 0.9166820597528649
+  "share_top5": 0.9653924657015837
  },
- "review_share": 0.9166820597528649,
+ "review_share": 0.9653924657015837,
  "headline": {
   "status": "확정",
   "per_share": 8733.864451149073,
@@ -1212,9 +1200,9 @@
   "xlsx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_model_2026-09-30.xlsx",
   "docx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_report_draft.docx"
  },
- "excel_ready_seconds": 12.0,
+ "excel_ready_seconds": 13.0,
  "result": "완료",
- "seconds": 58.0,
+ "seconds": 60.6,
  "api_calls": {
   "DART": 0,
   "KRX": 0,

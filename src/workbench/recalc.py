@@ -14,7 +14,9 @@ fast value exactly (tests/test_p7c1.py). Nothing is written; no Excel, no reconc
 from __future__ import annotations
 
 import copy
+import threading
 import time
+from collections import OrderedDict
 from pathlib import Path
 
 import duckdb
@@ -24,7 +26,13 @@ from src import yamlio
 from src.collect.core import ROOT
 from src.workbench.spec import HOOK
 
-_CTX: dict = {}
+# P7-X4 E-F4: the most recently used companies only. Measured on one server process (scripts/audit/ctx_p7x4.py): an entry
+# is about 0.3 MB of Python objects and the cache grew by one entry per company opened, without a bound. 16 = more than
+# the companies a few people work on at once (public server: at most 3 confirmations at a time); a company pushed out is
+# rebuilt from its draft on the next use (same values, about 0.1 s replay / 1 s PC).
+CTX_MAX = 16
+_CTX: OrderedDict = OrderedDict()
+_CTX_LOCK = threading.Lock()
 
 
 def apply_overrides(cfg: dict, led: dict, ov: dict) -> tuple[dict, dict]:
@@ -121,28 +129,38 @@ def ctx_aggregates(bt, cfg: dict) -> dict:
 
 
 def context(cfg_path: str) -> Ctx:
-    """The in-memory company of a config (loaded once per process; recalculations reuse it)."""
-    if cfg_path not in _CTX:
-        from src.workbench import snapdata as SD
+    """The in-memory company of a config (loaded once and kept while among the CTX_MAX most recently used; recalculations
+    reuse it)."""
+    with _CTX_LOCK:
+        if cfg_path in _CTX:
+            _CTX.move_to_end(cfg_path)
+            return _CTX[cfg_path]
+    from src.workbench import snapdata as SD
 
-        if SD.replaying():  # P7-C3 public deployment: no market input yet (DCF values need none, except SOTP)
-            from src.market.provider import use
-            from src.workbench.public_deploy import SnapshotUserProvider
+    if SD.replaying():  # P7-C3 public deployment: no market input yet (DCF values need none, except SOTP)
+        from src.market.provider import use
+        from src.workbench.public_deploy import SnapshotUserProvider
 
-            cfg = yamlio.load((ROOT / cfg_path).read_text(encoding="utf-8"))
-            with use(SnapshotUserProvider({}, cfg)):
-                _CTX[cfg_path] = Ctx(cfg_path)
-        else:
-            _CTX[cfg_path] = Ctx(cfg_path)
-    return _CTX[cfg_path]
+        cfg = yamlio.load((ROOT / cfg_path).read_text(encoding="utf-8"))
+        with use(SnapshotUserProvider({}, cfg)):
+            ctx = Ctx(cfg_path)
+    else:
+        ctx = Ctx(cfg_path)
+    with _CTX_LOCK:
+        _CTX[cfg_path] = ctx
+        _CTX.move_to_end(cfg_path)
+        while len(_CTX) > CTX_MAX:
+            _CTX.popitem(last=False)  # the least recently used company
+    return ctx
 
 
 def drop(cfg_path: str | None = None) -> None:
     """Forget the in-memory company of one config (or all)."""
-    if cfg_path is None:
-        _CTX.clear()
-    else:
-        _CTX.pop(cfg_path, None)
+    with _CTX_LOCK:
+        if cfg_path is None:
+            _CTX.clear()
+        else:
+            _CTX.pop(cfg_path, None)
 
 
 def v2_for_peers(v2: dict | None, names: list[str], ov: dict) -> dict | None:

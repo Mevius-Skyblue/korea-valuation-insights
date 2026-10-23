@@ -392,16 +392,16 @@ def _method(c: nav.Ctx) -> None:
 
 
 def _valid(c: nav.Ctx) -> None:
-    """검증 결과 (P7-D, config/p7d.yaml): the final-check holdout scorecard, how it was measured, known issues and why a
-    result can be held. Numbers come from app/data/validation.json (made from config/p7d.yaml by scripts/public_docs.py,
-    the same file the README and VALIDATION.md use)."""
+    """검증 결과 (P7-D, P7-D3): the final re-check holdout scorecard, how it was measured, known issues and why a result
+    can be held. Numbers come from app/data/validation.json (made from config/p7d.yaml + config/p7d3.yaml by
+    scripts/public_docs.py, the same file the README and VALIDATION.md use)."""
     import json
 
     v = json.loads((M.APP_DATA / "validation.json").read_text(encoding="utf-8"))
     ho, sm, hr = v["holdout"], v["summary"], v["hold_reasons"]
     rows = {r["no"]: r for r in v["rows"]}
     st.markdown(
-        f"<p class='wb-eyebrow'>최종 확인 홀드아웃 · {v['date']} · 처음 보는 상장사 {ho['drawn']}곳</p>"
+        f"<p class='wb-eyebrow'>최종 재확인 홀드아웃 · {v['date']} · 처음 보는 상장사 {ho['drawn']}곳</p>"
         "<h1 class='wb-ref-title'>검증 결과</h1><p class='wb-ref-lead'>이 도구를 얼마나 믿을 수 있는지, 개발에 쓰지 않은 회사로 "
         "미리 정한 규칙대로 <b>한 번만</b> 시험한 결과를 숫자 그대로 보여 드립니다. 금융 "
         f"{ho['financial']}곳·자동 평가 범위 밖 {ho['out_of_scope']}곳을 뺀 {ho['denominator']}곳이 분모입니다. 13개 지표 중 "
@@ -410,7 +410,7 @@ def _valid(c: nav.Ctx) -> None:
     )
     with ui.card("valid_find", None, plain=True):
         st.markdown(
-            f"<div class='wb-find'><div><b>{ui.esc(rows[1]['result'].split(' [')[0])}</b><span>초안을 만든 회사(분모 전체)</span></div>"
+            f"<div class='wb-find'><div><b>{ui.esc(rows[1]['result'].split(' [')[0].split('(')[0])}</b><span>초안을 만든 회사(분모 전체)</span></div>"
             f"<div><b>{ui.esc(rows[2]['result'].split('(')[0])}</b><span>멈춤(처리 안 된 예외)</span></div>"
             f"<div><b>{ui.esc(rows[4]['result'].split('(')[0])}</b><span>출처를 거슬러 올라갈 수 없는 숫자</span></div></div>",
             unsafe_allow_html=True,
@@ -424,19 +424,26 @@ def _valid(c: nav.Ctx) -> None:
                     r["no"] or "—",
                     r["metric"],
                     r["target"],
-                    r["result"],
+                    (
+                        "html",
+                        ui.esc(r["result"])
+                        + (f"<br><span class='wb-kpi-note'>※ {ui.esc(r['post_fix'])}</span>" if r.get("post_fix") else ""),
+                    )
+                    if r.get("post_fix")
+                    else r["result"],
                     ("html", f"<b>{ui.esc(r['verdict'])}</b>") if r["verdict"].startswith(("미달", "미측정")) else r["verdict"],
                 ]
                 for r in v["rows"]
             ],
             min_width=720,
-            caption="숫자는 최종 확인 보고서의 칸 그대로입니다(다시 계산하거나 반올림을 바꾸지 않음). 속도는 개발 PC 값입니다.",
+            caption="숫자는 최종 재확인 보고서의 칸 그대로입니다(다시 계산하거나 반올림을 바꾸지 않음). 속도는 개발 PC 값입니다.",
         )
     st.markdown("<h2 class='wb-ref-h2'>미달·미측정 이유</h2>", unsafe_allow_html=True)
     with ui.card("valid_miss", None, plain=True):
         st.markdown(
-            "<div class='wb-method'><p>미달 4건은 고치지 않고 그대로 공개합니다. 가치 계산의 오류가 아니라 허용오차 정의·파서·대리 지표·"
-            "제품 특성이고, 고치면 확인용 표본을 다시 써야 하기 때문입니다.</p><ul>"
+            "<div class='wb-method'><p>점수표는 측정한 그대로 공개합니다. 남은 미달은 구조적이거나 외부 관행·대리 지표라 홀드아웃 반복은 "
+            "여기서 멈춥니다. 3번의 검사 칸 수식 오류만 내려받는 엑셀에 보이는 제품 결함이라 측정 뒤 고쳤고(값 불변), 점수표는 바꾸지 "
+            "않았습니다(새 표본으로 다시 재지 않음).</p><ul>"
             + "".join(
                 f"<li><b>{ui.esc(r['metric'])}</b> ({ui.esc(r['verdict'])}): {ui.esc(r['reason'])}</li>"
                 for r in v["rows"]
@@ -479,8 +486,8 @@ def _valid(c: nav.Ctx) -> None:
     st.markdown("<h2 class='wb-ref-h2'>알려진 한계</h2>", unsafe_allow_html=True)
     with ui.card("valid_known", None, plain=True):
         ui.table(
-            ["무엇", "영향", "지금 막는 장치"],
-            [[x["title"], x["effect"], x["safeguard"]] for x in v["known_issues"]],
+            ["무엇", "영향", "지금 막는 장치", "상태"],
+            [[x["title"], x["effect"], x["safeguard"], x.get("status") or "열림"] for x in v["known_issues"]],
             min_width=640,
             caption="회사 이름이 나오는 항목은 이 도구의 판정 문제이며 그 회사에 대한 의견이 아닙니다.",
         )
