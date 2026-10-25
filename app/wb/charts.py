@@ -79,8 +79,8 @@ def band(value: float, q1: float, q3: float, lo: float, hi: float, fmt: str = ".
             x=x,
             x2="q3:Q",
             tooltip=[
-                alt.Tooltip("q1:Q", title="실무 하위 25%", format=fmt),
-                alt.Tooltip("q3:Q", title="실무 상위 25%", format=fmt),
+                alt.Tooltip("q1:Q", title="실무 1사분위", format=fmt),
+                alt.Tooltip("q3:Q", title="실무 3사분위", format=fmt),
             ],
         )
     )

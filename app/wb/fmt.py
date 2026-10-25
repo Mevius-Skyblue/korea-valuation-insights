@@ -82,3 +82,73 @@ def days(v) -> str:
 def ratio_text(v) -> str:
     """DCF ÷ market price as '×1.23'."""
     return f"×{float(v):,.2f}" if ok(v) else NA
+
+
+# ---------------------------------------------------------------- P7-U1 table formats (config/p7u.yaml number_format)
+MINUS = "−"
+
+
+def amt(v, mn: bool = False, paren: bool = True) -> str:
+    """An amount in 억원 (mn=True: 백만원, x 100) as a whole number; negatives in parentheses."""
+    if not ok(v):
+        return NA
+    x = float(v) * (100 if mn else 1)
+    s = f"{abs(x):,.0f}"
+    if s == "0":
+        return "0"
+    return (f"({s})" if paren else MINUS + s) if x < 0 else s
+
+
+def unit(mn: bool = False) -> str:
+    return "백만원" if mn else "억원"
+
+
+def amt_u(v, mn: bool = False) -> str:
+    """amt with its unit (억 or 백만 after the number)."""
+    return NA if not ok(v) else amt(v, mn) + ("백만" if mn else "억")
+
+
+def won0(v, paren: bool = False) -> str:
+    """Per-share and price values: whole 원 without the unit."""
+    if not ok(v):
+        return NA
+    x = float(v)
+    s = f"{abs(x):,.0f}"
+    if x < 0 and s != "0":
+        return f"({s})" if paren else MINUS + s
+    return s
+
+
+def x_(v) -> str:
+    """A multiple: 1 decimal + 'x' (below 1x: 2 decimals); <= 0 or missing -> '계산 불가'."""
+    if not ok(v) or float(v) <= 0:
+        return "계산 불가"
+    return f"{float(v):,.2f}x" if float(v) < 1 else f"{float(v):,.1f}x"
+
+
+def p1(v, d: int = 1, paren: bool = False) -> str:
+    """A ratio as % with d decimals (table default 1); negatives in parentheses when paren."""
+    if not ok(v):
+        return NA
+    x = float(v) * 100
+    s = f"{abs(x):.{d}f}%"
+    if x < 0 and float(f"{abs(x):.{d}f}") != 0:
+        return f"({s})" if paren else MINUS + s
+    return s
+
+
+def signed(d, zero: str = "±0") -> str:
+    """A per-share difference with its sign, '±0' when |d| < 0.5."""
+    if not ok(d):
+        return NA
+    if abs(float(d)) < 0.5:
+        return zero
+    return ("+" if float(d) > 0 else MINUS) + f"{abs(float(d)):,.0f}"
+
+
+def pct_signed(v, d: int = 1) -> str:
+    """A premium with its sign and one decimal."""
+    if not ok(v):
+        return NA
+    x = float(v) * 100
+    return ("+" if x >= 0 else MINUS) + f"{abs(x):.{d}f}%"

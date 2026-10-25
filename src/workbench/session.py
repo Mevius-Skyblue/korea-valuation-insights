@@ -457,6 +457,52 @@ def set_engagement(s: dict, fields: dict, reason: str | None = None) -> dict:
     return {"ok": True, "reason": "", "session": s}
 
 
+MEMO_KEYS = ("method", "norm", "contingent", "dlom", "reason", "limit")  # the six report boxes a person writes (P7-U1)
+
+
+def set_memos(s: dict, memos: dict, reason: str | None = None) -> dict:
+    """P7-U1 (config/p7u.yaml export): the six report boxes written on the confirm screen (report '[평가자 작성]' boxes at
+    confirmation). One audit entry per changed box; no new version (model values unchanged). A box written for the first
+    time also closes its '보고서 사람 작성 칸' judgement item ('그대로 유지', reason '보고서 작성 칸 작성')."""
+    from src.workbench import judge as J
+
+    old = dict(s.get("memos") or {})
+    new = {k: str(memos.get(k) or "").strip()[:4000] for k in MEMO_KEYS}
+    changed = [k for k in MEMO_KEYS if new[k] != str(old.get(k) or "")]
+    if not changed:
+        return {"ok": True, "noop": True, "session": s}
+    s["memos"] = {k: v for k, v in new.items() if v}
+    titles = {
+        "method": "평가방법 선택 근거·채택·가중치",
+        "norm": "정상화 조정(비경상 손익)",
+        "contingent": "우발채무·비영업자산 명세 확인",
+        "dlom": "DLOM·경영권 프리미엄 조정 여부와 근거",
+        "reason": "주요 가정의 합리성",
+        "limit": "평가상 한계 보완",
+    }
+    for k in changed:
+        s["audit"].append(
+            {
+                "at": _now(),
+                "v": current(s)["v"],
+                "field": None,
+                "label": f"보고서 작성 칸: {titles[k]}",
+                "before": None,
+                "after": None,
+                "before_text": f"{len(str(old.get(k) or ''))}자",
+                "after_text": f"{len(new[k])}자",
+                "reason": reason or "",
+                "judgement": None,
+            }
+        )
+        if new[k]:
+            for jid, j in (s.get("judgements") or {}).items():
+                if j.get("category") == "보고서 사람 작성 칸" and str(j.get("item")) == titles[k] and j.get("status") == "미처리":
+                    J.resolve(s, jid, "keep", reason="보고서 작성 칸 작성")
+    save(s)
+    return {"ok": True, "session": s}
+
+
 def set_public_inputs(s: dict, user: dict) -> dict:
     """Store the public-mode market inputs (close, vwap20, sub_close, pref) the user typed. Values must be positive."""
     out = {}

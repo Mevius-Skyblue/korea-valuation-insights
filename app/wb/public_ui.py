@@ -222,17 +222,15 @@ def moved(page: str, title: str) -> None:
     st.markdown(f"### '{title}' 화면을 옮겼습니다")
     st.markdown(
         f"이 화면은 이제 워크벤치의 참고 페이지에 있습니다: [{title} 열기](/?p={page}&m=public). "
-        "회사 평가는 [워크벤치 첫 화면](/?p=select&m=public)에서 시작합니다."
+        "회사 평가는 [워크벤치 첫 화면](/?m=public)에서 시작합니다."
     )
     st.caption("가정 하의 추정 내재가치(예시)이며 투자 권유가 아닙니다. 출처: DART 전자공시·한국은행 ECOS·사용자 입력 시세.")
 
 
-def calculator() -> None:
+def calculator(mode: str = "public") -> None:
     import runpy
 
-    st.markdown(
-        "[← 워크벤치로](/?p=select&m=public) · 회사 자료 없이 가정만으로 계산하는 간이 계산기입니다(같은 계산 엔진 함수)."
-    )
+    st.markdown(f"[← 워크벤치로](/?m={mode}) · 회사 자료 없이 가정만으로 계산하는 간이 계산기입니다(같은 계산 엔진 함수).")
     runpy.run_path(str(Path(__file__).resolve().parents[1] / "views" / "calculator.py"), run_name="__main__")
 
 
@@ -282,7 +280,13 @@ def session_files(c) -> None:
             st.success(f"불러왔습니다: 새 세션 {s['session_id']}(버전 {len(s['versions']) - 1}개 다시 계산)")
             for n in notes:
                 st.info(n)
-            st.button("이 세션 열기", key="sf_open", on_click=nav.go, args=("data", s["session_id"], "public"), type="primary")
+            st.button(
+                "이 세션 열기",
+                key="sf_open",
+                on_click=nav.go,
+                args=("summary", s["session_id"], "pc" if not M.public_deploy() else "public"),
+                type="primary",
+            )
         except SF.SessionFileError as e:
             st.error(f"불러오지 못했습니다: {e}")
         except ValueError as e:

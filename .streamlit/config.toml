@@ -1,10 +1,29 @@
-# KVI 밸류에이션 워크벤치 theme (same as the PC screen, .streamlit/config.toml of the private repository)
+# KVI 밸류에이션 워크벤치 theme (config/p7c2.yaml app.theme, P7-U1 config/p7u.yaml fonts). Colours: design reference tokens.
 [theme]
 base = "light"
-primaryColor = "#F07224"
+primaryColor = "#C2410C"
 backgroundColor = "#F4F4F2"
 secondaryBackgroundColor = "#FFFFFF"
 textColor = "#15171B"
+font = "Pretendard"
+headingFont = "Pretendard"
+baseFontSize = 15
+
+# Pretendard 1.309 (SIL OFL 1.1, app/static/OFL.txt): subset served from app/static (P7-U1, scripts/p7u_fonts.py)
+[[theme.fontFaces]]
+family = "Pretendard"
+url = "app/static/Pretendard-Regular.subset.woff"
+weight = 400
+
+[[theme.fontFaces]]
+family = "Pretendard"
+url = "app/static/Pretendard-Medium.subset.woff"
+weight = 500
+
+[[theme.fontFaces]]
+family = "Pretendard"
+url = "app/static/Pretendard-SemiBold.subset.woff"
+weight = 600
 
 [client]
 toolbarMode = "minimal"
@@ -13,5 +32,6 @@ toolbarMode = "minimal"
 gatherUsageStats = false
 
 [server]
-headless = true
 maxUploadSize = 5
+headless = true
+enableStaticServing = true

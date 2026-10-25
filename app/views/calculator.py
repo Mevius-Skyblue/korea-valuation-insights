@@ -96,7 +96,7 @@ with right:
         x = r["cagr5"]
         band = 1 + sum(x >= cb.cagr_lo.iloc[k] for k in (1, 2, 3))
         row = cb[cb.band == band].iloc[0]
-        st.write(f"입력 경로의 예측 매출 CAGR(첫 추정 연도부터 최대 5개 연도) **{pct(x)}** → **{row.label}**")
+        st.write(f"입력 경로의 예측 매출 CAGR(첫 추정 연도부터 최대 5개 연도) **{pct(x)}** → **{row.label.replace('하위 25%', '1사분위 이하').replace('상위 25%', '3사분위 이상')}**")
         st.write(
             "그 구간의 스팩 합병 외부평가 추정 매출 달성률 중앙값: "
             + " · ".join(f"{h}차 {pct(row[f'h{h}_median'])}(n={row[f'h{h}_n']})" for h in (1, 2, 3))

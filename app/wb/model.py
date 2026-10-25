@@ -139,12 +139,12 @@ GATES = [
     ("G5", "12월 결산", ("G5_fiscal_year",)),
     ("G6", "지배구조(일반 경로·SOTP로 평가 가능)", ("G6_structure", "G6_sotp_unsupported")),
     ("G7", "필수 재무 자료(FY2022~2025·반기)", ("G7_data",)),
-    ("G8", "쓸 수 있는 피어 3곳 이상", ("G8_peers",)),
+    ("G8", "쓸 수 있는 Peer 3곳 이상", ("G8_peers",)),
 ]
 NOTE_RULES = {
     "G6_sotp_path": ("G6", "SOTP 경로"),
     "G23_loss_path": ("G2", "적자 경로"),
-    "G8_peer_relax": ("G8", "피어 부족 → 판단 1순위"),
+    "G8_peer_relax": ("G8", "Peer 부족 → 판단 1순위"),
 }
 OUT_WHY = {
     "G1": "금융회사는 예금·대출 같은 영업과 재무 활동이 섞여 있어 현금흐름 할인(FCFF)과 EV 배수가 맞지 않습니다. 금융업 전용 방법이 필요합니다.",
@@ -155,7 +155,7 @@ OUT_WHY = {
     "G5": "12월 결산이 아니라 계산 엔진의 기간 계산(LTM = 사업연도 + 반기 − 전년 반기)이 맞지 않습니다.",
     "G6": "지원하지 않는 지배구조입니다(예: 상장 종속회사를 다른 종속회사를 통해서만 보유).",
     "G7": "필수 재무 자료가 없어 예측 출발점을 만들 수 없습니다(최근 상장·분할 등).",
-    "G8": "비교할 피어가 3곳 미만입니다.",
+    "G8": "비교할 Peer가 3곳 미만입니다.",
 }
 
 
@@ -194,7 +194,7 @@ def gate_view(summ: dict | None) -> dict:
     elif any(n.get("rule") == "G6_sotp_path" for n in notes):
         path = "SOTP(모회사 사업 가치 + 상장 종속회사 지분 시가 + 비상장 지분 장부)"
     elif any(n.get("rule") == "G23_loss_path" for n in notes):
-        path = "적자 경로(피어 EV/Sales 범위 + 전환 DCF)"
+        path = "적자 경로(Peer EV/Sales 범위 + 전환 DCF)"
     elif facts.get("nci_path"):
         path = "연결 DCF − 비지배지분(장부)"
     else:
@@ -245,7 +245,7 @@ class Opened:
     the peer table and the snapshot check (run in parallel with the company load)."""
 
     def __init__(self, sid: str):
-        need_db("세션 열기(재무·피어·베타 표)")
+        need_db("세션 열기(재무·Peer·베타 표)")
         s = S.load(sid)
         if public_deploy():  # P7-C3: the company's public snapshot in this process's replay store
             from src.workbench.public_deploy import ensure
@@ -463,7 +463,10 @@ def relative(o: Opened, s: dict, mode: str) -> dict:
             pr = o.p3[o.p3.tier.isin(tiers) & o.p3.name.isin(names)]
         br = bridge(c)
         shares = c.market["shares_out"]
-        eb, _ = ltm_dna(c)
+        kd_ = ("ltmdna", o.cfg_path, mode, ukey(s) if mode == "public" else "")  # P7-U1: statements only, not the version
+        if kd_ not in _CACHE:
+            _CACHE[kd_] = ltm_dna(c)
+        eb, _ = _CACHE[kd_]
         m_rev = ltm(c, "revenue")
         m_ebitda = ltm(c, "operating_income") + eb / EOK if eb else None
         m_ni = ltm(c, "net_income_parent") or ltm(c, "net_income")

@@ -31,9 +31,11 @@ def badge(label: str, cls: str = "") -> str:
 
 
 def head(title: str, sub: str | None = None, right: str = "") -> None:
+    """Card title (600) with an optional grey part and a right-side note (P7-U1: one line, no paragraph)."""
     st.markdown(
-        f'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">'
-        f'<div><p class="wb-h2">{title}</p>{f"<p class=wb-sub>{sub}</p>" if sub else ""}</div>{right}</div>',
+        f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">'
+        f'<p class="wb-h2">{title}{f"<span class=wb-h2-sub>{sub}</span>" if sub else ""}</p>'
+        f'<span class="wb-kpi-note">{right}</span></div>',
         unsafe_allow_html=True,
     )
 
@@ -70,7 +72,7 @@ def card(key: str, title: str | None = None, sub: str | None = None, right: str 
         except NeedInput as e:
             ph.empty()
             st.markdown(
-                f'<p class="wb-kpi-note">공개 모드: {esc(e)}. 5단계 또는 2단계 위의 <b>시세 직접 입력</b>에서 넣으면 계산합니다.</p>',
+                f'<p class="wb-kpi-note">공개 모드: {esc(e)}. 위 KPI <b>주가 / 시가총액</b> 칸의 <b>입력</b>에서 넣으면 계산합니다.</p>',
                 unsafe_allow_html=True,
             )
         except PublicDataUnavailable as e:
@@ -129,8 +131,13 @@ def table(header: list[str], rows: list[list], num_cols: tuple[int, ...] = (), c
 
 
 def footer(mode: str, as_of: str) -> None:
+    """P7-U1: the disclaimer in one line (the full text and the sources in the tooltip)."""
     src = tx.SOURCES_PC if mode == "pc" else tx.SOURCES_PUBLIC
-    st.markdown(f'<div class="wb-foot">{esc(tx.DISCLAIMER)} {esc(src)} · 기준일 {esc(as_of)}</div>', unsafe_allow_html=True)
+    line = tx.FOOT_LINE_PC if mode == "pc" else tx.FOOT_LINE_PUBLIC
+    st.markdown(
+        f'<div class="wb-foot" title="{esc(tx.DISCLAIMER + " " + src)}">{esc(line)} · 기준일 {esc(as_of)}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def pos(v: float, lo: float, hi: float) -> float:
@@ -138,3 +145,155 @@ def pos(v: float, lo: float, hi: float) -> float:
     if hi <= lo:
         return 50.0
     return max(0.0, min(100.0, (v - lo) / (hi - lo) * 100))
+
+
+# ---------------------------------------------------------------- P7-U1 building blocks (config/p7u.yaml screen)
+
+
+def h2(title: str, sub: str = "", right: str = "") -> None:
+    """Card title line: title (600) + grey part + right note (HTML allowed in right)."""
+    head(title, sub or None, right)
+
+
+def tip_span(text: str, tip: str, cls: str = "wb-term") -> str:
+    return f'<span class="{cls}" title="{esc(tip)}">{esc(text)}</span>' if tip else esc(text)
+
+
+def cells(items: list[dict]) -> None:
+    """Grey cells (label k, value v, sub s, tooltip tip) in a 4-column grid."""
+    out = []
+    for x in items:
+        v = x["v"] if x.get("html") else esc(x["v"])
+        s = f'<span class="s">{esc(x["s"])}</span>' if x.get("s") else ""
+        out.append(
+            f'<div title="{esc(x.get("tip", ""))}"><span class="k">{esc(x["k"])}</span><span class="v">{v}</span>{s}</div>'
+        )
+    st.markdown(f'<div class="wb-cells">{"".join(out)}</div>', unsafe_allow_html=True)
+
+
+def lines(rows: list[tuple]) -> None:
+    """Label / value lines of a card; (label, value, True) is a total line (600, darker rule above); a 4th item = tooltip."""
+    out = []
+    for r in rows:
+        lab, val = r[0], r[1]
+        top = len(r) > 2 and r[2]
+        tipx = r[3] if len(r) > 3 else ""
+        out.append(f'<div class="{"top" if top else ""}"><span>{tip_span(lab, tipx)}</span><span>{esc(val)}</span></div>')
+    st.markdown(f'<div class="wb-lines">{"".join(out)}</div>', unsafe_allow_html=True)
+
+
+def _neg(text) -> bool:
+    s = str(text)
+    return (s.startswith("(") and s.endswith(")") and any(ch.isdigit() for ch in s)) or (
+        s.startswith("−") and any(ch.isdigit() for ch in s)
+    )
+
+
+def tbl(
+    head: list[str],
+    rows: list,
+    groups: list[tuple] | None = None,
+    shade: tuple = (),
+    left: tuple = (0,),
+    min_width: int = 0,
+    tips: bool = True,
+    compact: bool = False,
+) -> None:
+    """A screen table (P7-U1): header rule, numbers right-aligned, negatives in parentheses shown red, first-column terms
+    with a dotted underline and a definition tooltip. rows: lists of cells or {'c': cells, 'strong', 'top', 'dim',
+    'hl': {i}, 'gap': {i}}; a cell may be (text, title) for its own tooltip. groups: two-level header [(label, span, shaded)]."""
+    from app.wb import glossary as G
+
+    th = ""
+    if groups:
+        th += (
+            "<tr>"
+            + "".join(
+                f'<th colspan="{n}" class="{"grp" if lab else "blank"}{" sh" if sh else ""}">{esc(lab)}</th>'
+                for lab, n, sh in groups
+            )
+            + "</tr>"
+        )
+    th += (
+        "<tr>"
+        + "".join(
+            f'<th class="{"l" if i in left else ""}{" sh" if i in shade else ""}">{esc(h)}</th>' for i, h in enumerate(head)
+        )
+        + "</tr>"
+    )
+    body = []
+    for r in rows:
+        meta = r if isinstance(r, dict) else {"c": r}
+        cls = " ".join(k for k in ("strong", "top", "dim") if meta.get(k))
+        tds = []
+        for i, cv in enumerate(meta["c"]):
+            title = ""
+            if isinstance(cv, tuple):
+                cv, title = cv[0], cv[1]
+            c = ["l"] if i in left else []
+            if i in shade:
+                c.append("sh")
+            if i not in left and _neg(cv):
+                c.append("neg")
+            if i in (meta.get("hl") or ()):
+                c.append("hl")
+            if i in (meta.get("gap") or ()):
+                c.append("gap")
+            txt = esc(cv)
+            if i == 0 and tips and not title:
+                tt = G.row_tip(str(cv))
+                if tt:
+                    txt = f'<span class="wb-term" title="{esc(tt)}">{esc(cv)}</span>'
+            ttl = f' title="{esc(title)}"' if title else ""
+            tds.append(f'<td class="{" ".join(c)}"{ttl}>{txt}</td>')
+        body.append(f'<tr class="{cls}">' + "".join(tds) + "</tr>")
+    mw = f' style="min-width:{min_width}px"' if min_width else ""
+    st.markdown(
+        f'<div class="wb-tw"><table class="wb-t{" compact" if compact else ""}"{mw}><thead>{th}</thead><tbody>{"".join(body)}</tbody></table></div>',
+        unsafe_allow_html=True,
+    )
+
+
+def tsv(head: list[str], rows: list) -> str:
+    """Tab-separated text of a table (copy -> Excel / PowerPoint): header line + one line per row."""
+    out = ["\t".join(str(h) for h in head)]
+    for r in rows:
+        cs = r["c"] if isinstance(r, dict) else r
+        out.append("\t".join(str(c[0] if isinstance(c, tuple) else c) for c in cs))
+    return "\n".join(out)
+
+
+COPY_HTML = """<html><body style="margin:0;font-family:Pretendard,'Malgun Gothic',sans-serif">
+<button id="b" title="표 복사 → 엑셀·PPT에 붙여넣기" aria-label="표 복사"
+ style="height:30px;padding:0 8px;border:1px solid #E4E4E0;border-radius:6px;background:#FFFFFF;color:#5A5E66;font-size:13px;cursor:pointer;white-space:nowrap">복사</button>
+<script>
+const t = __TEXT__;
+const b = document.getElementById('b');
+b.onclick = async () => {
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select();
+    document.execCommand('copy'); a.remove(); }
+  b.textContent = '복사됨'; setTimeout(() => { b.textContent = '복사'; }, 1200);
+};
+</script></body></html>"""
+
+
+def copy_btn(text: str) -> None:
+    """Copy button (clipboard = tab-separated text of a table this app drew). st.iframe with the app's own HTML
+    (same origin), with the textarea fallback; '</' is escaped so a cell text cannot close the script."""
+    import json as _json
+
+    payload = _json.dumps(text, ensure_ascii=False).replace("</", "<\\/")
+    st.iframe(COPY_HTML.replace("__TEXT__", payload), height=32, width=56)
+
+
+def title_copy(title: str, sub: str = "", note: str = "", text: str | None = None) -> None:
+    """Card title line with a copy button on the right (text = tab-separated table)."""
+    if text is None:
+        h2(title, sub, note)
+        return
+    a, b = st.columns([12, 1.4], vertical_alignment="center")
+    with a:
+        h2(title, sub, note)
+    with b:
+        copy_btn(text)

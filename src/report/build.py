@@ -25,6 +25,15 @@ from src.report.xlsx import Model
 
 HEADER = "자동 생성 초안 — 주식가치 산정 결과(기계적 가치산정), 전문가 판단 전, 투자 권유 아님"
 HUMAN = "[사람 작성 칸]"
+WRITTEN = "[평가자 작성]"  # P7-U1: a box the evaluator filled on the confirm screen
+MEMO_KEY = {
+    "평가방법 선택 근거·채택·가중치": "method",
+    "정상화 조정(비경상 손익)": "norm",
+    "우발채무·비영업자산 명세 확인": "contingent",
+    "DLOM·경영권 프리미엄 조정 여부와 근거": "dlom",
+    "주요 가정의 합리성": "reason",
+    "평가상 한계 보완": "limit",
+}
 FORBIDDEN = ["매수", "매도", "목표주가", "저평가", "고평가", "상승 여력", "상승여력", "투자의견", "추천", "목표 주가"]
 TOKEN = re.compile(r"\d[\d,]*(?:\.\d+)?")
 PREREG = ["1386d1d", "19b03c4", "370efdb", "bf5211c", "7e14f06"]
@@ -194,6 +203,9 @@ class Doc:
         self.d.add_paragraph()
         return t
 
+    memos: dict = {}  # P7-U1: report boxes the evaluator wrote on the confirm screen (config report.memos)
+    lit = staticmethod(lambda x: x)
+
     def human(self, title, guidance):
         from docx.oxml import OxmlElement
         from docx.oxml.ns import qn
@@ -201,7 +213,9 @@ class Doc:
         t = self.d.add_table(rows=1, cols=1)
         t.style = "Table Grid"
         cell = t.rows[0].cells[0]
-        cell.text = f"{HUMAN} {title}\n작성 안내: {guidance}\n\n"
+        text = self.memos.get(MEMO_KEY.get(title, ""), "")
+        # an empty box keeps the '[사람 작성 칸]' form (check.human_boxes); a written one is marked as the evaluator's text
+        cell.text = f"{WRITTEN} {title}\n{self.lit(text)}" if text else f"{HUMAN} {title}\n작성 안내: {guidance}\n\n"
         shd = OxmlElement("w:shd")
         shd.set(qn("w:val"), "clear")
         shd.set(qn("w:fill"), "FFF2CC")
@@ -275,6 +289,8 @@ def build_report(
     m = Model(xlsx)
     R = Reg()
     D = Doc()
+    D.memos = dict(((cfg.get("report") or {}).get("memos")) or {})  # P7-U1 (empty for RF / JW and plain auto drafts)
+    D.lit = R.lit
     cap = cfg["excel"]["forecast_type"] == "scenario_capex"
     name = cfg["meta"]["target"]["name"] if cap else cfg["target"]["name"]
     code = cfg["meta"]["target"]["stock_code"] if cap else cfg["target"]["stock_code"]
@@ -416,6 +432,16 @@ def build_report(
         D.b(L(f"신용등급 {cfg['kd']['rating']}: {cfg['kd']['rating_source']}"))
         D.b(L(f"재무상태표일 뒤 사건: {cfg['bridge']['post_bs_event']}"))
     D.b(J(f"기준일 종가 {n('Close', 'won')}", "은") + L(" 한국거래소 통계정보(보통주) 값이다"))
+    evs = (cfg.get("report") or {}).get("events") or []  # P7-U1: disclosure reviews of the work screen (values unchanged)
+    if evs:
+        na = sum(1 for e in evs if e["mark"] == "해당 없음")
+        D.b(
+            L(
+                f"기준일 뒤 사건(작업 화면 공시 검토): 검토 {len(evs)}건 중 해당 없음 {na}건. 가치는 다시 계산하지 않았다(반영은 평가자가 가정·브리지에서 직접)"
+            )
+        )
+        for e in [e for e in evs if e["mark"] != "해당 없음"]:
+            D.b(L(f"{e['date']} {e['title']} — 가치 영향 {e['tags']} · {e['mark']} (DART {e['rcept_no']})"))
 
     # 3 ---------------------------------------------------------------- methods
     D.h(L("3. 평가방법과 선택 근거"))

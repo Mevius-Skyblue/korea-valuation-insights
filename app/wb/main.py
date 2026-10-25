@@ -1,5 +1,9 @@
 """The work screen body shared by the PC entry (app/Workbench.py) and the public deployment (app/Home.py, P7-C3).
 
+P7-U1 structure (config/p7u.yaml screen): top row (search, version, 이력, ⋯, 확정 · 내보내기) and sub row, the KPI band,
+seven work tabs (only the selected tab is drawn), the overlays 이력 / 확정 · 내보내기 / 세션 관리, the reference pages
+behind ⋯, and the first screen without a company.
+
 run(public=False)   PC: PC / public modes, DB market data (P7-C2)
 run(public=True)    public deployment: public mode only, the public snapshot (no DB), a workspace per browser session
 """
@@ -9,8 +13,38 @@ from __future__ import annotations
 import streamlit as st
 
 from app.wb import components as ui
-from app.wb import nav, style
-from app.wb.pages import assume, data, export, ref, result, select
+from app.wb import model as M
+from app.wb import nav, shell, style
+
+
+def _pages() -> dict:
+    from app.wb.pages import (
+        assume_tab,
+        dcf_tab,
+        events_tab,
+        export,
+        fin_tab,
+        history,
+        premium_tab,
+        ref,
+        rel_tab,
+        sessions,
+        summary,
+    )
+
+    return {
+        "summary": summary.render,
+        "assume": assume_tab.render,
+        "dcf": dcf_tab.render,
+        "rel": rel_tab.render,
+        "premium": premium_tab.render,
+        "fin": fin_tab.render,
+        "events": events_tab.render,
+        "history": history.render,
+        "export": export.render,
+        "sessions": sessions.render,
+        **{pid: ref.render for pid, _ in nav.REFS},
+    }
 
 
 def run(public: bool = False) -> None:
@@ -24,7 +58,12 @@ def run(public: bool = False) -> None:
     c = nav.state(public)
     is_ref = c.page.startswith("ref_")
     style.inject("ref" if is_ref else "work")
-    if c.sid and not is_ref:
+    if c.page == "calc":
+        from app.wb import public_ui
+
+        public_ui.calculator(c.mode)
+        return
+    if c.sid:
         try:
             nav.open_session(c)
         except Exception as e:  # noqa: BLE001 - the page says why instead of a stack trace
@@ -36,28 +75,33 @@ def run(public: bool = False) -> None:
                 ui._log("open_session", e)
                 st.error(f"세션을 열지 못했습니다(실패). 사유: {type(e).__name__}: {e}")
             c.s, c.o = None, None
-    if not is_ref:
-        nav.sidebar(c)
-    if c.page != "select" and not is_ref and c.o is None:
-        st.markdown('<h1 class="wb-title">세션을 먼저 고르세요</h1>', unsafe_allow_html=True)
-        if public:
-            st.markdown(
-                "<p class='wb-kpi-note'>공개 배포에서는 브라우저를 새로 고치면 작업 공간이 새로 만들어집니다. "
-                "1단계의 <b>세션 파일 불러오기</b>로 이어서 작업할 수 있습니다.</p>",
-                unsafe_allow_html=True,
-            )
-        st.button("1단계 회사 선택으로", key="to_select", on_click=nav.go, args=("select",), type="primary")
+    if is_ref:
+        _pages()[c.page](c)
+        return
+    shell.top(c)
+    if c.page == "sessions":
+        _pages()["sessions"](c)
+        ui.footer(c.mode, M.AS_OF)
+        return
+    if c.o is None:
+        shell.first_screen(c)
+        ui.footer(c.mode, M.AS_OF)
+        return
+    shell.toast(c)
+    shell.kpi_band(c)
+    shell.tabs(c)
+    page = c.page if c.page in _pages() else "summary"
+    st_ = M.status(c.o, c.s)
+    if st_["hold"] and st_["label"] != "확정" and page in nav.TAB_IDS and page != "summary":
+        st.markdown(
+            "<div class='wb-band-top'>평가 보류 — 아래 숫자는 보류 전 계산값(대표값 아님). 확인 뒤 확정하면 확정값이 대표값</div>",
+            unsafe_allow_html=True,
+        )
+    if page == "summary" and st_["hold"] and st_["label"] != "확정":
+        from app.wb.pages import hold
+
+        hold.render(c, st_)
     else:
-        {
-            "select": select.render,
-            "data": data.render,
-            "assume": assume.render,
-            "result": result.render,
-            "export": export.render,
-            "ref_rates": ref.render,
-            "ref_accuracy": ref.render,
-            "ref_premium": ref.render,
-            "ref_method": ref.render,
-            "ref_valid": ref.render,
-            "ref_guide": ref.render,
-        }[c.page](c)
+        with ui.card(f"tab_{page}", plain=True):
+            _pages()[page](c)
+    ui.footer(c.mode, M.AS_OF)

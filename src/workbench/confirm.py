@@ -82,6 +82,13 @@ def session_config(s: dict, version: int | None = None, mode: str = "pc", user: 
     }
     if s.get("engagement"):  # P7-X2b: purpose / premise / evaluator typed in step 5 (report and Excel cover)
         cfg2.setdefault("report", {})["engagement"] = dict(s["engagement"])
+    if s.get("memos"):  # P7-U1: the report boxes the evaluator wrote on the confirm screen ('[평가자 작성]' boxes)
+        cfg2.setdefault("report", {})["memos"] = dict(s["memos"])
+    from src.workbench import events as E
+
+    ev = E.report_rows(cfg, s)  # P7-U1: disclosure reviews -> the report's '기준일 뒤 사건' lines (values unchanged)
+    if ev:
+        cfg2.setdefault("report", {})["events"] = ev
     if mode == "public":
         cfg2["public_mode"] = {"user": dict(user or {})}
     sid = s["session_id"].replace("-", "")

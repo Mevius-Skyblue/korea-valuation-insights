@@ -3,7 +3,8 @@
 The KVI work screen in public mode only, on the public snapshots (DART · ECOS data and peer aggregates; no DB, no KRX
 values): the user types the market prices. Same app and functions as the PC (app/Workbench.py), body app/wb/main.py.
 Pages (address):
-    /                 the work screen (?p=select|data|assume|result|export|ref_*)
+    /                 the work screen (?p=summary|assume|dcf|rel|premium|fin|events|history|export|sessions|ref_*;
+                      the old step addresses select|data|result still open the matching tab)
     /rates, /accuracy the P6 public pages moved into the work screen's reference pages -> a notice with the new address
     /calculator       the simple DCF calculator of P6 (kept: a what-if tool without company data, same engine functions)
 Community Cloud runs this file (branch main, app/Home.py); the file name is kept so its settings need no change.

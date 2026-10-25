@@ -9,7 +9,7 @@ from src.workbench import spec
 GROUPS = [
     ("할인율", ["rf_tenor", "mrp", "beta_u", "de", "kd", "srp"]),
     ("예측", ["g_start", "normal_margin", "g_terminal", "scenario_width"]),
-    ("피어", ["peers"]),
+    ("Peer", ["peers"]),
     ("경로별", ["sotp_discount", "cash_adjust_mn", "nci_mn", "premium"]),
 ]
 PCT_FIELDS = {"mrp", "srp", "kd", "g_start", "normal_margin", "g_terminal", "scenario_width", "sotp_discount"}

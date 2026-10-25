@@ -55,7 +55,21 @@ def app_version() -> str:
 def dump(s: dict) -> bytes:
     keep = {
         k: s.get(k)
-        for k in ("session_id", "code", "name", "as_of", "created", "audit", "judgements", "public_inputs", "auto_headline")
+        for k in (
+            "session_id",
+            "code",
+            "name",
+            "as_of",
+            "created",
+            "audit",
+            "judgements",
+            "public_inputs",
+            "auto_headline",
+            "engagement",  # P7-U1: the confirm screen's texts and the disclosure reviews travel with the file
+            "memos",
+            "events_review",
+            "events_lookup",
+        )
     }
     keep["versions"] = [
         {"v": v["v"], "overrides": v["overrides"], "created": v["created"], "reverted_to": v.get("reverted_to")}
@@ -146,6 +160,27 @@ def load(data: bytes) -> tuple[dict, list[str]]:
             mine["resolution"] = (
                 {k: res.get(k) for k in ("action", "field", "value", "reason", "at", "v")} if isinstance(res, dict) else None
             )
+    for k in ("engagement", "memos"):  # P7-U1: texts only (keys of the screen, strings cut to their length)
+        src_k = src.get(k)
+        if isinstance(src_k, dict):
+            s[k] = {str(a)[:40]: str(b)[:4000] for a, b in src_k.items() if isinstance(b, str)}
+    rv = src.get("events_review")
+    if isinstance(rv, dict):
+        s["events_review"] = {
+            str(a)[:14]: {"mark": b.get("mark"), "at": str(b.get("at") or ""), "v": b.get("v")}
+            for a, b in rv.items()
+            if isinstance(b, dict) and b.get("mark") in ("adj", "note", "na") and str(a).isdigit()
+        }
+    lk = src.get("events_lookup")
+    if isinstance(lk, dict) and isinstance(lk.get("rows"), list):
+        s["events_lookup"] = {
+            **{k: str(lk.get(k) or "") for k in ("at", "bgn", "end", "status")},
+            "rows": [
+                {k: str(x.get(k) or "") for k in ("rcept_dt", "report_nm", "rcept_no")}
+                for x in lk["rows"]
+                if isinstance(x, dict) and str(x.get("rcept_no") or "").isdigit()
+            ],
+        }
     s["loaded_from"] = {"session_id": str(src.get("session_id")), "app_version": p.get("app_version"), "at": S._now()}
     S.save(s)
     return s, notes
