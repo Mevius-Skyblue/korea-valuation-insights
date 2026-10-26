@@ -100,7 +100,7 @@ def body(c: nav.Ctx) -> None:
             shown += 1
     if shown == 0 and flt != "all":
         st.markdown("<p class='wb-kpi-note'>해당 행 없음 · 제목 규칙 기준</p>", unsafe_allow_html=True)
-    legend = " ".join(f"<span class='wb-chip' title='{ui.esc(t['tip'])}'>{ui.esc(t['name'])}</span>" for t in E.rules()["tags"])
+    legend = " ".join(f"<span class='wb-chip' title='{ui.attr(t['tip'])}'>{ui.esc(t['name'])}</span>" for t in E.rules()["tags"])
     st.markdown(
         f"<div class='wb-subrow' style='font-size:13px'>태그 기준 {legend}<span style='margin-left:auto'>공시 유형 코드 + 제목 단어 · 본문 미해석</span></div>",
         unsafe_allow_html=True,
@@ -134,7 +134,7 @@ def _row(c: nav.Ctx, r: dict) -> None:
     cols = st.columns([1.1, 3.8, 0.7, 1.3, 3.0, 0.4], vertical_alignment="center")
     cols[0].markdown(f"<span style='font-size:14px'>{r['date']}</span>", unsafe_allow_html=True)
     cols[1].markdown(
-        f"<span title='{ui.esc(r['title'])}' style='font-size:14px'>{ui.esc(r['title'][:44])}</span>", unsafe_allow_html=True
+        f"<span title='{ui.attr(r['title'])}' style='font-size:14px'>{ui.esc(r['title'][:44])}</span>", unsafe_allow_html=True
     )
     cols[2].markdown(f"<span class='wb-kpi-note' style='font-size:14px'>{ui.esc(r['kind'])}</span>", unsafe_allow_html=True)
     with cols[3]:

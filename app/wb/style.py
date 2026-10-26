@@ -261,6 +261,30 @@ body.kvi-mini [data-testid="stToastContainer"] {{ top: 52px !important; bottom: 
 .stApp[data-test-script-state="running"] .wb-ver .n {{ display: none; }}
 .stApp[data-test-script-state="running"] .wb-ver .calc {{ display: inline; color: {t["accent_dark"]}; }}
 .stApp[data-test-script-state="running"] .wb-kpi .v, .stApp[data-test-script-state="running"] .kvi-mini-items .v {{ opacity: 0.35; }}
+[class*="st-key-jc_s_"] button {{ height: auto !important; min-height: 40px; padding: 4px 8px; }}
+[class*="st-key-jc_s_"] button p, [class*="st-key-jc_s_"] button div {{ white-space: normal !important; overflow: visible !important;
+  text-overflow: clip !important; line-height: 1.3; font-size: 13px !important; }}
+[class*="st-key-jc_s_"][class*="_on"] button {{ border: 2px solid {t["accent"]} !important; color: {t["accent_dark"]} !important; }}
+[class*="st-key-sensgrid_"] {{ gap: 4px !important; }}
+[class*="st-key-sensgrid_"] [data-testid="stHorizontalBlock"] {{ gap: 3px !important; }}
+[class*="st-key-sensgrid_"] [data-testid="stColumn"] {{ min-width: 0 !important; }}
+[class*="st-key-sc_"] button {{ min-height: 30px !important; height: 30px; padding: 0 2px !important; border-radius: 4px;
+  border: 1px solid {t["line_soft"]}; background: {t["card"]}; }}
+[class*="st-key-sc_"] button p {{ font-size: 13px !important; white-space: nowrap; font-variant-numeric: tabular-nums; }}
+[class*="st-key-sc_"][class*="_base"] button {{ background: {t["accent_bg"]} !important; }}
+[class*="st-key-sc_"][class*="_base"] button p {{ color: {t["accent_dark"]} !important; }}
+[class*="st-key-sc_"][class*="_sel"] button {{ border: 2px solid {t["accent"]} !important; }}
+.wb-sg-h {{ font-size: 12px; color: {t["text_sub"]}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 0; }}
+.wb-sg-h.r {{ text-align: center; }}
+[class*="st-key-sensgrid_"] [data-testid="stMarkdownContainer"], [class*="st-key-sensgrid_"] .stMarkdown {{ margin-bottom: 0 !important; }}
+[class*="st-key-sensgrid_"] [data-testid="stHorizontalBlock"]:first-of-type {{ min-height: 22px; margin-bottom: 2px; }}
+.wb-sg-r {{ font-size: 13px; color: {t["text_sub"]}; white-space: nowrap; padding-top: 5px; }}
+.st-key-topbar [data-testid="stPopoverButton"] [data-testid="stMarkdownContainer"],
+.st-key-topbar [data-testid="stPopoverButton"] > div > div[aria-hidden="true"] {{ display: none !important; }}
+.st-key-topbar [data-testid="stPopoverButton"] {{ min-width: 44px; justify-content: center; }}
+.st-key-topbar [data-testid="stPopoverButton"] [data-testid="stIconMaterial"] {{ font-size: 22px; }}
+[class*="st-key-plain_tab_"] {{ margin-top: -6px; }}
+[data-testid="stElementContainer"]:has(#kvi-state), body:not(.kvi-mini) [data-testid="stLayoutWrapper"]:has(> .st-key-minibar) {{ display: none !important; }}
 .wb-sens-pv {{ font-size: 14px; padding: 8px 12px; border-radius: 8px; background: {t["shade"]}; }}
 .st-key-sensapply {{ background: {t["accent_bg"]}; border: 1px solid {t["accent_line"]}; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; }}
 .wb-ver-note {{ font-size: 12px; color: {t["warn_text"]}; text-align: right; white-space: nowrap; }}

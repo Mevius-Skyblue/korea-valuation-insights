@@ -173,7 +173,7 @@ def gate_line(code: str, name: str) -> dict:
     if not ds["summary"]:
         txt = f"{ui.badge('초안 없음')} 평가 시작 → 공시 수집 후 초안(보통 30~60초)"
         st.markdown(
-            f"<div class='wb-subrow' title='{ui.esc(EXCLUDE_TIP)}'>자동 평가 가능 여부 {txt}</div>", unsafe_allow_html=True
+            f"<div class='wb-subrow' title='{ui.attr(EXCLUDE_TIP)}'>자동 평가 가능 여부 {txt}</div>", unsafe_allow_html=True
         )
         return {"ok": True, "has_draft": False}
     rows = "\n".join(
@@ -182,14 +182,14 @@ def gate_line(code: str, name: str) -> dict:
     hl = (ds["summary"].get("headline") or {}).get("status")
     if not gv["passed"]:
         why = " · ".join(FAIL_LABEL.get(f["id"], f["label"]) for f in gv["fails"]) or "범위 밖"
-        b = ui.badge("제외", "warn") + f" {ui.esc(why)} — 숫자 없이 사유만"
+        b = ui.badge("제외", "warn") + f" · {ui.esc(why)} — 숫자 없이 사유만"
     elif hl == "자동 결과 보류":
-        b = ui.badge("보류", "yellow") + f" {ui.esc(tx.plain_words(gv['path']))} · 확인 항목이 있어 대표값 보류"
+        b = ui.badge("보류", "yellow") + f" · {ui.esc(tx.plain_words(gv['path']))} · 확인 항목이 있어 대표값 보류"
     else:
-        b = ui.badge("통과", "ok") + f" {ui.esc(tx.plain_words(gv['path']))}"
+        b = ui.badge("통과", "ok") + f" · {ui.esc(tx.plain_words(gv['path']))}"
     st.markdown(
-        f"<div class='wb-subrow' title='{ui.esc(rows + chr(10) + chr(10) + EXCLUDE_TIP)}'>자동 평가 가능 여부 {b}"
-        f"<span class='wb-help'>ⓘ</span></div>",
+        f"<div class='wb-subrow' title='{ui.attr(rows + chr(10) + chr(10) + EXCLUDE_TIP)}'>자동 평가 가능 여부 · {b}"
+        f" <span class='wb-help'>ⓘ</span></div>",
         unsafe_allow_html=True,
     )
     if not gv["passed"]:
@@ -287,7 +287,7 @@ def version_text(c: nav.Ctx) -> tuple[str, str]:
 
 def menu(c: nav.Ctx) -> None:
     """⋯ : reference pages, the simple DCF calculator, sessions, favourites."""
-    with st.popover("⋯", help="참고 자료 · 간이 DCF 계산기 · 세션 저장·불러오기 · 즐겨찾기"):
+    with st.popover("더보기", icon=":material/more_horiz:", help="참고 자료 · 간이 DCF 계산기 · 세션 저장·불러오기 · 즐겨찾기"):
         st.markdown("<p class='wb-kpi-note'>참고</p>", unsafe_allow_html=True)
         for pid, label in nav.REFS:
             st.button(label, key=f"menu_{pid}", on_click=nav.go, args=(pid,), width="stretch")
@@ -373,7 +373,8 @@ def sub(c: nav.Ctx) -> None:
         "<div class='wb-subrow'><b>평가기준일</b> "
         f"<span title='자동 초안은 이 기준일만 지원(다른 기준일은 시세·재무 기준 시점 규칙을 새로 고정한 뒤)'>{ui.esc(cfg['meta']['as_of'])}</span>"
         + (f" {ui.badge(M.example_prices()['short_label'], 'yellow')}" if ex else "")
-        + f" <a href='{href}' target='_blank' rel='noopener' title='{ui.esc(rtip)}'>DART 공시 ↗</a>"
+        + f" <a href='{href}' target='_blank' rel='noopener' title='{ui.attr(rtip)}'>DART 공시 ↗</a>"
+        + (f" {ui.badge(tx.MODE_LABEL['deploy'][0], 'dark')}" if c.public else "")  # P7-U2F D6: on this line, not under ⋯
         + "</div>",
         unsafe_allow_html=True,
     )
@@ -389,10 +390,7 @@ def sub(c: nav.Ctx) -> None:
             required=True,
         )
     with right, st.container(key="modeseg"):
-        if c.public:
-            a, b = tx.MODE_LABEL["deploy"]
-            st.markdown(f"<div class='wb-subrow'>{ui.badge(a, 'dark')}</div>", unsafe_allow_html=True)
-        else:
+        if not c.public:  # the public deployment's mode badge is on the left of this line (P7-U2F D6)
 
             def _mode():
                 v = st.session_state.get("mode_seg")
@@ -435,7 +433,7 @@ def _b2(v) -> str:
 
 def _kc(label: str, value: str, sub: str, tip: str, cls: str = "") -> str:
     return (
-        f"<div class='wb-kpi' title='{ui.esc(tip)}'><div class='k'>{ui.esc(label)}</div>"
+        f"<div class='wb-kpi' title='{ui.attr(tip)}'><div class='k'>{ui.esc(label)}</div>"
         f"<div class='v {cls}'>{ui.esc(value)}</div><div class='s'>{ui.esc(sub)}</div></div>"
     )
 
@@ -516,7 +514,7 @@ def kpi_band(c: nav.Ctx) -> None:
                 _kc(
                     "WACC / g",
                     f"{F.p1(w)} / {F.p1(g)}",
-                    f"βu {_b2(r.get('beta_u'))} · MRP {_pc(M.current_value(o, s, 'mrp'))} · SRP {_pc(r.get('srp'))}",
+                    f"베타 {_b2(r.get('beta_u'))} · MRP {_pc(M.current_value(o, s, 'mrp'))} · SRP {_pc(r.get('srp'))}",
                     "g = 영구성장률 · 엑셀 WACC · 한국은행 ECOS 국고채 · MRP 한공회 가이던스",
                 ),
                 _kc(

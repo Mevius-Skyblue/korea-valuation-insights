@@ -182,13 +182,13 @@ def methods(c: nav.Ctx) -> None:
     ui.title_copy(
         "세 방식 비교",
         "과거 최대주주 지분 거래 집계",
-        f"<span class='wb-help' title='{ui.esc(tip)}'>ⓘ 대표 = {ui.esc(METHOD.get(pm['method'], pm['method']))} (규칙)</span>",
+        f"<span class='wb-help' title='{ui.attr(tip)}'>ⓘ 대표 = {ui.esc(METHOD.get(pm['method'], pm['method']))} (규칙)</span>",
         ui.tsv(head, rows),
     )
     ui.tbl(head, rows, min_width=640)
     if warns:
         st.markdown(
-            f"<p class='wb-kpi-note' title='{ui.esc('; '.join(warns))}'>ⓘ 경고 {len(warns)}건(외삽·n<10 칸·다른 시장 채움·분위 교차)</p>",
+            f"<p class='wb-kpi-note' title='{ui.attr('; '.join(warns))}'>ⓘ 경고 {len(warns)}건(외삽·n<10 칸·다른 시장 채움·분위 교차)</p>",
             unsafe_allow_html=True,
         )
 

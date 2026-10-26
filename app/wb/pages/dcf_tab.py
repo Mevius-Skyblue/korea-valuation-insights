@@ -180,7 +180,7 @@ def fcff(c: nav.Ctx, d: dict) -> None:
     )
     mark = f"ⓘ 불연속 {jump_txt}" if fj.get("jump") else f"ⓘ 배수 {jump_txt}"
     ui.title_copy(
-        f"② FCFF 추정 <span class='wb-help{' wb-warn' if fj.get('jump') else ''}' title='{ui.esc(tip)}'>{ui.esc(mark)}</span>",
+        f"② FCFF 추정 <span class='wb-help{' wb-warn' if fj.get('jump') else ''}' title='{ui.attr(tip)}'>{ui.esc(mark)}</span>",
         "",
         ui.esc(
             f"{F.unit(mn)} · 기중 할인 (Mid-year) · 수렴 구간 (Fade) {fd[0]['label']}–{fd[-1]['label']}" if fd else F.unit(mn)
@@ -466,7 +466,7 @@ def sens_gm(c: nav.Ctx, d: dict) -> None:
         "gm",
         "민감도 · 영업이익률 × 매출 성장률",
         "원/주 · 기준 대비",
-        "성장률 \\ 영업이익률",
+        "성장 \\ 이익률",
         cols,
         rl,
         vals,

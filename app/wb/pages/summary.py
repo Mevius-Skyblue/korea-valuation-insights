@@ -48,7 +48,7 @@ def football(c: nav.Ctx) -> None:
         diff = f"{(ps / price - 1) * 100:+.1f}%" if F.ok(ps) else "—"
         tip = f"DCF {F.won0(ps)}원 = 주가 대비 {diff} · 주가는 {'사용자 입력(공개)' if c.mode == 'public' else '한국거래소 통계정보(PC)'}"
         pr_txt = (
-            f"<span class='wb-legend' title='{ui.esc(tip)}'><span style='width:0;height:14px;border-left:2px dashed {T['blue_line']}'></span>"
+            f"<span class='wb-legend' title='{ui.attr(tip)}'><span style='width:0;height:14px;border-left:2px dashed {T['blue_line']}'></span>"
             f"주가 {F.won0(price)}원{' (예시)' if ff['example'] else ''}</span>"
         )
     ui.title_copy(
@@ -88,7 +88,7 @@ def football(c: nav.Ctx) -> None:
             tip = f"{rr['label']}: Peer 5곳 미만(공개 모드 비표시)"
         sub = rr["sub"] + (f" · n {rr['n']}" if rr.get("n") else "")
         html.append(
-            f"<div class='row' title='{ui.esc(tip)}'><div class='lab'><b>{ui.esc(rr['label'])}</b><span>{ui.esc(sub)}</span></div>"
+            f"<div class='row' title='{ui.attr(tip)}'><div class='lab'><b>{ui.esc(rr['label'])}</b><span>{ui.esc(sub)}</span></div>"
             f"<div class='track'>{bar}{mark}{pline}</div><span class='val'>{F.won0(rr['rep']) if F.ok(rr['rep']) else '—'}</span></div>"
         )
     ticks = "".join(f"<span>{F.won0(lo_ax + (top - lo_ax) * i / 4)}</span>" for i in range(5))
@@ -133,7 +133,7 @@ def evaluation(c: nav.Ctx) -> None:
     ]
     st.markdown(
         "<div class='wb-chips'>"
-        + "".join(f"<span class='wb-chip {k}' title='{ui.esc(t)}'>{ui.esc(x)}</span>" for x, k, t in chips)
+        + "".join(f"<span class='wb-chip {k}' title='{ui.attr(t)}'>{ui.esc(x)}</span>" for x, k, t in chips)
         + "</div>",
         unsafe_allow_html=True,
     )
@@ -168,7 +168,7 @@ def evaluation(c: nav.Ctx) -> None:
     st.markdown(
         "<div style='display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;padding:12px;background:#F7F7F5;border-radius:8px'>"
         + "".join(
-            f"<div title='{ui.esc(x.get('tip', ''))}' style='display:flex;flex-direction:column;gap:1px'><span class='wb-kpi-note' style='font-size:12px'>{ui.esc(x['k'])}</span>"
+            f"<div title='{ui.attr(x.get('tip', ''))}' style='display:flex;flex-direction:column;gap:1px'><span class='wb-kpi-note' style='font-size:12px'>{ui.esc(x['k'])}</span>"
             f"<span style='font-size:15px;font-weight:500'>{ui.esc(x['v'])}</span></div>"
             for x in items
         )
@@ -181,7 +181,7 @@ def premium_tiles(c: nav.Ctx) -> None:
     o, s = c.o, c.s
     a, b = st.columns([3, 1], vertical_alignment="center")
     a.markdown(
-        f"<p class='wb-h2'><span class='wb-term' title='{ui.esc('과거 최대주주 지분 거래 집계 · 기준가 = 공시 전 20일 VWAP · 거래별 값 비공개')}'>경영권 프리미엄 (CP)</span></p>",
+        f"<p class='wb-h2'><span class='wb-term' title='{ui.attr('과거 최대주주 지분 거래 집계 · 기준가 = 공시 전 20일 VWAP · 거래별 값 비공개')}'>경영권 프리미엄 (CP)</span></p>",
         unsafe_allow_html=True,
     )
     b.button("상세 →", key="to_premium", type="tertiary", on_click=nav.go, args=("premium",))

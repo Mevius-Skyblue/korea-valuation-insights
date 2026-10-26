@@ -106,6 +106,11 @@ def open_session(c: Ctx) -> None:
     if c.page in ("start", "sessions") or c.page.startswith("ref_"):
         return
     c.o = _opened(c.sid, M.open_key(c.s), M.no_db(), str(M.S.workspace() or ""))  # P7-C3: per workspace
+    if c.mode == "public" and not c.s.get("public_inputs"):
+        # P7-U2F D2: the first open in public mode starts from the example prices (marked example, as the button does);
+        # the user's own values replace them
+        M.S.set_public_inputs(c.s, M.example_inputs(c.o))
+        c.s = M.load(c.sid)
     if (c.mode == "pc" or c.public) and JB.prepare_on():
         JB.standby(c.sid)  # prepared confirmation: the Excel model of the current state (C2-F3)
     JB.ensure_warm()  # a pre-started job process for the next 확정 (fix C4-F1)

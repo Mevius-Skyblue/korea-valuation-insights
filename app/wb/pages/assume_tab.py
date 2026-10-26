@@ -171,12 +171,12 @@ def _cand_label(c: nav.Ctx, cd: dict, compact: bool = False) -> tuple[str, bool,
         if pv.get("after") is not None
         else tx.plain_words(pv.get("error") or "계산 불가")
     )
-    if compact:
-        lab = (
-            f"{_short(cd['label'])[:14]} {val} · {F.won0(pv['after'])}원"
-            if pv.get("after") is not None
-            else f"{_short(cd['label'])[:14]} {val}"
-        )
+    if compact:  # P7-U2F D4: no cut (two lines allowed by CSS); the value only when the label has no number of its own
+        import re
+
+        sl = _short(cd["label"])
+        head_ = sl if re.search(r"\d", sl) else f"{sl} {val}"
+        lab = f"{head_} · {F.won0(pv['after'])}원" if pv.get("after") is not None else head_
         return lab, ok, full
     prev = (
         f"{F.won0(pv['before'])} → {F.won0(pv['after'])}원"
@@ -297,20 +297,23 @@ def compact_row(c: nav.Ctx, r: dict) -> None:
     r = _clean(c, r)
     a, b, d = st.columns([2.2, 4.2, 1], vertical_alignment="center")
     a.markdown(
-        f"<span class='wb-term' style='font-size:15px;font-weight:500' title='{ui.esc((r.get('detail') or '') + ' · ' + r['category'])}'>"
+        f"<span class='wb-term' style='font-size:15px;font-weight:500' title='{ui.attr((r.get('detail') or '') + ' · ' + r['category'])}'>"
         f"{ui.esc(str(r['item'])[:40])}</span> {ui.badge(r['status'], STATUS_CLS.get(r['status'], ''))}",
         unsafe_allow_html=True,
     )
     cands = (r.get("candidates") or [])[:3]
+    res = r.get("resolution") or {}
     with b:
         if cands:
             cols = st.columns(len(cands))
             for i, cd in enumerate(cands):
                 lab, ok, full = _cand_label(c, cd, compact=True)
+                # P7-U2F D4: the candidate now applied (this judgement's adopted value) gets the orange frame
+                on = r.get("status") in ("채택", "수정") and res.get("field") == cd["field"] and res.get("value") == cd["value"]
                 cols[i].button(
                     lab,
                     help=full,
-                    key=f"jc_s_{r['id']}_{i}",
+                    key=f"jc_s_{r['id']}_{i}" + ("_on" if on else ""),
                     on_click=_do,
                     args=(c.sid, r["id"], "candidate"),
                     kwargs={"candidate": i},
@@ -519,7 +522,7 @@ def _row(c: nav.Ctx, f: str, d: dict) -> None:
     cols = st.columns(WIDTHS, vertical_alignment="center")
     tipx = f"{G.tip(LABEL[f].split(' (')[0]) or G.tip(f)} · 허용 {FD.rng_text(f)}".strip(" ·")
     cols[0].markdown(
-        f"<span class='wb-term' style='font-weight:500' title='{ui.esc(tipx)}'>{ui.esc(LABEL[f])}</span>", unsafe_allow_html=True
+        f"<span class='wb-term' style='font-weight:500' title='{ui.attr(tipx)}'>{ui.esc(LABEL[f])}</span>", unsafe_allow_html=True
     )
     with cols[1]:
         if f == "rf_tenor":
@@ -554,7 +557,7 @@ def _row(c: nav.Ctx, f: str, d: dict) -> None:
         at = (M.spec.fmt(f, auto).replace("배", "x")) if auto is not None else "자동"
     atip = _auto_tip(c, f)
     cols[2].markdown(
-        f"<div style='text-align:right;color:#5A5E66' title='{ui.esc(atip)}'>{ui.esc(at)}</div>", unsafe_allow_html=True
+        f"<div style='text-align:right;color:#5A5E66' title='{ui.attr(atip)}'>{ui.esc(at)}</div>", unsafe_allow_html=True
     )
     ptxt, gap = _practice(c, f, cur if cur is not None else auto, M.result(o, s, c.mode))
     with cols[3]:

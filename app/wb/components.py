@@ -26,6 +26,12 @@ def esc(x) -> str:
     return html.escape("" if x is None else str(x))
 
 
+def attr(x) -> str:
+    """An HTML attribute value (title tooltips): escaped, line breaks as &#10;. A blank line inside st.markdown HTML ends the
+    HTML block, so a raw multi-line title leaked its text and "'>" onto the screen (P7-U2F D1)."""
+    return esc(x).replace("\r", "").replace("\n", "&#10;")
+
+
 def badge(label: str, cls: str = "") -> str:
     return f'<span class="wb-badge {cls}">{esc(label)}</span>'
 
@@ -71,10 +77,17 @@ def card(key: str, title: str | None = None, sub: str | None = None, right: str 
             raise
         except NeedInput as e:
             ph.empty()
-            st.markdown(
-                f'<p class="wb-kpi-note">공개 모드: {esc(e)}. 위 KPI <b>주가 / 시가총액</b> 칸의 <b>입력</b>에서 넣으면 계산합니다.</p>',
-                unsafe_allow_html=True,
-            )
+            # P7-U2F D2: the full sentence once per run (the first card), the others say it briefly
+            run = st.session_state.get("_run_no")
+            msg = str(e).replace("공개 모드 시세 입력 필요: ", "")
+            if st.session_state.get("_need_input_shown") != run:
+                st.session_state["_need_input_shown"] = run
+                st.markdown(
+                    f'<p class="wb-kpi-note">시세 입력 필요({esc(msg)}) — 위 KPI <b>주가 / 시가총액</b> 칸의 <b>입력</b>에서 넣으면 계산합니다.</p>',
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.markdown('<p class="wb-kpi-note">시세 입력 뒤 계산</p>', unsafe_allow_html=True)
         except PublicDataUnavailable as e:
             ph.empty()
             msg = str(e)
@@ -135,7 +148,7 @@ def footer(mode: str, as_of: str) -> None:
     src = tx.SOURCES_PC if mode == "pc" else tx.SOURCES_PUBLIC
     line = tx.FOOT_LINE_PC if mode == "pc" else tx.FOOT_LINE_PUBLIC
     st.markdown(
-        f'<div class="wb-foot" title="{esc(tx.DISCLAIMER + " " + src)}">{esc(line)} · 기준일 {esc(as_of)}</div>',
+        f'<div class="wb-foot" title="{attr(tx.DISCLAIMER + " " + src)}">{esc(line)} · 기준일 {esc(as_of)}</div>',
         unsafe_allow_html=True,
     )
 
@@ -156,7 +169,7 @@ def h2(title: str, sub: str = "", right: str = "") -> None:
 
 
 def tip_span(text: str, tip: str, cls: str = "wb-term") -> str:
-    return f'<span class="{cls}" title="{esc(tip)}">{esc(text)}</span>' if tip else esc(text)
+    return f'<span class="{cls}" title="{attr(tip)}">{esc(text)}</span>' if tip else esc(text)
 
 
 def cells(items: list[dict]) -> None:
@@ -166,7 +179,7 @@ def cells(items: list[dict]) -> None:
         v = x["v"] if x.get("html") else esc(x["v"])
         s = f'<span class="s">{esc(x["s"])}</span>' if x.get("s") else ""
         out.append(
-            f'<div title="{esc(x.get("tip", ""))}"><span class="k">{esc(x["k"])}</span><span class="v">{v}</span>{s}</div>'
+            f'<div title="{attr(x.get("tip", ""))}"><span class="k">{esc(x["k"])}</span><span class="v">{v}</span>{s}</div>'
         )
     st.markdown(f'<div class="wb-cells">{"".join(out)}</div>', unsafe_allow_html=True)
 
@@ -243,8 +256,8 @@ def tbl(
             if i == 0 and tips and not title:
                 tt = G.row_tip(str(cv))
                 if tt:
-                    txt = f'<span class="wb-term" title="{esc(tt)}">{esc(cv)}</span>'
-            ttl = f' title="{esc(title)}"' if title else ""
+                    txt = f'<span class="wb-term" title="{attr(tt)}">{esc(cv)}</span>'
+            ttl = f' title="{attr(title)}"' if title else ""
             tds.append(f'<td class="{" ".join(c)}"{ttl}>{txt}</td>')
         body.append(f'<tr class="{cls}">' + "".join(tds) + "</tr>")
     mw = f' style="min-width:{min_width}px"' if min_width else ""
