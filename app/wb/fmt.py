@@ -152,3 +152,18 @@ def pct_signed(v, d: int = 1) -> str:
         return NA
     x = float(v) * 100
     return ("+" if x >= 0 else MINUS) + f"{abs(x):.{d}f}%"
+
+
+def kst(at, clock: bool = False) -> str:
+    """P7-U3 U3-2c: a time written by the server ('YYYY-MM-DDTHH:MM:SS', naive = the server's local clock, UTC on the
+    public deployment) as Korean time: 'YYYY-MM-DD HH:MM', or 'HH:MM' with clock=True."""
+    from datetime import datetime, timedelta, timezone
+
+    if not at:
+        return ""
+    try:
+        d = datetime.fromisoformat(str(at))
+    except ValueError:
+        return str(at)
+    d = (d if d.tzinfo else d.astimezone()).astimezone(timezone(timedelta(hours=9)))
+    return d.strftime("%H:%M" if clock else "%Y-%m-%d %H:%M")

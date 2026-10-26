@@ -148,7 +148,8 @@ def footer(mode: str, as_of: str) -> None:
     src = tx.SOURCES_PC if mode == "pc" else tx.SOURCES_PUBLIC
     line = tx.FOOT_LINE_PC if mode == "pc" else tx.FOOT_LINE_PUBLIC
     st.markdown(
-        f'<div class="wb-foot" title="{attr(tx.DISCLAIMER + " " + src)}">{esc(line)} · 기준일 {esc(as_of)}</div>',
+        f'<div class="wb-foot"><span title="{attr(tx.DISCLAIMER + " " + src)}">{esc(line)} · 기준일 {esc(as_of)}</span>'
+        f" · {tx.project_links()}</div>",  # P7-U3 U3-4a
         unsafe_allow_html=True,
     )
 
@@ -301,12 +302,16 @@ def copy_btn(text: str) -> None:
 
 
 def title_copy(title: str, sub: str = "", note: str = "", text: str | None = None) -> None:
-    """Card title line with a copy button on the right (text = tab-separated table)."""
+    """Card title line with a copy button on the right (text = tab-separated table). P7-U3 U3-3d: the row is in a keyed
+    container so the stylesheet gives only ITS last column a fixed 60 px (a narrow card's 1.4/13.4 share was under the
+    button's 56 px and cut it)."""
     if text is None:
         h2(title, sub, note)
         return
-    a, b = st.columns([12, 1.4], vertical_alignment="center")
-    with a:
-        h2(title, sub, note)
-    with b:
-        copy_btn(text)
+    n = st.session_state["_copy_n"] = st.session_state.get("_copy_n", 0) + 1
+    with st.container(key=f"copyhead_{n}"):
+        a, b = st.columns([12, 1.4], vertical_alignment="center")
+        with a:
+            h2(title, sub, note)
+        with b:
+            copy_btn(text)

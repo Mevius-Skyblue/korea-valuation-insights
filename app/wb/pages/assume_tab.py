@@ -162,6 +162,24 @@ def _short(label: str) -> str:
     return t.split(": ", 1)[1] if ": " in t else t
 
 
+def short_name(label: str) -> str:
+    """P7-U3 U3-3b: the button name of a candidate - the prefix, explanations in parentheses (4+ characters; markers like
+    '(A)' stay) and a rule's left side ('… = 수렴 규칙(A) …' -> '수렴 규칙(A) …') are left to the tooltip."""
+    import re
+
+    t = _short(label)
+    t = re.sub(r"\s*\([^()]{4,}\)", "", t)
+    if " = " in t:
+        t = t.split(" = ", 1)[1]
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def applied(r: dict, cd: dict) -> bool:
+    """The candidate this judgement adopted (status 채택/수정 with this field and value) - shown with the orange frame."""
+    res = r.get("resolution") or {}
+    return r.get("status") in ("채택", "수정") and res.get("field") == cd["field"] and res.get("value") == cd["value"]
+
+
 def _cand_label(c: nav.Ctx, cd: dict, compact: bool = False) -> tuple[str, bool, str]:
     val = M.spec.fmt(cd["field"], cd["value"]) if cd["field"] != "peers" else f"{len(cd['value'])}곳"
     pv = M.candidate_preview(c.o, c.s, c.mode, cd["field"], cd["value"])
@@ -171,19 +189,18 @@ def _cand_label(c: nav.Ctx, cd: dict, compact: bool = False) -> tuple[str, bool,
         if pv.get("after") is not None
         else tx.plain_words(pv.get("error") or "계산 불가")
     )
-    if compact:  # P7-U2F D4: no cut (two lines allowed by CSS); the value only when the label has no number of its own
-        import re
+    import re
 
-        sl = _short(cd["label"])
-        head_ = sl if re.search(r"\d", sl) else f"{sl} {val}"
-        lab = f"{head_} · {F.won0(pv['after'])}원" if pv.get("after") is not None else head_
-        return lab, ok, full
-    prev = (
-        f"{F.won0(pv['before'])} → {F.won0(pv['after'])}원"
-        if pv.get("after") is not None
-        else tx.plain_words(pv.get("error") or "계산 불가")
-    )
-    return f"{_short(cd['label'])} {val} · {prev}", ok, full
+    # P7-U3 U3-3b: short name (+ the value when the name has no number of its own) · per share after adopting it; the
+    # whole sentence (and 'current -> after') is the tooltip. Same rule on the summary and the 가정·판단 tab
+    # A long value text (a named rule such as the CAPEX path) stays in the tooltip. The summary's narrower buttons use a
+    # fixed two-line form - name / per share - so a long name never wraps into a third line
+    sl = short_name(cd["label"])
+    head_ = sl if re.search(r"\d", sl) or len(val) > 12 or (compact and len(sl) > 14) else f"{sl} {val}"
+    if pv.get("after") is not None:
+        ps = f"{F.won0(pv['after'])}원"
+        return (f"{head_}  \n{ps}" if compact else f"{head_} · {ps}"), ok, full
+    return (head_ if compact else f"{head_} · {tx.plain_words(pv.get('error') or '계산 불가')}"), ok, full
 
 
 def _item(c: nav.Ctx, r: dict) -> None:
@@ -221,14 +238,12 @@ def _item(c: nav.Ctx, r: dict) -> None:
                 if opened:
                     lab, ok, full = _cand_label(c, cd)
                 else:
-                    lab = (
-                        f"{_short(cd['label'])} {M.spec.fmt(cd['field'], cd['value']) if cd['field'] != 'peers' else ''}".strip()
-                    )
+                    lab = f"{short_name(cd['label'])} {M.spec.fmt(cd['field'], cd['value']) if cd['field'] != 'peers' else ''}".strip()
                     ok, full = True, tx.plain_words(cd["label"])
                 cols[i % len(cols)].button(
                     lab,
                     help=full,
-                    key=f"jc_f_{jid}_{i}",
+                    key=f"jc_f_{jid}_{i}" + ("_on" if applied(r, cd) else ""),  # P7-U3 U3-3c: the adopted one framed
                     on_click=_do,
                     args=(c.sid, jid, "candidate"),
                     kwargs={"candidate": i, "rkey": f"jr_f_{jid}"},
@@ -302,14 +317,12 @@ def compact_row(c: nav.Ctx, r: dict) -> None:
         unsafe_allow_html=True,
     )
     cands = (r.get("candidates") or [])[:3]
-    res = r.get("resolution") or {}
     with b:
         if cands:
             cols = st.columns(len(cands))
             for i, cd in enumerate(cands):
                 lab, ok, full = _cand_label(c, cd, compact=True)
-                # P7-U2F D4: the candidate now applied (this judgement's adopted value) gets the orange frame
-                on = r.get("status") in ("채택", "수정") and res.get("field") == cd["field"] and res.get("value") == cd["value"]
+                on = applied(r, cd)  # P7-U2F D4: the candidate now applied gets the orange frame
                 cols[i].button(
                     lab,
                     help=full,

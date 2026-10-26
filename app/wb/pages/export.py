@@ -89,16 +89,14 @@ def _engagement(c: nav.Ctx) -> None:
 
 
 def preflight(c: nav.Ctx) -> None:
-    from app.wb import shell
-
     s = c.s
-    n = shell.tab_counts(c)["assume"]
+    n, ptxt = pending_text(c)
     done = sum(1 for k, _, _ in MEMOS if (s.get("memos") or {}).get(k))
     st_ = M.status(c.o, s)
     mk = M.market(c.o, s, c.mode)
     ex = (s.get("public_inputs") or {}).get("example") and c.mode == "public"
     rows = [
-        ("미처리 판단", f"{n}건 (보고서에 표시)" if n else "없음", bool(n)),
+        ("미처리 판단", f"{ptxt.removeprefix('미처리 ')} (보고서에 표시)" if n else "없음", bool(n)),
         ("보고서 작성 칸", f"{done}/6", done < 6),
         ("평가 보류", "있음 · 확정하면 확정값이 대표값" if st_["hold"] else "없음", st_["hold"]),
         ("주가 입력", ("입력됨" + (" · 예시" if ex else "")) if mk.get("close") else "없음 (블록가 제외)", not mk.get("close")),
@@ -118,12 +116,12 @@ def _confirm(c: nav.Ctx) -> None:
 
     s = c.s
     v = M.version(s)["v"]
-    n_all = M.S.pending(s)
+    n_all, ptxt = pending_text(c)
     conf = s.get("confirmed") or {}
     job = JB.job(c.sid, "pc")
     busy = bool(job and job["alive"])
     if st.session_state.get("confirm_ask") == v and n_all:
-        st.warning(f"미처리 {n_all}건 남긴 채 v{v}를 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)")
+        st.warning(f"{ptxt}을 남긴 채 v{v}를 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)")
         a, b = st.columns(2)
         go_ = a.button(f"미처리 {n_all}건 남긴 채 확정", key="confirm_yes", type="primary", disabled=busy, width="stretch")
         if b.button("취소", key="confirm_no", width="stretch"):
@@ -172,7 +170,7 @@ def _summary_pdf(c: nav.Ctx) -> None:
     """P7-U2: the one-page Valuation Summary (current version, Base) next to the files."""
     from app.wb import summary_pdf
 
-    a, _b = st.columns([1, 2])
+    a, _b = st.columns([1.3, 1])  # P7-U3 U3-3d: wide enough for the whole label
     with a:
         summary_pdf.button(c, "export")
 
@@ -199,14 +197,54 @@ def _queued(j: dict) -> None:
     )
 
 
+def _retry(sid: str, mode: str) -> None:
+    s = M.load(sid)
+    JB.retry(sid, mode, user=s.get("public_inputs") if mode == "public" else None)
+
+
+def _problem(c: nav.Ctx, mode: str, oc: dict) -> bool:
+    """P7-U3 U3-1: a confirmation that failed, ended without a result or does not answer says why and offers a retry."""
+    if oc["state"] not in ("stalled", "failed", "empty"):
+        return False
+    st.error(oc["why"] + " — [다시 시도]를 누르세요." + (f" 기록: {oc['log']}" if oc.get("log") else ""))
+    st.button("다시 시도", key=f"retry_{mode}", type="primary", on_click=_retry, args=(c.sid, mode))
+    return True
+
+
+def _watch(mode: str, oc: dict) -> None:
+    """While a job of this browser runs, remember it; when its record appears, redraw the whole page once so the output
+    table and the header version show the confirmation at once (P7-U3 U3-2b, U3-2d)."""
+    flag = f"_job_run_{mode}"
+    if oc["state"] in ("running", "queued", "stalled"):
+        st.session_state[flag] = True
+    elif oc["state"] == "done" and st.session_state.pop(flag, None):
+        st.rerun(scope="app")
+
+
+def pending_text(c: nav.Ctx) -> tuple[int, str]:
+    """P7-U3 U3-2a: one count of what is left - the 가정·판단 judgements (the tab number) and the post-date filing check
+    moved to the 공시·이벤트 tab, shown apart when there is one."""
+    from app.wb import shell
+
+    n_j = shell.tab_counts(c)["assume"]
+    n_all = M.S.pending(c.s)
+    n_e = n_all - n_j
+    txt = f"미처리 {n_j}건" + (f" + 공시 확인 {n_e}건(공시·이벤트 탭)" if n_e else "")
+    return n_all, txt
+
+
 @st.fragment(run_every=0.5)
 def _live(c: nav.Ctx) -> None:
     """Live status of the latest PC confirmation: the Excel download as soon as the model exists, then the reconciliation
     status and the report (polled from the job's output folder; afterwards from the session record)."""
     j = JB.job(c.sid, "pc")
     s = M.load(c.sid)
-    if j and j.get("queued"):
+    oc = JB.outcome(j, s)
+    _watch("pc", oc)
+    if oc["state"] == "queued":
         _queued(j)
+        return
+    if _problem(c, "pc", oc):
         return
     last = next((x for x in reversed(s.get("confirmations") or []) if x.get("mode") == "pc"), None)
     if j and (
@@ -215,9 +253,6 @@ def _live(c: nav.Ctx) -> None:
         or last.get("v") != j["v"]
         or (last.get("at") or "") < time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(j["started"]))
     ):
-        if not j["alive"] and j["returncode"]:
-            st.error(f"확정 작업 실패(코드 {j['returncode']}). 기록: {JB.safe_name(str(j['log']))}")
-            return
         v, xlsx, docx, recon = j["v"], j["xlsx"], j["docx"], j["reconcile"]
         head = f"확정 v{v} · 시작 {j['elapsed']:.0f}초 전"
         secs, per = j["excel_seconds"], None
@@ -225,7 +260,7 @@ def _live(c: nav.Ctx) -> None:
         outs = last.get("outputs") or {}
         v, xlsx, docx = last.get("v"), outs.get("xlsx") or last.get("excel"), outs.get("docx")
         recon = (last.get("reconcile") or {}).get("status", "")
-        head = f"확정 v{v} · {str(last.get('at', '')).replace('T', ' ')}"
+        head = f"확정 v{v} · {F.kst(last.get('at'))}"
         secs, per = last.get("excel_seconds"), last.get("per_share")
     else:
         st.markdown("<p class='wb-kpi-note'>확정하면 버전이 고정되고 파일이 만들어집니다</p>", unsafe_allow_html=True)
@@ -271,10 +306,10 @@ def _public(c: nav.Ctx) -> None:
         if not c.public:
             shell.public_form(c, "export", target_only=True)
     v = M.version(s)["v"]
-    n = M.S.pending(s)
+    n, ptxt = pending_text(c)
     go_ = False
     if c.public and st.session_state.get("confirm_ask") == v and n:  # P7-C3: the public export is the confirmation
-        st.warning(f"미처리 {n}건 남긴 채 v{v}를 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)")
+        st.warning(f"{ptxt}을 남긴 채 v{v}를 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)")
         a, b = st.columns(2)
         go_ = a.button(
             f"미처리 {n}건 남긴 채 확정", key="confirm_yes", type="primary", disabled=busy or bool(miss), width="stretch"
@@ -300,10 +335,14 @@ def _public(c: nav.Ctx) -> None:
 def _public_live(c: nav.Ctx) -> None:
     j = JB.job(c.sid, "public")
     s = M.load(c.sid)
-    if j and j.get("queued"):
+    oc = JB.outcome(j, s)
+    _watch("public", oc)
+    if oc["state"] == "queued":
         _queued(j)
         return
-    if j and j["alive"]:
+    if _problem(c, "public", oc):
+        return
+    if oc["state"] == "running":
         if c.public:  # P7-C3: the Excel model can be taken as soon as it exists
             st.markdown(
                 f"<p style='font-size:14px'>{ui.badge('만드는 중')} 공개 모드 엑셀·대조·보고서({j['elapsed']:.0f}초) · 엑셀 {'준비됨' if j['xlsx'] else '만드는 중'} · "
@@ -319,8 +358,6 @@ def _public_live(c: nav.Ctx) -> None:
             unsafe_allow_html=True,
         )
         return
-    if j and j["returncode"]:
-        st.error(f"공개 모드 내보내기 실패(코드 {j['returncode']}). 기록: {JB.safe_name(str(j['log']))}")
     rec = next((x for x in reversed(s.get("confirmations") or []) if x.get("mode") == "public"), None)
     if not rec:
         return
@@ -375,7 +412,7 @@ def _outputs(c: nav.Ctx) -> None:
                     [
                         JB.safe_name(o[k]),
                         f"v{x.get('v')}",
-                        (x.get("at") or "").replace("T", " ")[:16],
+                        F.kst(x.get("at")),
                         "PC" if x.get("mode") == "pc" else "공개",
                         (x.get("reconcile") or {}).get("status", ""),
                         "" if scan is None else f"검출 {scan['hits']}건",

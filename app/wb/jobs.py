@@ -345,6 +345,7 @@ def job(sid: str, mode: str) -> dict | None:
     return {
         **j,
         "alive": alive,
+        "acked": (j["dir"] / ACK).exists(),
         "returncode": j["proc"].poll(),
         "xlsx": rel(outs.get("xlsx")),
         "docx": rel(outs.get("docx")),
@@ -353,6 +354,59 @@ def job(sid: str, mode: str) -> dict | None:
         "excel_seconds": round(j["excel_at"] - j["started"], 1) if "excel_at" in j else None,
         "elapsed": round(time.time() - j["started"], 1),
     }
+
+
+STALL_S = 120.0  # a started job that has not accepted the confirmation after 2 minutes is reported as not answering
+
+
+def record_of(j: dict, s: dict) -> dict | None:
+    """The session's confirmation record written by this job (same mode and version, at or after its start)."""
+    t = time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(int(j["started"])))
+    return next(
+        (
+            x
+            for x in reversed(s.get("confirmations") or [])
+            if x.get("mode") == j["mode"] and x.get("v") == j["v"] and (x.get("at") or "") >= t
+        ),
+        None,
+    )
+
+
+def outcome(j: dict | None, s: dict) -> dict:
+    """P7-U3 U3-1: what became of the latest confirmation job, so that no ending is silent.
+
+    none / queued / running   nothing to say, waiting its turn, working
+    stalled                   alive but the confirmation not accepted after STALL_S
+    failed                    ended with an error code
+    empty                     ended with code 0 but wrote no confirmation record (P7-U3: a warm worker that left)
+    done                      the record is there ('record')
+    """
+    if not j:
+        return {"state": "none"}
+    if j.get("queued"):
+        return {"state": "queued"}
+    log = safe_name(str(j.get("log") or ""))
+    if j["alive"]:
+        if not j.get("acked") and j["elapsed"] > STALL_S:
+            return {"state": "stalled", "why": f"확정 작업이 {j['elapsed']:.0f}초 동안 응답하지 않습니다", "log": log}
+        return {"state": "running"}
+    rec = record_of(j, s)
+    if j["returncode"]:
+        return {"state": "failed", "why": f"확정 작업이 오류로 끝났습니다(종료 코드 {j['returncode']})", "log": log}
+    if rec is None:
+        return {"state": "empty", "why": "확정 작업이 결과 없이 끝났습니다(확정 기록·파일 없음)", "log": log}
+    return {"state": "done", "record": rec}
+
+
+def retry(sid: str, mode: str, user: dict | None = None) -> dict:
+    """[다시 시도]: drop the job of this session and mode (stop it if it still runs) and start the confirmation again."""
+    with _JLOCK:
+        j = _JOBS.pop(_k(sid, mode), None)
+        if j and j.get("proc") and j["proc"].poll() is None:
+            j["proc"].terminate()
+        if _k(sid, mode) in _QUEUE:
+            _QUEUE.remove(_k(sid, mode))
+    return start_confirm(S.load(sid), mode, user=user)
 
 
 def confirmations(s: dict) -> list[dict]:

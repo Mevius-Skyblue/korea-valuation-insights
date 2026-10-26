@@ -292,6 +292,7 @@ def warm(base: str, idle_s: float = WARM_IDLE_S) -> dict | None:
     t0 = time.time()
     preload()
     print(json.dumps({"event": "warm", "preload_s": round(time.time() - t0, 2)}), flush=True)
+    seen = None  # when THIS worker first saw .claimed (P7-U3 U3-1, below)
     while True:
         job = _trigger(ticket)
         if job:
@@ -302,8 +303,14 @@ def warm(base: str, idle_s: float = WARM_IDLE_S) -> dict | None:
             run(job["sid"], job.get("mode", "pc"), job.get("user"), job.get("clicked"))
             return {"seconds": round(time.time() - t1, 1)}
         if claimed.exists():
-            if time.time() - claimed.stat().st_mtime > WARM_CLAIM_S:
+            # P7-U3 U3-1: the claim's age is counted from when this worker first saw it. The file's mtime is not the claim
+            # time - the screen renames .open -> .claimed and a rename keeps the mtime of .open (the worker's start), so a
+            # worker that had waited over a minute left in the moment between the claim and the ticket, exit code 0, and
+            # the confirmation ended with nothing on the screen
+            seen = seen or time.time()
+            if time.time() - seen > WARM_CLAIM_S:
                 claimed.unlink(missing_ok=True)
+                print(json.dumps({"event": "claim_without_ticket"}), flush=True)
                 return None
         elif time.time() - t0 > idle_s:
             try:

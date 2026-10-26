@@ -304,7 +304,7 @@ def _guide(c: nav.Ctx) -> None:
         )
 
 
-REPO_URL = "https://github.com/Mevius-Skyblue/korea-valuation-insights"
+REPO_URL = tx.REPO_URL
 
 
 def _method(c: nav.Ctx) -> None:

@@ -19,6 +19,19 @@ DISCLAIMER = (
 )
 FOOT_LINE_PC = "가정 하의 추정 내재가치(예시) · 투자 권유 아님 · 출처 DART · ECOS · 한국거래소 통계정보"
 FOOT_LINE_PUBLIC = "가정 하의 추정 내재가치(예시) · 투자 권유 아님 · 출처 DART · ECOS · 시세는 사용자 입력"
+# P7-U3 U3-4a: the project introduction (one-page PDF) and the public repository, from the app (⋯ menu, footer)
+REPO_URL = "https://github.com/Mevius-Skyblue/korea-valuation-insights"
+ONEPAGE_URL = REPO_URL + "/blob/main/docs/KVI_onepage.pdf"
+
+
+def project_links() -> str:
+    """'프로젝트 소개(PDF) ↗ · GitHub ↗' as HTML links (new tab)."""
+    return (
+        f"<a href='{ONEPAGE_URL}' target='_blank' rel='noopener'>프로젝트 소개(PDF) ↗</a> · "
+        f"<a href='{REPO_URL}' target='_blank' rel='noopener'>GitHub ↗</a>"
+    )
+
+
 SOURCES_PC = "출처: DART 전자공시(접수번호 링크), 한국거래소 통계정보, 한국은행 ECOS"
 SOURCES_PUBLIC = "출처: DART 전자공시(접수번호 링크), 한국은행 ECOS, 시세는 사용자 입력"
 MODE_LABEL = {

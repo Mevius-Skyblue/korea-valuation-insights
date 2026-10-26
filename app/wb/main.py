@@ -56,6 +56,7 @@ def run(public: bool = False) -> None:
             public_ui.diag()
             return
     st.session_state["_run_no"] = st.session_state.get("_run_no", 0) + 1  # P7-U2F: one-per-run notices
+    st.session_state["_copy_n"] = 0  # P7-U3: copy-button keys count from 0 in every run (stable keys)
     c = nav.state(public)
     is_ref = c.page.startswith("ref_")
     style.inject("ref" if is_ref else "work")

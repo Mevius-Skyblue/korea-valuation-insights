@@ -122,7 +122,7 @@ abbr.wb-term, .wb-term {{ text-decoration: underline dotted {t["line_strong"]}; 
 .wb-brand {{ display: flex; align-items: baseline; gap: 8px; white-space: nowrap; padding-top: 8px; }}
 .wb-brand b {{ font-weight: 500; font-size: 20px; letter-spacing: 0.5px; }}
 .wb-brand span {{ font-size: 14px; color: {t["text_sub"]}; }}
-.wb-ver {{ font-size: 14px; color: {t["text_sub"]}; white-space: nowrap; padding-top: 10px; text-align: right; }}
+.wb-ver {{ font-size: 14px; color: {t["text_sub"]}; white-space: nowrap; padding-top: 10px; text-align: right; overflow: hidden; text-overflow: ellipsis; }}
 .wb-ver.warn {{ color: {t["warn_text"]}; }}
 .wb-subrow {{ display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 14px; color: {t["text_sub"]}; min-height: 32px; }}
 .wb-subrow b {{ color: {t["text"]}; font-weight: 500; }}
@@ -264,7 +264,13 @@ body.kvi-mini [data-testid="stToastContainer"] {{ top: 52px !important; bottom: 
 [class*="st-key-jc_s_"] button {{ height: auto !important; min-height: 40px; padding: 4px 8px; }}
 [class*="st-key-jc_s_"] button p, [class*="st-key-jc_s_"] button div {{ white-space: normal !important; overflow: visible !important;
   text-overflow: clip !important; line-height: 1.3; font-size: 13px !important; }}
-[class*="st-key-jc_s_"][class*="_on"] button {{ border: 2px solid {t["accent"]} !important; color: {t["accent_dark"]} !important; }}
+[class*="st-key-jc_s_"][class*="_on"] button, [class*="st-key-jc_f_"][class*="_on"] button {{ border: 2px solid {t["accent"]} !important; color: {t["accent_dark"]} !important; background: {t["accent_bg"]} !important; }}
+[class*="st-key-jc_f_"] button {{ height: auto !important; min-height: 40px; padding: 4px 10px; }}
+[class*="st-key-jc_f_"] button p, [class*="st-key-jc_f_"] button div {{ white-space: normal !important; overflow: visible !important;
+  text-overflow: clip !important; line-height: 1.3; }}
+[class*="st-key-copyhead_"] [data-testid="stColumn"]:last-child {{ flex: 0 0 60px !important; min-width: 60px !important; }}
+[class*="st-key-copyhead_"] [data-testid="stColumn"]:first-child {{ flex: 1 1 auto !important; min-width: 0 !important; }}
+.wb-foot a {{ color: {t["text_sub"]}; }}
 [class*="st-key-sensgrid_"] {{ gap: 4px !important; }}
 [class*="st-key-sensgrid_"] [data-testid="stHorizontalBlock"] {{ gap: 3px !important; }}
 [class*="st-key-sensgrid_"] [data-testid="stColumn"] {{ min-width: 0 !important; }}
@@ -287,7 +293,7 @@ body.kvi-mini [data-testid="stToastContainer"] {{ top: 52px !important; bottom: 
 [data-testid="stElementContainer"]:has(#kvi-state), body:not(.kvi-mini) [data-testid="stLayoutWrapper"]:has(> .st-key-minibar) {{ display: none !important; }}
 .wb-sens-pv {{ font-size: 14px; padding: 8px 12px; border-radius: 8px; background: {t["shade"]}; }}
 .st-key-sensapply {{ background: {t["accent_bg"]}; border: 1px solid {t["accent_line"]}; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; }}
-.wb-ver-note {{ font-size: 12px; color: {t["warn_text"]}; text-align: right; white-space: nowrap; }}
+.wb-ver-note {{ font-size: 12px; color: {t["warn_text"]}; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; }}
 .st-key-scenrow [data-testid="stButtonGroup"], .st-key-scenrow [data-testid="stElementContainer"] {{ display: flex; justify-content: flex-end; }}
 @media (max-width: 767px) {{
   .st-key-topbar [data-testid="stHorizontalBlock"] {{ flex-wrap: nowrap !important; gap: 6px; }}

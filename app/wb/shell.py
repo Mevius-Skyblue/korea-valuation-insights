@@ -275,11 +275,12 @@ def dirty(s: dict) -> int:
 def version_text(c: nav.Ctx) -> tuple[str, str]:
     s = c.s
     v = M.version(s)["v"]
-    conf = (s.get("confirmed") or {}).get("v")
+    cf = s.get("confirmed") or {}
+    conf = cf.get("v")
     st_ = M.status(c.o, s)
     n = dirty(s)
-    if conf == v:
-        return f"v{v} · 확정", ""
+    if conf == v:  # P7-U3 U3-2d: the confirmed version with its time (Korean time)
+        return f"v{v} · 확정 {F.kst(cf.get('at'), clock=True)}".rstrip(), ""
     if st_["hold"]:
         return f"v{v} · 보류" + (f" · 확정 전 변경 {n}건" if n else ""), "warn"
     return (f"v{v} · 확정 전 변경 {n}건" if n else "v0 · 자동 초안"), ""
@@ -288,6 +289,7 @@ def version_text(c: nav.Ctx) -> tuple[str, str]:
 def menu(c: nav.Ctx) -> None:
     """⋯ : reference pages, the simple DCF calculator, sessions, favourites."""
     with st.popover("더보기", icon=":material/more_horiz:", help="참고 자료 · 간이 DCF 계산기 · 세션 저장·불러오기 · 즐겨찾기"):
+        st.markdown(f"<p class='wb-kpi-note'>프로젝트 · {tx.project_links()}</p>", unsafe_allow_html=True)  # P7-U3 U3-4a
         st.markdown("<p class='wb-kpi-note'>참고</p>", unsafe_allow_html=True)
         for pid, label in nav.REFS:
             st.button(label, key=f"menu_{pid}", on_click=nav.go, args=(pid,), width="stretch")
@@ -325,13 +327,14 @@ def top(c: nav.Ctx) -> None:
             search(c)
         if c.s and c.o:
             txt, cls = version_text(c)
-            note = (
-                "<div class='wb-ver-note'>6시간 뒤 삭제 · 세션 파일 내려받기(확정 · 내보내기)</div>"
+            note = (  # P7-U3 U3-3a: short (the column is narrow), the whole sentence in the tooltip
+                "<div class='wb-ver-note' title='이 브라우저의 작업 공간은 6시간 뒤 지워집니다 — 확정 · 내보내기에서 세션 파일을 "
+                "내려받아 두면 이어서 작업할 수 있습니다'>6시간 뒤 삭제 ⓘ</div>"
                 if c.mode == "public" and dirty(c.s)
                 else ""
             )
             v_.markdown(
-                f"<div class='wb-ver {cls}' data-testid='wb-version'><span class='n'>{ui.esc(txt)}</span>"
+                f"<div class='wb-ver {cls}' data-testid='wb-version' title='{ui.attr(txt)}'><span class='n'>{ui.esc(txt)}</span>"
                 f"<span class='calc'>계산 중…</span></div>{note}",
                 unsafe_allow_html=True,
             )
