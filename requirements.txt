@@ -1,4 +1,4 @@
-# Pinned packages of the public app and its confirmation job (tested with Python 3.13; bundle 1f18f00).
+# Pinned packages of the public app and its confirmation job (tested with Python 3.13; bundle dc5751e).
 streamlit==1.66.0
 pandas==3.0.6
 numpy==2.5.3

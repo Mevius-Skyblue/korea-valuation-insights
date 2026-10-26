@@ -1,5 +1,22 @@
 # KVI 밸류에이션 워크벤치
 
+**공시 데이터로 상장사 가치평가 초안을 만들고, 실무자가 판단·확정하면 수식이 살아 있는 엑셀 모델과 보고서 초안을 내주는 작업 도구입니다.**
+
+**[공개 앱 열기](https://korea-valuation-insights-nadjarrtmvgmg7kxs9ujyy.streamlit.app/)** · **[1쪽 요약 (PDF)](docs/KVI_onepage.pdf)**
+
+![요약 탭 — 유니셈(036200), 평가기준일 2026-09-30, 주가는 예시 입력(실제 종가 아님)](docs/demo/02_summary_example_prices_1440.png)
+
+1. **초안 자동 생성** — 회사를 고르면 DART 공시·ECOS 금리로 재무 정리, 원문 대사, Peer 선정, DCF·상대가치, 경영권 프리미엄 범위까지
+2. **판단 항목 검토** — 사람이 정할 가정을 주당 영향이 큰 순서로, 후보마다 '반영 뒤 주당'을 미리 보여 줌
+3. **확정 및 산출물 생성** — 변경마다 버전·이유 기록. 수식이 살아 있는 엑셀과 보고서 초안, 엑셀 재계산 값 ↔ 엔진 값 자동 대조
+4. **평가 보류** — 믿기 어려운 결과는 대표값 대신 '자동 결과 보류 + 사유'와 먼저 볼 판단을 표시
+
+**홀드아웃**: 처음 보는 상장사 50곳을 수정 없이 한 번 — 초안 44/44 · 크래시 0 · 출처 없는 숫자 0, 품질 지표 13개 중 통과 8 · 미달 4 · 미측정 1(측정 그대로 공개, [검증 결과](#검증-결과))
+
+결과는 **가정 하의 추정 내재가치(예시)**이며 투자 권유가 아닙니다.
+
+---
+
 > **English summary.** KVI Valuation Workbench drafts an equity valuation of a Korean listed company from public filings (DART) and Bank of Korea rates, ranks the judgement calls by their per-share impact, and turns the analyst's decisions into a live-formula Excel model and a draft report.
 > Run once, without changes, on 50 companies it had never seen: a draft for 44/44 eligible companies, 0 crashes and 0 unsourced numbers — 8 of 13 quality metrics passed, 4 missed (reasons below, published as measured; one check-cell formula error was fixed afterwards without re-measuring) and 1 is not measured yet.
 > Exchange price data is not included (data terms): users type the prices. Results are illustrative estimates under stated assumptions, not investment advice.
