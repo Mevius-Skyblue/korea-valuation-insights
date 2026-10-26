@@ -1,10 +1,10 @@
 {
  "target": "<workspace>/sessions/036200_20260930_001/v1_public/valuation_036200_036200_20260930_001v1p.yaml",
- "started": "2026-10-24T02:01:26",
+ "started": "2026-10-26T12:36:41",
  "steps": {
   "engine": {
    "ok": true,
-   "sec": 1.1
+   "sec": 0.9
   },
   "first_draft": {
    "ok": true,
@@ -12,7 +12,7 @@
   },
   "excel": {
    "ok": true,
-   "sec": 55.3
+   "sec": 54.6
   },
   "report": {
    "ok": true,
@@ -25,13 +25,13 @@
  },
  "errors": [],
  "timing": {
-  "engine": 1.06,
-  "first_draft": 0.01,
-  "excel": 55.28,
-  "excel_build": 11.59,
-  "excel_reconcile": 43.68,
-  "report": 1.37,
-  "report_check": 0.53
+  "engine": 0.94,
+  "first_draft": 0.0,
+  "excel": 54.61,
+  "excel_build": 11.62,
+  "excel_reconcile": 42.99,
+  "report": 1.38,
+  "report_check": 0.51
  },
  "fast": false,
  "code": "036200",
@@ -59,10 +59,19 @@
  },
  "facts": {
   "acc_mt": "12",
+  "fin_structure": {
+   "hit": false,
+   "liab_share": 0.14875131997399918,
+   "op_share": 0.5843882153079728
+  },
   "fs_div": "CFS",
   "gate_a_p7b2_passed": true,
   "gate_a_p7b2b_passed": true,
   "gate_a_p7b3_passed": true,
+  "gate_a_p7b3b_passed": true,
+  "gate_a_p7b5_passed": true,
+  "holding_ratio": "",
+  "holding_scope": false,
   "ksic": "29271",
   "listed_sub": false,
   "listed_sub_p7b": false,
@@ -79,12 +88,27 @@
   "revenue_2025": 273330435300.0,
   "sotp": false,
   "sotp_unsupported": [],
+  "structure_guard": {
+   "a": false,
+   "b": false,
+   "equity_total": 252898449519.0,
+   "holding": "",
+   "listed_investees": [],
+   "minority_subs": [],
+   "n_assoc": 0,
+   "nci_equity": 0.0007007027853948415,
+   "scope_rcept": "20260313001168"
+  },
   "structure_source": "사업보고서 연결대상 종속회사 표(4곳) 20260313001168"
  },
  "peer_screen": {
-  "relax_step": null,
+  "relax_step": 0,
   "levels": [
    {
+    "band": [
+     0.3,
+     3.0
+    ],
     "candidates": 22,
     "dropped_holding": [],
     "dropped_profit": [
@@ -103,31 +127,32 @@
     ],
     "ksic": "29271",
     "ksic_digits": 5,
-    "pass": 10
+    "pass": 10,
+    "step": 0
    }
   ]
  },
  "values": {
-  "per_share_base_srp0": 7002.664468500492,
-  "wacc_base_srp0": 0.11974176891309479,
-  "ronic": 0.11974176891309479,
-  "tv_share": 0.4285652185570548,
-  "ev930_mn": 135010.7008866273,
+  "per_share_base_srp0": 6283.193634259337,
+  "wacc_base_srp0": 0.1189526032239875,
+  "ronic": 0.1189526032239875,
+  "tv_share": 0.4948615812826809,
+  "ev930_mn": 118846.7086946353,
   "close": 20000.0,
   "grid": {
-   "pessimistic|SRP0%": 5345.077547961827,
-   "pessimistic|SRP1%": 4955.207884882252,
-   "pessimistic|SRP2%": 4628.393636578287,
-   "base|SRP0%": 7002.664468500492,
-   "base|SRP1%": 6477.754062647854,
-   "base|SRP2%": 6035.580005626011,
-   "optimistic|SRP0%": 8801.431083570602,
-   "optimistic|SRP1%": 8129.771286977811,
-   "optimistic|SRP2%": 7562.23241694469
+   "pessimistic|SRP0%": 4691.380095525581,
+   "pessimistic|SRP1%": 4305.660068987227,
+   "pessimistic|SRP2%": 3982.2767592826267,
+   "base|SRP0%": 6283.193634259337,
+   "base|SRP1%": 5763.295620696118,
+   "base|SRP2%": 5325.210821878997,
+   "optimistic|SRP0%": 8014.795986412213,
+   "optimistic|SRP1%": 7349.06491518992,
+   "optimistic|SRP2%": 6786.3100522705045
   },
   "beta_u": 0.966807811708803,
-  "kd": 0.116498,
-  "de_own": 0.011671861102111377,
+  "kd": 0.055630000000000006,
+  "de_own": 0.02770553752646638,
   "block": {
    "q25": 19923.442814740745,
    "q50": 23854.18682653757,
@@ -135,8 +160,8 @@
   },
   "premium_method": "neighbours",
   "relative_median_ps": {
-   "EV/Sales": 12826.060215306248,
-   "EV/EBITDA": 6561.230037235491,
+   "EV/Sales": 12656.084998032877,
+   "EV/EBITDA": 6391.25481996212,
    "PER": 6817.13001586491,
    "PBR": 12524.18048900947
   },
@@ -186,7 +211,7 @@
    "combos": 9,
    "bad_combos": [],
    "other_bad": [],
-   "max_per_share_diff": 4.18367562815547e-11,
+   "max_per_share_diff": 4.547473508864641e-11,
    "nm_ratio_cells": 0,
    "formula_errors": 0,
    "hardcoded": 0,
@@ -262,7 +287,7 @@
   },
   {
    "category": "Kd 근거",
-   "detail": "이자비용 ÷ 평균 차입금 = 11.65%(이자 3.2억, 평균 차입 27.4억, 이자의 지급(현금흐름표)); 하한 Rf. 신용평가 등급·약정이자율(차입금 주석) 확인",
+   "detail": "이자비용 ÷ 평균 차입금 = 5.56%(이자 3.2억, 평균 차입 57.4억, 이자의 지급(현금흐름표)); 하한 Rf. 신용평가 등급·약정이자율(차입금 주석) 확인",
    "item": "신용등급 자동 탐색 안 함"
   },
   {
@@ -328,14 +353,14 @@
  ],
  "diagnostics": {
   "signals": {
-   "dcf": 7002.664468500492,
+   "dcf": 6283.193634259337,
    "peer_basis": "EV/EBITDA",
-   "q25": 5260.596670699277,
-   "q75": 7286.707794228767,
-   "peer_median": 6561.230037235491,
+   "q25": 5090.621453425906,
+   "q75": 7116.732576955396,
+   "peer_median": 6391.25481996212,
    "peer_n": 8,
    "price": 20000.0,
-   "ratio_market": 0.3501332234250246,
+   "ratio_market": 0.3141596817129669,
    "light_peer": "초록",
    "light_market": "빨강",
    "light": "빨강",
@@ -343,34 +368,34 @@
    "peer_invalid": []
   },
   "reverse": {
-   "target": 6561.230037235491,
+   "target": 6391.25481996212,
    "basis": "EV/EBITDA",
-   "margin": 0.047998731077240606,
+   "margin": 0.05484556279624331,
    "margin_base": 0.053505928262515545,
-   "start_growth": -0.008089723663892892,
+   "start_growth": 0.11130632720468492,
    "start_growth_base": 0.067855882642325,
-   "wacc": 0.12793358199113158,
-   "wacc_base": 0.11974176891309479,
-   "max_abs_error": 1.8189894035458565e-12
+   "wacc": 0.11713206612242966,
+   "wacc_base": 0.1189526032239875,
+   "max_abs_error": 2.7284841053187847e-12
   },
   "composition": {
-   "ev": 135010.7008866273,
-   "tv": 57860.89053301859,
-   "explicit": 77149.81035360871,
+   "ev": 118846.7086946353,
+   "tv": 58812.67019486937,
+   "explicit": 60034.03849976595,
    "cash_like": 62197.645863000005,
    "non_operating": 12011.071574,
-   "debt": -3051.4625290000004,
+   "debt": -8051.462528999999,
    "nci": -177.206648,
-   "equity": 205990.74914662732
+   "equity": 184826.7569546353
   },
   "composition_share": {
-   "ev": 0.6554211849121664,
-   "tv": 0.2808907233588064,
-   "explicit": 0.3745304615533599,
-   "cash_like": 0.3019438791337507,
-   "non_operating": 0.05830879116542432,
-   "debt": -0.01481359013276816,
-   "nci": -0.000860265078573318
+   "ev": 0.6430167939580608,
+   "tv": 0.3182043074494058,
+   "explicit": 0.3248124865086551,
+   "cash_like": 0.3365186236442274,
+   "non_operating": 0.06498556687302613,
+   "debt": -0.04356221286172427,
+   "nci": -0.000958771613589987
   },
   "anomalies": [
    {
@@ -395,19 +420,19 @@
     "key": "roic_below_wacc",
     "text": "과거 3년 ROIC(RONIC 상한) < 기본 WACC",
     "on": true,
-    "value": -0.020822194739383862
+    "value": -0.04715401463368224
    },
    {
     "key": "terminal_heavy",
     "text": "영구가치 비중 > 75% 또는 < 0%",
     "on": false,
-    "value": 0.4285652185570548
+    "value": 0.4948615812826809
    },
    {
     "key": "bridge_heavy",
     "text": "브리지 항목 하나의 절댓값 > 주식가치의 50%",
     "on": false,
-    "value": 0.3019438791337507
+    "value": 0.3365186236442274
    },
    {
     "key": "negative_equity_scenario",
@@ -421,22 +446,22 @@
     "id": "ex_loss_3y",
     "label": "손실 연도 제외 3년 평균(FY2023~2025 중 영업이익 > 0인 해)",
     "margin": 0.053505928262515545,
-    "per_share": 7002.664468500492,
+    "per_share": 6283.193634259337,
     "diff": 0.0
    },
    {
     "id": "median_5y",
     "label": "5년 중앙값(FY2021~2025)",
     "margin": 0.07491254735451337,
-    "per_share": 8714.435549679818,
-    "diff": 1711.7710811793258
+    "per_share": 8005.857484993916,
+    "diff": 1722.6638507345788
    },
    {
     "id": "peer_median",
     "label": "피어 LTM 영업이익률 중앙값(포함 피어)",
     "margin": 0.14949342410730082,
-    "per_share": 14671.464495798522,
-    "diff": 7668.80002729803
+    "per_share": 14000.835624036281,
+    "diff": 7717.641989776944
    }
   ],
   "sensitivities": {
@@ -450,7 +475,7 @@
      }
     ],
     "operating_cash": 0.88,
-    "per_share": 7002.634552862252,
+    "per_share": 6283.163718621097,
     "diff": -0.029915638240113316
    },
    "nci": {
@@ -458,24 +483,24 @@
     "total_equity": 252898.449519,
     "share_book": 0.0007007027853948415,
     "peer_pbr": 1.4577799351609002,
-    "a_per_share": 7003.777608564374,
-    "b_per_share": 6999.906734557346,
-    "a_diff": 1.113140063880478,
-    "b_diff": -2.7577339431471164
+    "a_per_share": 6284.810909540782,
+    "b_per_share": 6280.435900316189,
+    "a_diff": 1.6172752814443714,
+    "b_diff": -2.7577339431478896
    }
   },
   "v1": {
-   "per_share": 4132.803226139056,
-   "tv_share": 0.5844571021177446,
+   "per_share": 3462.0411310219006,
+   "tv_share": 0.8381167560517347,
    "signals": {
-    "dcf": 4132.803226139056,
+    "dcf": 3462.0411310219006,
     "peer_basis": "EV/EBITDA",
-    "q25": 5260.596670699277,
-    "q75": 7286.707794228767,
-    "peer_median": 6561.230037235491,
+    "q25": 5090.621453425906,
+    "q75": 7116.732576955396,
+    "peer_median": 6391.25481996212,
     "peer_n": 8,
     "price": 20000.0,
-    "ratio_market": 0.2066401613069528,
+    "ratio_market": 0.17310205655109503,
     "light_peer": "노랑",
     "light_market": "빨강",
     "light": "빨강",
@@ -569,7 +594,24 @@
   "sotp": null,
   "turnaround": null,
   "loss": null,
-  "ltm_margin": 0.05035097063828727
+  "ltm_margin": 0.05035097063828727,
+  "dilution": {
+   "balance_eok": 0.0,
+   "balance": {
+    "cb_current": 0.0,
+    "cb_noncurrent": 0.0,
+    "bw_current": 0.0,
+    "bw_noncurrent": 0.0,
+    "eb_current": 0.0,
+    "eb_noncurrent": 0.0
+   },
+   "share_of_equity": 0.0,
+   "years": 3,
+   "stock_option_n": 0,
+   "convertible_n": 0,
+   "recent": [],
+   "item": null
+  }
  },
  "review_ranked": {
   "computed": [
@@ -577,17 +619,17 @@
     "category": "비경상 손익",
     "detail": "FY2024 세전이익 − 영업이익 = 81억(영업이익 100억의 30% 초과): 영업외 손익 확인",
     "item": "정상화 조정 필요 여부",
-    "impact": 7668.80002729803,
+    "impact": 7717.641989776944,
     "alternative": "정상 이익률 피어 LTM 영업이익률 중앙값(포함 피어) 14.95%(기본 5.35%)",
     "rank": 1,
     "top5": true,
-    "impact_pct": 1.0951260140756365
+    "impact_pct": 1.228299243826615
    },
    {
     "category": "이익률 수렴",
     "item": "피어 쪽 수렴 비율",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -2876.925833883918,
+    "impact": -2900.261946352231,
     "alternative": "수렴 비율 0%(기본 50%, 피어 이익률 중앙값 14.9% 쪽)",
     "cands": [
      {
@@ -603,60 +645,70 @@
     ],
     "rank": 2,
     "top5": true,
-    "impact_pct": -0.4108330260324418
+    "impact_pct": -0.461590413279395
    },
    {
     "category": "기본 경로",
     "item": "기본 경로 v1(대안)",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -2869.861242361436,
+    "impact": -2821.1525032374366,
     "alternative": "기본 경로 v1(3년 평균 이익률 5.35%, 매출 CAGR 4.91%)",
     "rank": 3,
     "top5": true,
-    "impact_pct": -0.4098241826765649
-   },
-   {
-    "category": "시나리오 폭",
-    "detail": "과거 매출 성장률 표준편차 20.7%(n=5), 영업이익률 범위 4.0%~14.8% — 회사 변동성에 맞는 폭인지 판단",
-    "item": "±2%p(성장·이익률) 기본값, g 2%",
-    "impact": 1798.7666150701098,
-    "alternative": "낙관(+2%p)",
-    "rank": 4,
-    "top5": true,
-    "impact_pct": 0.2568688851452691
-   },
-   {
-    "category": "할인율",
-    "item": "SRP 열",
-    "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -967.0844628744808,
-    "alternative": "SRP 2%",
-    "rank": 5,
-    "top5": true,
-    "impact_pct": -0.1381023562137865
+    "impact_pct": -0.4489997710487549
    },
    {
     "category": "재투자 비율",
     "item": "CAPEX ÷ 매출(3년 평균)",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": 649.0722288358038,
-    "alternative": "CAPEX ÷ 매출 5년 평균 4.35%(FY2021~2025, 기본 3년 평균 5.59%)",
+    "impact": 2120.0764784020257,
+    "alternative": "마지막 명시 연도 재투자 = 수렴 규칙(A) CAPEX ÷ 매출 1.54%(명시 → 수렴 FCFF 2.71배, 기본 CAPEX ÷ 매출 3년 평균 5.59%)",
     "cands": [
      {
       "label": "CAPEX ÷ 매출 5년 평균 4.35%",
       "field": "capex_ratio",
       "value": 0.04349806712824148
+     },
+     {
+      "label": "마지막 명시 연도 재투자 = 수렴 규칙(A) CAPEX ÷ 매출 1.54%",
+      "field": "capex_ratio",
+      "value": 0.015366879050430316
+     },
+     {
+      "label": "수렴 구간 재투자율 선형 수렴(C)",
+      "field": "fade_reinvest",
+      "value": "linear"
      }
     ],
+    "rank": 4,
+    "top5": true,
+    "impact_pct": 0.3374202040889259
+   },
+   {
+    "category": "시나리오 폭",
+    "detail": "과거 매출 성장률 표준편차 20.7%(n=5), 영업이익률 범위 4.0%~14.8% — 회사 변동성에 맞는 폭인지 판단",
+    "item": "±2%p(성장·이익률) 기본값, g 2%",
+    "impact": 1731.602352152876,
+    "alternative": "낙관(+2%p)",
+    "rank": 5,
+    "top5": true,
+    "impact_pct": 0.2755927085727953
+   },
+   {
+    "category": "할인율",
+    "item": "SRP 열",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -957.98281238034,
+    "alternative": "SRP 2%",
     "rank": 6,
     "top5": false,
-    "impact_pct": 0.09268932300775967
+    "impact_pct": -0.15246749792285638
    },
    {
     "category": "할인율",
     "item": "MRP",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": 613.8117434862406,
+    "impact": 615.8663728981464,
     "alternative": "MRP 7%(기본 8%, 한공회 가이던스 7~9%)",
     "cands": [
      {
@@ -672,34 +724,51 @@
     ],
     "rank": 7,
     "top5": false,
-    "impact_pct": 0.08765402744159732
+    "impact_pct": 0.09801804762789947
+   },
+   {
+    "category": "RONIC",
+    "item": "영구 구간 RONIC(하한 WACC)",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -557.2149320389944,
+    "alternative": "RONIC = 과거 3년 ROIC 7.18%(규칙 전 값, 기본 = WACC 11.90%)",
+    "cands": [
+     {
+      "label": "RONIC 과거 3년 ROIC 7.18%",
+      "field": "ronic",
+      "value": 0.07179858859030526
+     }
+    ],
+    "rank": 8,
+    "top5": false,
+    "impact_pct": -0.08868339326688265
    },
    {
     "category": "재투자 비율",
     "item": "운전자본 회전일수(3년 평균)",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": 444.52936746422074,
-    "alternative": "회전일수 5년 평균 DSO 0·DIO 67·DPO 0일(FY2021~2025, 기본 DSO 0·DIO 83·DPO 0일)",
+    "impact": 539.5592942004287,
+    "alternative": "회전일수 5년 평균 DSO 74·DIO 67·DPO 22일(FY2021~2025, 기본 DSO 78·DIO 83·DPO 24일)",
     "cands": [
      {
-      "label": "회전일수 5년 평균 DSO 0·DIO 67·DPO 0일",
+      "label": "회전일수 5년 평균 DSO 74·DIO 67·DPO 22일",
       "field": "nwc_days",
       "value": {
-       "dso": 0.0,
+       "dso": 73.74244053743085,
        "dio": 66.5397556284702,
-       "dpo": 0.0
+       "dpo": 22.171192483196535
       }
      }
     ],
-    "rank": 8,
+    "rank": 9,
     "top5": false,
-    "impact_pct": 0.06348003241677658
+    "impact_pct": 0.08587341495548735
    },
    {
     "category": "이익률 수렴",
     "item": "수렴 도달 연도",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": 292.33258032795766,
+    "impact": 292.9434942508615,
     "alternative": "도달 연도 2030(기본 2032)",
     "cands": [
      {
@@ -713,33 +782,26 @@
       "value": 2034
      }
     ],
-    "rank": 9,
-    "top5": false,
-    "impact_pct": 0.04174590709621076
-   },
-   {
-    "category": "RONIC",
-    "item": "영구 구간 RONIC(하한 WACC)",
-    "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -175.2997633786954,
-    "alternative": "RONIC = 과거 3년 ROIC 9.89%(규칙 전 값, 기본 = WACC 11.97%)",
-    "cands": [
-     {
-      "label": "RONIC 과거 3년 ROIC 9.89%",
-      "field": "ronic",
-      "value": 0.09891957417371093
-     }
-    ],
     "rank": 10,
     "top5": false,
-    "impact_pct": -0.02503329470764048
+    "impact_pct": 0.04662334336691084
+   },
+   {
+    "category": "할인율",
+    "item": "Rf 만기",
+    "detail": "자동 진단(config/p7b2.yaml ranking)",
+    "impact": -113.69242282739015,
+    "alternative": "Rf 국고채 10년",
+    "rank": 11,
+    "top5": false,
+    "impact_pct": -0.01809468710425828
    },
    {
     "category": "목표 D/E",
     "item": "목표 D/E(자기 평균)",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -145.91937517711176,
-    "alternative": "피어 D/E 중앙값 0.102배(기본 자기 평균 0.012배)",
+    "impact": 60.42913012821009,
+    "alternative": "피어 D/E 중앙값 0.102배(기본 자기 평균 0.028배)",
     "cands": [
      {
       "label": "피어 D/E 중앙값 0.102배",
@@ -747,25 +809,25 @@
       "value": 0.10190995379939999
      }
     ],
-    "rank": 11,
-    "top5": false,
-    "impact_pct": -0.020837693399917825
-   },
-   {
-    "category": "할인율",
-    "item": "Rf 만기",
-    "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -114.8087815487188,
-    "alternative": "Rf 국고채 10년",
     "rank": 12,
     "top5": false,
-    "impact_pct": -0.01639501393578882
+    "impact_pct": 0.009617582020505958
+   },
+   {
+    "category": "Kd 근거",
+    "detail": "이자비용 ÷ 평균 차입금 = 5.56%(이자 3.2억, 평균 차입 57.4억, 이자의 지급(현금흐름표)); 하한 Rf. 신용평가 등급·약정이자율(차입금 주석) 확인",
+    "item": "신용등급 자동 탐색 안 함",
+    "impact": -60.05670256871872,
+    "alternative": "세전 Kd 10.51%(BBB- 3년, 기본 5.56%)",
+    "rank": 13,
+    "top5": false,
+    "impact_pct": -0.009558308412024326
    },
    {
     "category": "재투자 비율",
     "item": "D&A ÷ 매출(3년 평균)",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -59.93326258545858,
+    "impact": -60.04895095283973,
     "alternative": "D&A ÷ 매출 5년 평균 0.80%(FY2021~2025, 기본 3년 평균 0.92%)",
     "cands": [
      {
@@ -774,39 +836,29 @@
       "value": 0.008028152737248703
      }
     ],
-    "rank": 13,
+    "rank": 14,
     "top5": false,
-    "impact_pct": -0.008558636909572268
+    "impact_pct": -0.009557074705675262
    },
    {
     "category": "영구성장률",
     "detail": "산업·물가 전망과 비교",
     "item": "g 2%(사람 값 기본)",
-    "impact": 28.218796919713895,
+    "impact": 28.580374870793094,
     "alternative": "g 3%",
-    "rank": 14,
-    "top5": false,
-    "impact_pct": 0.004029722835736052
-   },
-   {
-    "category": "Kd 근거",
-    "detail": "이자비용 ÷ 평균 차입금 = 11.65%(이자 3.2억, 평균 차입 27.4억, 이자의 지급(현금흐름표)); 하한 Rf. 신용평가 등급·약정이자율(차입금 주석) 확인",
-    "item": "신용등급 자동 탐색 안 함",
-    "impact": 5.975793469320706,
-    "alternative": "세전 Kd 10.51%(BBB- 3년, 기본 11.65%)",
     "rank": 15,
     "top5": false,
-    "impact_pct": 0.0008533599597983203
+    "impact_pct": 0.004548701907730104
    },
    {
     "category": "비지배지분",
     "item": "비지배지분 차감 방법",
     "detail": "자동 진단(config/p7b2.yaml ranking)",
-    "impact": -2.7577339431471164,
+    "impact": -2.7577339431478896,
     "alternative": "비지배 장부 × 피어 P/B 중앙값 1.46배",
     "rank": 16,
     "top5": false,
-    "impact_pct": -0.00039381209189045163
+    "impact_pct": -0.000438906407103427
    },
    {
     "category": "비영업·현금성 분류",
@@ -816,7 +868,7 @@
     "alternative": "영업용 현금 0억을 브리지에서 뺌",
     "rank": 17,
     "top5": false,
-    "impact_pct": -4.272036504773342e-06
+    "impact_pct": -4.761215391643707e-06
    }
   ],
   "other": [
@@ -947,12 +999,12 @@
     "alternative": ""
    }
   ],
-  "share_top5": 0.8646643109869251
+  "share_top5": 0.8401759701853452
  },
- "review_share": 0.8646643109869251,
+ "review_share": 0.8401759701853452,
  "headline": {
   "status": "확정",
-  "per_share": 7002.664468500492,
+  "per_share": 6283.193634259337,
   "auto_status": "표시",
   "auto_hold_reasons": [],
   "guard_now": [],
@@ -964,28 +1016,28 @@
   "session_id": "036200_20260930_001",
   "version": 1,
   "mode": "public",
-  "pending": 34,
+  "pending": 33,
   "auto_status": "표시",
   "auto_hold_reasons": []
  },
  "convergence": {
   "verdict": "수렴",
-  "dcf": 7002.664468500492,
-  "q25": 5260.596670699277,
-  "q75": 7286.707794228767
+  "dcf": 6283.193634259337,
+  "q25": 5090.621453425906,
+  "q75": 7116.732576955396
  },
  "reconcile": {
   "status": "일치",
-  "max_per_share_diff": 4.18367562815547e-11
+  "max_per_share_diff": 4.547473508864641e-11
  },
- "first_draft_seconds": 1.1,
+ "first_draft_seconds": 1.0,
  "outputs": {
   "xlsx": "<workspace>\\outputs\\036200_20260930_001\\v1_public\\036200_model_2026-09-30.xlsx",
   "docx": "<workspace>\\outputs\\036200_20260930_001\\v1_public\\036200_report_draft.docx"
  },
- "excel_ready_seconds": 12.8,
+ "excel_ready_seconds": 12.7,
  "result": "완료",
- "seconds": 59.1,
+ "seconds": 58.2,
  "api_calls": {
   "DART": 0,
   "KRX": 0,

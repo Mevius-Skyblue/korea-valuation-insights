@@ -1,10 +1,10 @@
 {
  "target": "<workspace>/sessions/035610_20260930_001/v1_public/valuation_035610_035610_20260930_001v1p.yaml",
- "started": "2026-10-24T02:02:28",
+ "started": "2026-10-26T12:37:42",
  "steps": {
   "engine": {
    "ok": true,
-   "sec": 0.5
+   "sec": 0.4
   },
   "first_draft": {
    "ok": true,
@@ -12,11 +12,11 @@
   },
   "excel": {
    "ok": true,
-   "sec": 57.5
+   "sec": 54.7
   },
   "report": {
    "ok": true,
-   "sec": 1.5
+   "sec": 1.4
   },
   "report_check": {
    "ok": true,
@@ -25,13 +25,13 @@
  },
  "errors": [],
  "timing": {
-  "engine": 0.47,
+  "engine": 0.44,
   "first_draft": 0.0,
-  "excel": 57.5,
-  "excel_build": 12.41,
-  "excel_reconcile": 45.09,
-  "report": 1.48,
-  "report_check": 0.54
+  "excel": 54.67,
+  "excel_build": 11.48,
+  "excel_reconcile": 43.18,
+  "report": 1.36,
+  "report_check": 0.53
  },
  "fast": false,
  "code": "035610",
@@ -723,7 +723,24 @@
    "candidate_out_of_range": true
   },
   "loss": null,
-  "ltm_margin": -1.0139704532897058
+  "ltm_margin": -1.0139704532897058,
+  "dilution": {
+   "balance_eok": 0.0,
+   "balance": {
+    "cb_current": 0.0,
+    "cb_noncurrent": 0.0,
+    "bw_current": 0.0,
+    "bw_noncurrent": 0.0,
+    "eb_current": 0.0,
+    "eb_noncurrent": 0.0
+   },
+   "share_of_equity": 0.0,
+   "years": 3,
+   "stock_option_n": 0,
+   "convertible_n": 0,
+   "recent": [],
+   "item": null
+  }
  },
  "review_ranked": {
   "computed": [
@@ -1200,9 +1217,9 @@
   "xlsx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_model_2026-09-30.xlsx",
   "docx": "<workspace>\\outputs\\035610_20260930_001\\v1_public\\035610_report_draft.docx"
  },
- "excel_ready_seconds": 13.0,
+ "excel_ready_seconds": 12.0,
  "result": "완료",
- "seconds": 60.6,
+ "seconds": 57.6,
  "api_calls": {
   "DART": 0,
   "KRX": 0,

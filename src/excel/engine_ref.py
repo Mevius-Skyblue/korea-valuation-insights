@@ -464,7 +464,10 @@ def mechanical_reference(cfg_path: str) -> dict:
         if x["estimated"] and (x["year"], x["period"]) in used
     ]
     forced = diag.get("forced", []) + forced  # P7-B3b: funding / turnaround / SOTP guard / stake discount first, then D&A
-    ranked = rank_review(cfg.get("human_review"), diag["impacts"], diag["base_per_share"], forced, diag.get("out_of_range"))
+    dil = (diag.get("dilution") or {}).get("item")  # P7-U1F D-3 check item (no impact)
+    ranked = rank_review(
+        cfg.get("human_review"), diag["impacts"], diag["base_per_share"], forced, diag.get("out_of_range"), [dil] if dil else None
+    )
     return {
         "diagnostics": diag,
         "review_ranked": ranked,

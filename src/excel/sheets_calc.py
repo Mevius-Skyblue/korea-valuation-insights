@@ -1054,11 +1054,17 @@ def scen_calc(c: Ctx):
             _vlist(s, rr + 2, "RONIC(적용)", ronic_formula(d, A("reinv"), A("rcalc"), w, f"({P['gt']})"), "pct")
             s.text(rr + 3, 0, "FCFF")
             s.text(rr + 4, 0, "현재가치")
+            lin = (d.get("overrides") or {}).get("fade_reinvest") == "linear"  # P7-U1F D-2 (C)
             for j in range(C_FIRST, last + 1):
+                rate = f"{a1(R['g'], j)}/{ron}"
+                if lin:  # straight line from the last explicit year's rate to g ÷ RONIC (company_dcf.dcf_value)
+                    ix = lambda k: f"INDEX({rng(k)},{end_idx})"  # noqa: E731, B023
+                    rre = f"IF({A('n32')}>0,({ix('capex')}-{ix('dna')}+{ix('dnwc')})/{A('n32')},{rate})"
+                    rate = f"IF(FadeReinvLinear=1,{rre}+({rate}-{rre})*({a1(R['year'], j)}-ExplicitEnd)/FadeYears,{rate})"
                 s.fx(
                     rr + 3,
                     j,
-                    f"={a1(R['fcff_pre'], j)}-IF({a1(R['explicit'], j)}=1,0,{a1(R['nopat'], j)}*{a1(R['g'], j)}/{ron})",
+                    f"={a1(R['fcff_pre'], j)}-IF({a1(R['explicit'], j)}=1,0,{a1(R['nopat'], j)}*{rate})",
                     "mn",
                 )
                 s.fx(rr + 4, j, f"={a1(rr + 3, j)}*(1+{w})^(-DCF!{a1(D['t'], j)})", "mn")

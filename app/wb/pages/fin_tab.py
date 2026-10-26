@@ -69,7 +69,7 @@ def table(c: nav.Ctx) -> None:
         )
     if warns:
         st.markdown(
-            "<div style='font-size:14px;color:#7C2D12;padding:10px 12px;background:#FFF1E6;border-radius:8px'><span style='font-weight:600'>데이터 검증</span> "
+            "<div style='font-size:14px;color:#7C2D12;padding:10px 12px;background:#FFF1E6;border-radius:8px'><span style='font-weight:500'>데이터 검증</span> "
             + " · ".join(ui.esc(w) for w in warns)
             + "</div>",
             unsafe_allow_html=True,

@@ -18,6 +18,7 @@ Per-share values in 원, amounts in 억원 inside (company_dcf units) and 백만
 from __future__ import annotations
 
 import re
+from datetime import date
 
 import numpy as np
 
@@ -231,6 +232,99 @@ def _customer_funds_of(corp: str, fs: str) -> dict:
             _close(con)
 
     return run(corp, fs)
+
+
+def _dilution_filings(stock_code: str, as_of: str) -> list[dict]:
+    """P7-U1F D-3: stock-option / convertible-type filings of the saved exchange-disclosure list in the years before the
+    valuation date (config/p7u1f.yaml d3_dilution filings_rule). Data seam (P7-C3): the public deployment replays it."""
+    from src.workbench.snapdata import seam
+
+    @seam("dilution_filings", key=lambda code, d: (code, d))
+    def run(code, d):
+        import duckdb
+
+        from src.db.build import DB_PATH
+        from src.yamlio import load
+
+        yrs = int(load((ROOT / "config" / "p7u1f.yaml").read_text(encoding="utf-8"))["params"]["d3_years"])
+        end = date.fromisoformat(d)
+        start = end.replace(year=end.year - yrs)
+        con = duckdb.connect(str(DB_PATH), read_only=True)
+        try:
+            df = con.execute(
+                "SELECT rcept_no, CAST(rcept_dt AS VARCHAR) AS dt, report_nm FROM disclosure_list "
+                "WHERE stock_code = ? AND rcept_dt > ? AND rcept_dt <= ? ORDER BY rcept_dt DESC, rcept_no DESC",
+                [code, start, end],
+            ).df()
+        finally:
+            con.close()
+        out = []
+        for r in df.itertuples():
+            nm = str(r.report_nm)
+            if re.search(r"자회사의\s*주요경영사항|종속회사의\s*주요경영사항|전환우선주|전환주식|주식교환", nm):
+                continue
+            if "주식매수선택권" in nm:
+                kind = "stock_option"
+            elif re.search(r"전환사채|전환가액|전환청구권|신주인수권|교환사채|교환가액|교환청구권", nm):
+                kind = "convertible"
+            else:
+                continue
+            out.append({"rcept_no": r.rcept_no, "date": r.dt, "name": re.sub(r"\s+", " ", nm).strip(), "kind": kind})
+        return out
+
+    return run(stock_code, as_of)
+
+
+def dilution(c, eq: float | None) -> dict | None:
+    """P7-U1F D-3 (config/p7u1f.yaml d3_dilution): CB / BW / EB book balances at the balance-sheet date (already in total
+    debt), the filings of the last years, and the check item when the balance is >= 5% of the equity value or a stock-option
+    filing exists. Values of the model do not change. None when the filings are not available (old public snapshot)."""
+    from src.valuation.company_dcf import val
+    from src.workbench.snapdata import Missing
+    from src.yamlio import load
+
+    P = load((ROOT / "config" / "p7u1f.yaml").read_text(encoding="utf-8"))["params"]
+    keys = ("cb_current", "cb_noncurrent", "bw_current", "bw_noncurrent", "eb_current", "eb_noncurrent")
+    bal = {k: val(c, k, c.Y, c.P) for k in keys}
+    total = float(sum(bal.values()))
+    code = str(c.cfg["target"].get("stock_code") or c.cfg["target"].get("code") or "")
+    try:
+        fl = _dilution_filings(code, c.cfg["meta"]["as_of"]) if code else []
+    except Missing:
+        return None
+    so = [x for x in fl if x["kind"] == "stock_option"]
+    cv = [x for x in fl if x["kind"] == "convertible"]
+    share = total / eq if eq and eq > 0 else None
+    flag = (share is not None and share >= float(P["d3_balance_share"])) or (share is None and total > 0) or bool(so)
+    out = {
+        "balance_eok": total,
+        "balance": bal,
+        "share_of_equity": share,
+        "years": int(P["d3_years"]),
+        "stock_option_n": len(so),
+        "convertible_n": len(cv),
+        "recent": fl[: int(P["d3_links"])],
+        "item": None,
+    }
+    if flag:
+        parts = []
+        if total > 0:
+            parts.append(f"CB·BW·EB 잔액 {total:,.1f}억" + (f"(주식가치의 {share:.1%})" if share is not None else ""))
+        if so:
+            parts.append(f"주식매수선택권 공시 {len(so)}건")
+        if cv:
+            parts.append(f"전환·신주인수권·교환 공시 {len(cv)}건")
+        out["item"] = {
+            "category": "희석증권",
+            "item": " · ".join(parts),
+            "detail": (
+                f"지금 모델: CB·BW·EB 장부 금액은 총차입금(부채), 주식 수는 발행 − 자기주식(희석 미반영). "
+                f"공시 건수는 평가기준일 전 {int(P['d3_years'])}년 거래소공시(조정·행사·취득 공시 기준, 발행결정은 대부분 빠짐)"
+            ),
+            "impact": None,
+            "alternative": "부채 처리(지금) 또는 원문 확인 후 판단",
+        }
+    return out
 
 
 def in_range(field: str, value) -> bool:
@@ -713,7 +807,9 @@ def mechanical(c, h, cap, srps, w_base, bu0, de_own, kd, br, multiples, sel, p3,
             )
     forced = struct_forced + forced
     to_mn = 100.0
+    dil = dilution(c, eq)  # P7-U1F D-3: shown and listed as a check item; the value does not change
     return {
+        "dilution": dil,
         "v2": None if not v2 else {k: v for k, v in v2.items() if k != "peers"},
         "v1": v1,
         "guard": guard,
@@ -815,6 +911,7 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
                 "alt": f"{lab} 5년 평균 {v:.2%}({lab_y}, 기본 3년 평균 {h[k]:.2%})",
                 "cands": [{"label": f"{lab} 5년 평균 {v:.2%}", "field": k, "value": float(v)}],
             }
+    reinvest_fade_candidates(c, h, tb, v0, ps0, ps_at, out, oor)
     nd = fy.get("nwc_days")
     if (
         nd
@@ -916,6 +1013,55 @@ def x2b_impacts(c, h, cap, s0, w0, bu0, de_own, kd, tb, ps0, eq, shares, br, pin
     if oor:
         out["_oor"] = {k: oor_text(v) for k, v in oor.items()}
     return out
+
+
+def reinvest_fade_candidates(c, h, tb, v0, ps0, ps_at, out: dict, oor: dict) -> None:
+    """P7-U1F D-2 (config/p7u1f.yaml d2_reinvest_fade): when the FCFF jumps from the last explicit year to the first fade
+    year, the CAPEX ÷ sales item also offers (A) the CAPEX ratio whose last-explicit-year reinvestment equals the fade rule
+    (NOPAT × g ÷ RONIC, RONIC of the default) and (C) the linear fade of the reinvestment rate. The item's impact is the
+    candidate with the largest |difference| (B = the 5-year average stays first when it exists). Default unchanged."""
+    from src.valuation.company_dcf import fade_jump, forecast
+
+    j = fade_jump(v0["r"].table, len(tb))
+    if not j["jump"]:
+        return
+    alts = []  # (field, value, difference, label)
+    prev = out.get("capex_ratio")
+    if prev:
+        cd = prev["cands"][0]
+        alts.append((cd["field"], cd["value"], prev["diff"], cd["label"]))
+    e, R = v0["r"].table.iloc[len(tb) - 1], v0["ronic"]
+    rev, g = float(tb.iloc[len(tb) - 1].revenue), float(tb.iloc[len(tb) - 1].growth)
+    if R and rev > 0:
+        a = h["dna_ratio"] + (float(e.nopat) * g / R - float(e.dnwc)) / rev
+        if not (0 <= a <= 1) or not in_range("capex_ratio", float(a)):
+            oor.setdefault("capex_ratio", []).append(("capex_ratio", float(a)))
+        else:
+            h2 = {**h, "capex_ratio": a}
+            x = ps_at(hh=h2, t=forecast(c, h2))
+            if x is not None:
+                alts.append(("capex_ratio", float(a), x - ps0, f"마지막 명시 연도 재투자 = 수렴 규칙(A) CAPEX ÷ 매출 {a:.2%}"))
+    had = "overrides" in c.cfg
+    old = dict(c.cfg.get("overrides") or {})
+    c.cfg["overrides"] = {**old, "fade_reinvest": "linear"}
+    try:
+        x = ps_at()
+    finally:
+        if had:
+            c.cfg["overrides"] = old
+        else:
+            c.cfg.pop("overrides", None)
+    if x is not None:
+        alts.append(("fade_reinvest", "linear", x - ps0, "수렴 구간 재투자율 선형 수렴(C)"))
+    if not alts:
+        return
+    far = max(alts, key=lambda z: abs(z[2]))
+    ratio = f"{j['ratio']:.2f}배" if j["ratio"] is not None else "부호 바뀜"
+    out["capex_ratio"] = {
+        "diff": far[2],
+        "alt": f"{far[3]}(명시 → 수렴 FCFF {ratio}, 기본 CAPEX ÷ 매출 3년 평균 {h['capex_ratio']:.2%})",
+        "cands": [{"label": lab, "field": f, "value": v} for f, v, _, lab in alts],
+    }
 
 
 def _eok(x) -> str:
@@ -1183,7 +1329,12 @@ AUTO = [
 
 
 def rank_review(
-    review: list[dict] | None, impacts: dict, base_ps: float | None, forced: list[dict] | None = None, oor: dict | None = None
+    review: list[dict] | None,
+    impacts: dict,
+    base_ps: float | None,
+    forced: list[dict] | None = None,
+    oor: dict | None = None,
+    extra_other: list[dict] | None = None,
 ) -> dict:
     """Merge the draft's list with the computed impacts; computed items by |impact|, then the rest in their order.
     Each computed key is attached once (the first matching item); a key without a draft item becomes its own item."""
@@ -1245,6 +1396,7 @@ def rank_review(
                     "alternative": im["alt"],
                 }
             )
+    out_n += [dict(x) for x in (extra_other or [])]  # P7-U1F D-3: check items without an impact (not in the top-5 share)
     out_c.sort(key=lambda x: -abs(x["impact"]))
     # P7-B2b: estimated inputs (D&A) go to the top regardless of the impact (config/p7b2b.yaml dna.flag)
     out_c = [{**f, "impact": f.get("impact"), "alternative": f.get("alternative", "원문 확인")} for f in (forced or [])] + out_c

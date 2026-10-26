@@ -20,7 +20,7 @@ from src.excel.sheets_layout import (
     n_periods,
     tax_of,
 )
-from src.excel.writer import a1
+from src.excel.writer import a1, col
 
 
 def forecast_rows(c: Ctx, s, top: int, P: dict, main: bool) -> dict:
@@ -47,6 +47,16 @@ def forecast_rows(c: Ctx, s, top: int, P: dict, main: bool) -> dict:
         s.const(R["maint"], C_OPEN, 0, "mn")
         s.const(R["cum_maint"], C_OPEN, 0, "mn")
     s.fx(R["nwc"], C_OPEN, "=NWC_Open", "mn")
+    # P7-U1F D-2 (C), only when a person confirmed it: fade reinvestment rate in a straight line from the last explicit
+    # year's rate (capex − D&A + ΔNWC) ÷ NOPAT to g ÷ RONIC (company_dcf.dcf_value, the same rule)
+    lin = (c.d.get("overrides") or {}).get("fade_reinvest") == "linear"
+
+    def rng(k):
+        return f"${col(C_FIRST)}${R[k] + 1}:${col(C_FIRST + n - 1)}${R[k] + 1}"
+
+    def at_end(k):
+        return f"INDEX({rng(k)},MATCH(ExplicitEnd,{rng('year')},0))"
+
     for j in range(C_FIRST, C_FIRST + n):
         f = {
             "k": f"={W('k', j)}+1",
@@ -83,7 +93,16 @@ def forecast_rows(c: Ctx, s, top: int, P: dict, main: bool) -> dict:
             "tax_rate": f"={eff_of(X('fy_ebit', j))}",
             "tax": f"=MAX({X('ebit', j)},0)*{X('tax_rate', j)}",
             "nopat": f"={X('ebit', j)}-{X('tax', j)}",
-            "reinv_rate": f"=IF({X('explicit', j)}=1,0,{X('g', j)}/RONIC)",
+            "reinv_rate": (
+                f"=IF({X('explicit', j)}=1,0,{X('g', j)}/RONIC)"
+                if not lin
+                else (
+                    f"=IF({X('explicit', j)}=1,0,IF(FadeReinvLinear=1,"
+                    f"IF({at_end('nopat')}>0,({at_end('capex')}-{at_end('dna')}+{at_end('dnwc')})/{at_end('nopat')},{X('g', j)}/RONIC)"
+                    f"+({X('g', j)}/RONIC-IF({at_end('nopat')}>0,({at_end('capex')}-{at_end('dna')}+{at_end('dnwc')})/{at_end('nopat')},{X('g', j)}/RONIC))"
+                    f"*({X('year', j)}-ExplicitEnd)/FadeYears,{X('g', j)}/RONIC))"
+                )
+            ),
             "reinv": f"={X('nopat', j)}*{X('reinv_rate', j)}",
             "fcff": f"={X('nopat', j)}+{X('dna', j)}-{X('capex', j)}-{X('dnwc', j)}-{X('reinv', j)}",
             "ebitda": f"={X('ebit', j)}+{X('dna', j)}",

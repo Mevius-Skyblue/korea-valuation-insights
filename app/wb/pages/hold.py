@@ -36,14 +36,14 @@ def render(c: nav.Ctx, st_: dict) -> None:
     with a, ui.card("hold_do1"):
         st.markdown("<span class='wb-kpi-note'>먼저 할 일 1</span>", unsafe_allow_html=True)
         st.markdown(
-            f"<p style='font-weight:600'>{ui.esc(str(top.get('alternative') or top.get('item') or '원문 확인'))}</p>",
+            f"<p style='font-weight:500'>{ui.esc(str(top.get('alternative') or top.get('item') or '원문 확인'))}</p>",
             unsafe_allow_html=True,
         )
         if rc:
             st.markdown(tx.dart_link(rc, "공시 원문 열기"), unsafe_allow_html=True)
     with b, ui.card("hold_do2"):
         st.markdown("<span class='wb-kpi-note'>먼저 할 일 2</span>", unsafe_allow_html=True)
-        st.markdown("<p style='font-weight:600'>기준일 전 주식 수 변동(병합·분할·증자) 공시 확인</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-weight:500'>기준일 전 주식 수 변동(병합·분할·증자) 공시 확인</p>", unsafe_allow_html=True)
         st.button("공시·이벤트 탭 →", key="hold_events", type="tertiary", on_click=nav.go, args=("events",))
     with d, ui.card("hold_do3"):
         st.markdown("<span class='wb-kpi-note'>확인한 값 입력 → 다시 계산</span>", unsafe_allow_html=True)

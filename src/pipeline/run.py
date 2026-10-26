@@ -488,7 +488,7 @@ def _first_draft(summary: dict, d: dict, cfg: dict, mode: str) -> None:
         if gd["hold"]
         else {"status": "표시", "per_share": summary["values"]["per_share_base_srp0"], "reasons": []}
     )
-    for k in ("v1", "v2", "guard", "dna", "sotp", "turnaround", "loss", "ltm_margin"):
+    for k in ("v1", "v2", "guard", "dna", "sotp", "turnaround", "loss", "ltm_margin", "dilution"):  # P7-U1F: dilution
         summary["diagnostics"][k] = dg.get(k)
     summary["debt_reclass"] = (cfg.get("bridge") or {}).get("debt_reclass") or []
     summary["beta_src"] = e.get("beta_src")

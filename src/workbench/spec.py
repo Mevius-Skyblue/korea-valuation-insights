@@ -6,6 +6,8 @@ Two kinds:
     hook            values the engine and the Excel model take from `cfg['overrides']` (Inputs '사람 확정값' cells):
                     normal_margin, g_start, beta_u, de, kd, cash_adjust_mn, nci_mn,
                     P7-X2b: dna_ratio, capex_ratio, nwc_days ({dso, dio, dpo}), conv_share, conv_end, ronic
+                    P7-U1F: fade_reinvest ('rule' = g ÷ RONIC from the first fade year, 'linear' = straight line from the
+                    last explicit year's reinvestment rate to g ÷ RONIC)
 """
 
 from __future__ import annotations
@@ -30,7 +32,9 @@ HOOK = (
     "conv_share",
     "conv_end",
     "ronic",
+    "fade_reinvest",
 )
+FADE_REINVEST = {"rule": "g ÷ RONIC(지금 규칙)", "linear": "마지막 명시 연도 재투자율에서 g ÷ RONIC로 선형 수렴"}
 LABEL = {
     "rf_tenor": "Rf 만기(년)",
     "mrp": "MRP",
@@ -54,6 +58,7 @@ LABEL = {
     "conv_share": "피어 쪽 이익률 수렴 비율",
     "conv_end": "이익률 수렴 도달 연도",
     "ronic": "영구 구간 RONIC",
+    "fade_reinvest": "수렴 구간 재투자율",
 }
 KIND = {
     "rf_tenor": "int",
@@ -76,14 +81,26 @@ KIND = {
     "ronic": "pct",
     "conv_end": "int",
     "nwc_days": "days3",
+    "fade_reinvest": "choice",
 }
 
 
+_RULES: dict = {}
+
+
 def rules() -> dict:
-    """Ranges of config/p7c1.yaml assumptions + the P7-X2b fields (config/p7x2b.yaml params.assumptions)."""
+    """Ranges of config/p7c1.yaml assumptions + the P7-X2b fields (config/p7x2b.yaml params.assumptions). Read again only
+    when either file changes (P7-U2 speed)."""
     from src.valuation.associates import params
 
-    return {**yamlio.load((ROOT / "config" / "p7c1.yaml").read_text(encoding="utf-8"))["assumptions"], **params()["assumptions"]}
+    k = tuple((ROOT / "config" / f).stat().st_mtime_ns for f in ("p7c1.yaml", "p7x2b.yaml"))
+    if k not in _RULES:
+        _RULES.clear()
+        _RULES[k] = {
+            **yamlio.load((ROOT / "config" / "p7c1.yaml").read_text(encoding="utf-8"))["assumptions"],
+            **params()["assumptions"],
+        }
+    return _RULES[k]
 
 
 def fmt(field: str, v) -> str:
@@ -105,6 +122,8 @@ def fmt(field: str, v) -> str:
         return f"{float(v):,.0f}백만원"
     if k == "int":
         return f"{int(v)}"
+    if k == "choice":
+        return FADE_REINVEST.get(str(v), str(v))
     if k == "days3":
         return "·".join(f"{n} {float(v[x]):.0f}일" for n, x in (("DSO", "dso"), ("DIO", "dio"), ("DPO", "dpo")))
     return str(v)
@@ -163,6 +182,10 @@ def check(field: str, value, allowed_peers: list[str] | None = None) -> tuple[bo
         if v != float(value) or v > r["conv_end"]["max"]:
             return False, f"도달 연도는 {r['conv_end']['max']}년 이하의 정수", None
         return True, "", v
+    if field == "fade_reinvest":  # P7-U1F D-2 (C): one of two named rules
+        if value not in FADE_REINVEST:
+            return False, f"수렴 구간 재투자율은 {list(FADE_REINVEST)} 중 하나", None
+        return True, "", value
     if field == "rf_tenor":
         try:
             v = int(value)

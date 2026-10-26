@@ -86,7 +86,7 @@ a:hover {{ color: #7C2D12; }}
 .stButton > button, .stDownloadButton > button, .stFormSubmitButton > button, [data-testid="stPopover"] > div > button {{
   border-radius: 8px; min-height: 40px; font-weight: 500; font-size: 15px; }}
 .stButton > button[kind="primary"], .stDownloadButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {{
-  background: {t["accent"]}; border-color: {t["accent"]}; color: #FFFFFF; font-weight: 600; }}
+  background: {t["accent"]}; border-color: {t["accent"]}; color: #FFFFFF; font-weight: 500; }}
 .stButton > button[kind="primary"] *, .stDownloadButton > button[kind="primary"] * {{ color: #FFFFFF !important; }}
 .stButton > button[kind="primary"]:hover, .stDownloadButton > button[kind="primary"]:hover {{ background: {t["accent_dark"]}; border-color: {t["accent_dark"]}; }}
 .stButton > button[kind="secondary"], .stDownloadButton > button[kind="secondary"] {{ background: #FFFFFF; border: 1px solid {t["line"]}; color: {t["text"]}; }}
@@ -120,7 +120,7 @@ abbr.wb-term, .wb-term {{ text-decoration: underline dotted {t["line_strong"]}; 
 /* top bar and sub row */
 .st-key-topbar {{ background: {t["card"]}; border: 1px solid {t["line"]}; border-radius: 12px; padding: 12px 16px 10px; gap: 8px; }}
 .wb-brand {{ display: flex; align-items: baseline; gap: 8px; white-space: nowrap; padding-top: 8px; }}
-.wb-brand b {{ font-weight: 600; font-size: 20px; letter-spacing: 0.5px; }}
+.wb-brand b {{ font-weight: 500; font-size: 20px; letter-spacing: 0.5px; }}
 .wb-brand span {{ font-size: 14px; color: {t["text_sub"]}; }}
 .wb-ver {{ font-size: 14px; color: {t["text_sub"]}; white-space: nowrap; padding-top: 10px; text-align: right; }}
 .wb-ver.warn {{ color: {t["warn_text"]}; }}
@@ -138,9 +138,9 @@ abbr.wb-term, .wb-term {{ text-decoration: underline dotted {t["line_strong"]}; 
   color: {t["text_sub"]} !important; font-weight: 500; font-size: 15px; box-shadow: none !important; white-space: nowrap; flex: 0 0 auto !important;
   max-width: none !important; }}
 .st-key-wbtabs button p {{ overflow: visible !important; text-overflow: clip !important; white-space: nowrap; }}
-.st-key-wbtabs button[data-selected="true"], .st-key-wbtabs button[aria-checked="true"] {{ color: {t["text"]} !important; font-weight: 600;
+.st-key-wbtabs button[data-selected="true"], .st-key-wbtabs button[aria-checked="true"] {{ color: {t["text"]} !important; font-weight: 500;
   box-shadow: inset 0 -3px 0 {t["accent"]} !important; }}
-.st-key-wbtabs button[data-selected="true"] *, .st-key-wbtabs button[aria-checked="true"] * {{ color: {t["text"]} !important; font-weight: 600 !important; }}
+.st-key-wbtabs button[data-selected="true"] *, .st-key-wbtabs button[aria-checked="true"] * {{ color: {t["text"]} !important; font-weight: 500 !important; }}
 /* KPI band */
 .st-key-kpiband {{ background: {t["card"]}; border: 1px solid {t["line"]}; border-radius: 10px; box-shadow: 0 2px 6px rgba(21,23,27,0.06); padding: 0; gap: 0; }}
 .st-key-kpiband [data-testid="stHorizontalBlock"] {{ gap: 0; flex-wrap: wrap; }}
@@ -179,7 +179,7 @@ table.wb-t tr.top td {{ border-top: 1px solid {t["line_strong"]}; }}
 table.wb-t tr.dim td {{ color: {t["text_faint"]}; }}
 table.wb-t .sh {{ background: {t["shade"]}; }}
 table.wb-t td.neg {{ color: {t["red_text"]}; }}
-table.wb-t td.hl {{ background: {t["accent_bg"]}; color: {t["accent_dark"]}; font-weight: 600; }}
+table.wb-t td.hl {{ background: {t["accent_bg"]}; color: {t["accent_dark"]}; font-weight: 500; }}
 table.wb-t td.gap {{ color: {t["accent_dark"]}; font-weight: 500; }}
 /* cells and small blocks */
 .wb-cells {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }}
@@ -224,9 +224,63 @@ table.wb-t td.gap {{ color: {t["accent_dark"]}; font-weight: 500; }}
 [data-testid="stExpander"] summary p {{ font-size: 14px; font-weight: 500; }}
 button[data-variant="segmented_control"][data-selected="true"] {{ background: {t["accent_bg"]} !important; border-color: {t["accent"]} !important; }}
 button[data-variant="segmented_control"][data-selected="true"], button[data-variant="segmented_control"][data-selected="true"] * {{
-  color: {t["accent_dark"]} !important; font-weight: 600; }}
+  color: {t["accent_dark"]} !important; font-weight: 500; }}
 [data-tag] {{ background: {t["accent_bg"]} !important; border: 1px solid {t["accent_line"]} !important; }}
 [data-tag], [data-tag] * {{ color: {t["accent_dark"]} !important; }}
+/* fixed KPI bar, expand overlay, shortcut window, computing state, phone top row */
+.st-key-kviclient {{ height: 0 !important; min-height: 0 !important; overflow: hidden; margin: 0 !important; }}
+.st-key-kviclient iframe {{ height: 0 !important; border: 0; }}
+.st-key-minibar {{ display: none !important; }}
+body.kvi-mini .st-key-minibar {{ display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 44px; padding: 0 28px; background: {t["card"]}; border-bottom: 1px solid {t["line"]};
+  box-shadow: 0 2px 8px rgba(21, 23, 27, 0.06); align-items: center; }}
+.st-key-minibar [data-testid="stHorizontalBlock"] {{ align-items: center; flex-wrap: nowrap; gap: 12px; }}
+.st-key-minibar button {{ min-height: 30px !important; height: 30px; font-size: 13px !important; }}
+.kvi-mini-items {{ display: flex; gap: 20px; align-items: baseline; overflow-x: auto; white-space: nowrap; font-size: 14px; }}
+.kvi-mini-items .i {{ display: inline-flex; gap: 6px; align-items: baseline; }}
+.kvi-mini-items .k {{ font-size: 12px; color: {t["text_sub"]}; }}
+.kvi-mini-items .v {{ font-weight: 600; }}
+.kvi-mini-items .d {{ font-size: 12px; color: {t["text_sub"]}; }}
+body.kvi-exp .kvi-mini-items {{ visibility: hidden; }}
+.kvi-exp-btn {{ height: 30px; padding: 0 10px; border: 1px solid {t["line"]}; border-radius: 6px; background: {t["card"]};
+  color: {t["text_sub"]}; font-size: 13px; cursor: pointer; white-space: nowrap; font-family: inherit; }}
+.kvi-exp-btn .x, body.kvi-exp .kvi-exp-btn .o {{ display: none; }}
+body.kvi-exp .kvi-exp-btn .x {{ display: inline; }}
+.kvi-overlay {{ position: fixed; top: 44px; z-index: 999; background: {t["card"]}; padding: 10px 14px; border: 1px solid {t["line"]};
+  border-top: 0; border-radius: 0 0 10px 10px; box-shadow: 0 8px 20px rgba(21, 23, 27, 0.12); }}
+body.kvi-mini [data-testid="stToastContainer"] {{ top: 52px !important; bottom: auto !important; }}
+#kvi-help {{ position: fixed; right: 24px; bottom: 24px; z-index: 1001; width: 280px; padding: 14px 16px; background: {t["card"]};
+  border: 1px solid {t["line"]}; border-radius: 10px; box-shadow: 0 8px 24px rgba(21, 23, 27, 0.14); font-size: 14px;
+  font-family: {FONT_WORK}; color: {t["text"]}; display: flex; flex-direction: column; gap: 6px; }}
+#kvi-help .h {{ display: flex; justify-content: space-between; align-items: center; }}
+#kvi-help .h b {{ font-weight: 600; }}
+#kvi-help .h button {{ border: none; background: none; color: {t["text_sub"]}; cursor: pointer; font-size: 14px; }}
+#kvi-help .r {{ display: flex; justify-content: space-between; gap: 12px; color: {t["text_sub"]}; }}
+#kvi-help kbd {{ font-family: inherit; font-size: 13px; padding: 0 6px; border: 1px solid {t["line"]}; border-radius: 4px; color: {t["text"]}; white-space: nowrap; }}
+.wb-ver .calc {{ display: none; }}
+.stApp[data-test-script-state="running"] .wb-ver .n {{ display: none; }}
+.stApp[data-test-script-state="running"] .wb-ver .calc {{ display: inline; color: {t["accent_dark"]}; }}
+.stApp[data-test-script-state="running"] .wb-kpi .v, .stApp[data-test-script-state="running"] .kvi-mini-items .v {{ opacity: 0.35; }}
+.wb-sens-pv {{ font-size: 14px; padding: 8px 12px; border-radius: 8px; background: {t["shade"]}; }}
+.st-key-sensapply {{ background: {t["accent_bg"]}; border: 1px solid {t["accent_line"]}; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; }}
+.wb-ver-note {{ font-size: 12px; color: {t["warn_text"]}; text-align: right; white-space: nowrap; }}
+.st-key-scenrow [data-testid="stButtonGroup"], .st-key-scenrow [data-testid="stElementContainer"] {{ display: flex; justify-content: flex-end; }}
+@media (max-width: 767px) {{
+  .st-key-topbar [data-testid="stHorizontalBlock"] {{ flex-wrap: nowrap !important; gap: 6px; }}
+  .st-key-topbar [data-testid="stColumn"] {{ min-width: 0 !important; width: auto !important; flex: 1 1 auto !important; }}
+  .st-key-topbar [data-testid="stColumn"]:has(.st-key-top_history) {{ display: none !important; }}
+  .wb-brand span, .wb-ver-note {{ display: none; }}
+  .st-key-topbar [data-testid="stColumn"]:has(.wb-brand) {{ flex: 0 0 40px !important; min-width: 40px !important; }}
+  .wb-brand b {{ font-size: 15px; }}
+  .st-key-topbar [data-testid="stColumn"]:has(.st-key-top_export) {{ flex: 0 0 96px !important; min-width: 96px !important; }}
+  .st-key-topbar [data-testid="stColumn"]:has([data-testid="stPopover"]) {{ flex: 0 0 44px !important; min-width: 44px !important; }}
+  .st-key-topbar [data-testid="stColumn"]:has(.wb-ver) {{ flex: 0 1 84px !important; min-width: 0 !important; overflow: hidden; }}
+  .wb-ver {{ font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+  .st-key-top_export button p {{ font-size: 0 !important; }}
+  .st-key-top_export button p::after {{ content: '확정'; font-size: 14px; }}
+  body.kvi-mini .st-key-minibar {{ padding: 0 12px; }}
+  .kvi-mini-items .i:nth-child(n+3) {{ display: none; }}
+}}
 """
     if kind == "ref":
         base += f"""
@@ -240,7 +294,7 @@ button[data-variant="segmented_control"][data-selected="true"], button[data-vari
 .wb-find b {{ font-size: 28px; font-weight: 600; display: block; color: {t["text"]}; }}
 .wb-find span {{ font-size: 14px; line-height: 1.6; color: #33363C; }}
 .wb-refnav {{ border-bottom: 1px solid {t["line"]}; padding-bottom: 10px; margin-bottom: 18px; }}
-.wb-refnav b {{ font-weight: 600; letter-spacing: 0.04em; font-size: 18px; margin-right: 8px; }}
+.wb-refnav b {{ font-weight: 500; letter-spacing: 0.04em; font-size: 18px; margin-right: 8px; }}
 .wb-method p, .wb-method li {{ font-size: 15px; line-height: 1.75; color: #33363C; }}
 .wb-kpis {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 4px 0 8px 0; }}
 .wb-card {{ background: {t["card"]}; border: 1px solid {t["line"]}; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }}

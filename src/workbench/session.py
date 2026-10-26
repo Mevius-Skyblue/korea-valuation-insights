@@ -325,6 +325,7 @@ def _auto_value(field: str, cfg: dict, led: dict, r0: dict, x) -> object:
         "conv_share": (x.base_v2 or {}).get("conv_share") if x is not None else None,
         "conv_end": ((x.base_v2 or {}).get("conv_end") or _explicit_end(x.c)) if x is not None and x.base_v2 else None,
         "ronic": r0.get("ronic"),
+        "fade_reinvest": "rule",  # P7-U1F D-2 (C): the default rule
     }
     return m.get(field)
 

@@ -89,7 +89,7 @@ def vs(c: nav.Ctx) -> None:
     st.markdown(
         "<div class='wb-cells'>"
         + "".join(
-            f"<div><span class='k'>{ui.esc(k)}</span><span style='font-size:14px'><span style='font-weight:600'>{ui.esc(a)}</span> "
+            f"<div><span class='k'>{ui.esc(k)}</span><span style='font-size:14px'><span style='font-weight:500'>{ui.esc(a)}</span> "
             f"<span class='wb-kpi-note'>{'vs Peer ' if k != '선정 기준' else ''}{ui.esc(b)}</span></span></div>"
             for k, (a, b) in items
         )

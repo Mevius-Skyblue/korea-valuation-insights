@@ -881,6 +881,19 @@ def inputs(c: Ctx):
                     "사람 판단 반영 내역(Judgements 시트)",
                     name=nm,
                 )
+        if ovr.get("fade_reinvest") == "linear":  # P7-U1F D-2 (C): the fade reinvestment rule a person chose
+            w.item(
+                "ovr_fade_reinvest",
+                "사람 확정값: 수렴 구간 재투자율 선형 수렴(1 = 켬)",
+                1,
+                "int",
+                "",
+                src_wb,
+                "",
+                "⚠️",
+                "마지막 명시 연도 재투자율 → g ÷ RONIC(Judgements 시트)",
+                name="FadeReinvLinear",
+            )
         if ovr.get("nwc_days") is not None:  # P7-X2b: the three turnover days together
             for k, lab, nm in (("dso", "DSO", "DsoOverride"), ("dio", "DIO", "DioOverride"), ("dpo", "DPO", "DpoOverride")):
                 w.item(

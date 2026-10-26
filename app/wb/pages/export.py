@@ -168,6 +168,15 @@ def _dl(label: str, rel: str | None, key: str, primary: bool = False) -> bool:
     return True
 
 
+def _summary_pdf(c: nav.Ctx) -> None:
+    """P7-U2: the one-page Valuation Summary (current version, Base) next to the files."""
+    from app.wb import summary_pdf
+
+    a, _b = st.columns([1, 2])
+    with a:
+        summary_pdf.button(c, "export")
+
+
 def _session_file(c: nav.Ctx, key: str) -> None:
     from src.workbench import sessionfile as SF
 
@@ -244,6 +253,7 @@ def _live(c: nav.Ctx) -> None:
             _dl("PDF", pdf, f"dl_p_{v}")
     with e:
         _session_file(c, f"dl_s_{v}")
+    _summary_pdf(c)
 
 
 def _public(c: nav.Ctx) -> None:
@@ -342,6 +352,7 @@ def _public_live(c: nav.Ctx) -> None:
             _dl("보고서 초안", outs.get("docx"), f"dlp_d_{rec.get('v')}")
         with d:
             _session_file(c, f"dlp_s_{rec.get('v')}")
+        _summary_pdf(c)
     else:
         ui.tbl(
             ["파일", "위치", "항목"],

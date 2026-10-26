@@ -967,11 +967,17 @@ def dcf_value(
     g32 = col["growth"][ix[end]]
     fade = fade_years(c)
     ce = t.attrs.get("conv_end")
-    for y, gy in zip(fade, fade_path(g32, gT, len(fade))):
+    # P7-U1F D-2 (C), a person's choice (default off): the fade reinvestment rate moves in a straight line from the last
+    # explicit year's rate to g / RONIC (reached in the last fade year, so the terminal formula is unchanged)
+    rr_end = None
+    if overrides_of(c.cfg).get("fade_reinvest") == "linear" and n32 > 0:
+        rr_end = (col["capex"][ix[end]] - col["dna"][ix[end]] + col["dnwc"][ix[end]]) / n32
+    for i, (y, gy) in enumerate(zip(fade, fade_path(g32, gT, len(fade))), start=1):
         rev = prev * (1 + gy)
         ebit = rev * (margin_path(t.attrs["m_start"], t.attrs["conv"], y, c.Y, ce) if ce is not None else m)
         nopat = ebit * (1 - eff(c, ebit))
-        periods.append(Period(str(y), date(y, 1, 1), date(y, 12, 31), ebit, 0.0, nopat * gy / R, 0.0, tax_base=ebit))
+        reinv = nopat * gy / R if rr_end is None else nopat * (rr_end + (gy / R - rr_end) * i / len(fade))
+        periods.append(Period(str(y), date(y, 1, 1), date(y, 12, 31), ebit, 0.0, reinv, 0.0, tax_base=ebit))
         prev = rev
     rev_next = prev * (1 + gT)
     ebit_next = rev_next * m
@@ -1002,6 +1008,27 @@ def dcf_value(
         "tv_share": r.tv_share_gordon,
         "implied_multiple": r.implied_multiple,
         "r": r,
+    }
+
+
+def fade_jump(table: pd.DataFrame, n_explicit: int) -> dict:
+    """P7-U1F D-2: FCFF of the first fade year ÷ the last explicit year (rows of dcf_value's table; n_explicit = rows of the
+    forecast). 'jump' = ratio above config/p7u1f.yaml params.d2_jump_ratio, or the FCFF turns from <= 0 to > 0."""
+    from src import yamlio
+    from src.collect.core import ROOT
+
+    lim = float(yamlio.load((ROOT / "config" / "p7u1f.yaml").read_text(encoding="utf-8"))["params"]["d2_jump_ratio"])
+    if len(table) <= n_explicit:
+        return {"last": None, "first": None, "ratio": None, "sign_flip": False, "jump": False}
+    last, first = float(table.iloc[n_explicit - 1].fcff), float(table.iloc[n_explicit].fcff)
+    ratio = first / last if last > 0 else None
+    flip = last <= 0 < first
+    return {
+        "last": last,
+        "first": first,
+        "ratio": ratio,
+        "sign_flip": flip,
+        "jump": bool(flip or (ratio is not None and ratio > lim)),
     }
 
 

@@ -1,0 +1,6 @@
+# 공개 축약본(P7-C3): 비공개 저장소 config/p7u1f.yaml에서 공개 앱이 읽는 최상위 키만 (params)
+params:
+  d2_jump_ratio: 1.5
+  d3_balance_share: 0.05
+  d3_years: 3
+  d3_links: 5

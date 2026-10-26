@@ -82,8 +82,17 @@ def need_db(what: str) -> None:
         raise PublicDataUnavailable(f"{what}: DB 없음(공개 배포)")
 
 
+_YAML: dict = {}
+SRP_CITE: dict = {}  # P7-U2: the KICPA-cited SRP of the saved opinions (PC), read once with the session's DB connection
+
+
 def _load_yaml(p) -> dict:
-    return yamlio.load((ROOT / p).read_text(encoding="utf-8"))
+    """A config file, read again only when it changes (P7-U2 speed: the screen asked for the same files dozens of times)."""
+    f = ROOT / p
+    k = (str(p), f.stat().st_mtime_ns)
+    if k not in _YAML:
+        _YAML[k] = yamlio.load(f.read_text(encoding="utf-8"))
+    return _YAML[k]
 
 
 # ---------------------------------------------------------------- companies, drafts, gate
@@ -210,10 +219,21 @@ def gate_view(summ: dict | None) -> dict:
 # ---------------------------------------------------------------- sessions
 
 
+_SESS_ROWS: dict = {}  # P7-U2 speed: path -> (mtime_ns, row); a session file is read again only when it changes
+
+
 def sessions() -> list[dict]:
     """Saved sessions: company, as-of, version, status (초안/확정), pending judgements, last change."""
     out = []
     for p in sorted(S.base().glob("*/session.json")):
+        try:
+            mt = p.stat().st_mtime_ns
+        except OSError:
+            continue
+        hit = _SESS_ROWS.get(str(p))
+        if hit and hit[0] == mt:
+            out.append(hit[1])
+            continue
         try:
             s = json.loads(p.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
@@ -233,6 +253,7 @@ def sessions() -> list[dict]:
                 "auto": ((s.get("auto_headline") or {}).get("status") or ""),
             }
         )
+        _SESS_ROWS[str(p)] = (mt, out[-1])
     return sorted(out, key=lambda x: x["modified"], reverse=True)
 
 
@@ -269,6 +290,13 @@ class Opened:
             con = duckdb.connect(str(DB_PATH), read_only=True)
             try:
                 self.p3 = con.execute(f"SELECT * FROM peer_{name}_c3").df()
+                if "v" not in SRP_CITE:  # P7-U2 speed: the cited SRP (one aggregate) on this open connection, once
+                    try:
+                        from src.workbench.public_deploy import srp_cite_value
+
+                        SRP_CITE["v"] = float(srp_cite_value(con))
+                    except Exception:  # noqa: BLE001 - the assumption table asks again (or offers no button)
+                        pass
             finally:
                 con.close()
             from src.workbench import snapdata as SD

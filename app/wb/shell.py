@@ -265,18 +265,24 @@ def _start(code: str, mode: str) -> None:
 # ---------------------------------------------------------------- top row, sub row
 
 
+def dirty(s: dict) -> int:
+    """P7-U2 save guard: changes after the last confirmation (= versions since it; every change is a saved version)."""
+    v = M.version(s)["v"]
+    conf = (s.get("confirmed") or {}).get("v")
+    return max(v - int(conf), 0) if conf is not None else v
+
+
 def version_text(c: nav.Ctx) -> tuple[str, str]:
     s = c.s
     v = M.version(s)["v"]
     conf = (s.get("confirmed") or {}).get("v")
     st_ = M.status(c.o, s)
-    n_ch = len({a["field"] for a in s["audit"] if a.get("field")})
+    n = dirty(s)
     if conf == v:
         return f"v{v} · 확정", ""
     if st_["hold"]:
-        return f"v{v} · 보류", "warn"
-    done = sum(1 for j in (s.get("judgements") or {}).values() if j.get("status") not in ("미처리",))
-    return (f"v{v} · 판단 {done}건 반영" if done else (f"v{v} · 변경 {n_ch}건" if v else "v0 · 자동 초안")), ""
+        return f"v{v} · 보류" + (f" · 확정 전 변경 {n}건" if n else ""), "warn"
+    return (f"v{v} · 확정 전 변경 {n}건" if n else "v0 · 자동 초안"), ""
 
 
 def menu(c: nav.Ctx) -> None:
@@ -286,6 +292,11 @@ def menu(c: nav.Ctx) -> None:
         for pid, label in nav.REFS:
             st.button(label, key=f"menu_{pid}", on_click=nav.go, args=(pid,), width="stretch")
         st.markdown("<p class='wb-kpi-note'>도구</p>", unsafe_allow_html=True)
+        if c.s:  # P7-U2: history also here (the only place on a phone), the Summary PDF
+            st.button("이력", key="menu_history", on_click=nav.go, args=("history",), width="stretch")
+            from app.wb import summary_pdf
+
+            summary_pdf.button(c, "menu")
         st.button("간이 DCF 계산기", key="menu_calc", on_click=nav.go, args=("calc",), width="stretch")
         st.button("모든 세션 · 세션 저장·불러오기", key="menu_sessions", on_click=nav.go, args=("sessions",), width="stretch")
         if c.s:
@@ -298,6 +309,9 @@ def menu(c: nav.Ctx) -> None:
                 args=(code,),
                 width="stretch",
             )
+        from app.wb import client
+
+        st.markdown(f"<p class='wb-kpi-note'>단축키 (?): {ui.esc(client.keys_text())}</p>", unsafe_allow_html=True)
 
 
 def top(c: nav.Ctx) -> None:
@@ -311,11 +325,28 @@ def top(c: nav.Ctx) -> None:
             search(c)
         if c.s and c.o:
             txt, cls = version_text(c)
-            v_.markdown(f"<div class='wb-ver {cls}' data-testid='wb-version'>{ui.esc(txt)}</div>", unsafe_allow_html=True)
+            note = (
+                "<div class='wb-ver-note'>6시간 뒤 삭제 · 세션 파일 내려받기(확정 · 내보내기)</div>"
+                if c.mode == "public" and dirty(c.s)
+                else ""
+            )
+            v_.markdown(
+                f"<div class='wb-ver {cls}' data-testid='wb-version'><span class='n'>{ui.esc(txt)}</span>"
+                f"<span class='calc'>계산 중…</span></div>{note}",
+                unsafe_allow_html=True,
+            )
             h.button("이력", key="top_history", on_click=nav.go, args=("history",), width="stretch")
             with m:
                 menu(c)
-            e.button("확정 · 내보내기", key="top_export", type="primary", on_click=nav.go, args=("export",), width="stretch")
+            e.button(
+                "확정 · 내보내기",
+                key="top_export",
+                type="primary",
+                icon=":material/ios_share:",
+                on_click=nav.go,
+                args=("export",),
+                width="stretch",
+            )
         else:
             with m:
                 menu(c)
@@ -415,16 +446,19 @@ def kpi_band(c: nav.Ctx) -> None:
     o, s, mn = c.o, c.s, c.mn
     st_ = M.status(o, s)
     hold = st_["hold"] and st_["label"] != "확정"
+    scen = scenario()
+    lab_sc = SCEN_LABEL[scen]
     try:
-        k = V.kpi(o, s, c.mode)
+        k = V.kpi(o, s, c.mode, scen)
     except M.NeedInput:
         k = None
+    mini = None  # P7-U2: the same numbers for the fixed bar
     with st.container(key="kpiband"):
         cols = st.columns(6)
         if k is None or k["r"].get("per_share") is None:
             err = (k or {}).get("r", {}).get("error") if k else "시세 입력 필요"
             cells = [
-                _kc("주당가치 (DCF · Base)", "—", tx.plain_words(err or "계산 불가"), "시세 입력 뒤 계산", "muted"),
+                _kc(f"주당가치 (DCF · {lab_sc})", "—", tx.plain_words(err or "계산 불가"), "시세 입력 뒤 계산", "muted"),
                 _kc("기업가치 (EV)", "—", "", ""),
                 _kc("주주가치 (Equity)", "—", "", ""),
                 None,
@@ -444,7 +478,7 @@ def kpi_band(c: nav.Ctx) -> None:
             src_ps = "주주가치 ÷ 유통주식수 · 엑셀 Bridge · Scenarios"
             if hold:
                 c1 = _kc(
-                    "주당가치 (DCF · Base)",
+                    f"주당가치 (DCF · {lab_sc})",
                     "Hold",
                     "확인 후 산출",
                     f"평가 보류 — 대표값 미표시 · 보류 전 계산값 {F.won0(ps)}원",
@@ -452,7 +486,7 @@ def kpi_band(c: nav.Ctx) -> None:
                 )
             else:
                 c1 = _kc(
-                    "주당가치 (DCF · Base)",
+                    f"주당가치 (DCF · {lab_sc})",
                     F.won0(ps) + "원",
                     f"{F.won0(sc.get('pessimistic'))} ~ {F.won0(sc.get('optimistic'))}",
                     f"Bear ~ Bull 범위 · {src_ps} · v0 대비 {d_ps}",
@@ -492,12 +526,80 @@ def kpi_band(c: nav.Ctx) -> None:
                     "영구가치 현재가치 ÷ EV · 엑셀 DCF",
                 ),
             ]
+            mini = [
+                ("주당가치", "Hold" if hold else F.won0(ps) + "원", "" if hold else f"v0 대비 {d_ps}"),
+                ("EV", "—" if hold else F.amt(r["ev"], mn) + u, ""),
+                ("주주가치", "—" if hold else F.amt(r["equity"], mn) + u, ""),
+                ("WACC / g", f"{F.p1(w)} / {F.p1(g)}", ""),
+                ("영구가치 비중", F.p1(r.get("tv_share"), 0), ""),
+            ]
         for i, col in enumerate(cols):
             with col:
                 if i == 3:
                     _price_cell(c, mk)
                 else:
                     st.markdown(cells[i], unsafe_allow_html=True)
+    st.session_state["_mini"] = mini
+
+
+# ---------------------------------------------------------------- P7-U2 scenario switch and the fixed KPI bar
+
+SCEN_LABEL = {"pessimistic": "Bear", "base": "Base", "optimistic": "Bull"}
+BAR_TABS = ("summary", "assume", "dcf", "rel", "premium")  # config/p7u2.yaml kpi_bar.tabs_with_bar
+MINI_EMPTY = [("주당가치", "—", ""), ("EV", "—", ""), ("주주가치", "—", ""), ("WACC / g", "—", ""), ("영구가치 비중", "—", "")]
+
+
+def scenario() -> str:
+    """The scenario the KPI band, the bar and the summary show (screen state only; Excel and report stay on Base)."""
+    v = st.session_state.get("scen", "base")
+    return v if v in SCEN_LABEL else "base"
+
+
+def _scen_pick(key: str) -> None:
+    v = st.session_state.get(key)
+    if v in SCEN_LABEL:
+        st.session_state["scen"] = v
+
+
+def scen_switch(key: str) -> None:
+    """Bear / Base / Bull. Two copies (tab row and bar) write the same state."""
+    st.session_state[key] = scenario()
+    st.segmented_control(
+        "시나리오",
+        list(SCEN_LABEL),
+        format_func=SCEN_LABEL.get,
+        key=key,
+        on_change=_scen_pick,
+        args=(key,),
+        required=True,
+        label_visibility="collapsed",
+        help="엔진이 이미 계산한 시나리오 값을 화면에만 보여 줌(확정·엑셀·보고서는 Base 기준)",
+    )
+
+
+def mini_bar(c: nav.Ctx) -> None:
+    """The 44px bar (shown by client.py when the KPI band is out of view): tab menu · scenario · numbers · expand."""
+    mini = st.session_state.get("_mini") or MINI_EMPTY
+    lab = dict(nav.TABS)
+    with st.container(key="minibar"):
+        a, b, m, d = st.columns([1.5, 2.1, 7.6, 1.2], vertical_alignment="center")
+        with a, st.popover(lab.get(c.page, "탭"), width="stretch"):
+            for t_id, t_lab in nav.TABS:
+                st.button(t_lab, key=f"mb_tab_{t_id}", on_click=nav.go, args=(t_id,), width="stretch", disabled=t_id == c.page)
+        with b:
+            scen_switch("scen_bar")
+        items = "".join(
+            f"<span class='i'><span class='k'>{ui.esc(k)}</span><span class='v'>{ui.esc(v)}</span>"
+            + (f"<span class='d'>{ui.esc(dd)}</span>" if dd else "")
+            + "</span>"
+            for k, v, dd in mini
+        )
+        m.markdown(f"<div class='kvi-mini-items'>{items}</div>", unsafe_allow_html=True)
+        d.markdown(
+            "<button type='button' class='kvi-exp-btn' title='이 위치에서 지표 6칸 펼치기·접기'>"
+            "<span class='o'>▾ 펼치기</span><span class='x'>▴ 접기</span></button>",
+            unsafe_allow_html=True,
+        )
 
 
 def _price_cell(c: nav.Ctx, mk: dict) -> None:
@@ -672,7 +774,8 @@ def tabs(c: nav.Ctx) -> None:
         if v and v != c.page:
             nav.go(v)
 
-    with st.container(key="wbtabs"):
+    a, b = st.columns([8.6, 1.9], vertical_alignment="center")
+    with a, st.container(key="wbtabs"):
         st.segmented_control(
             "작업 탭",
             nav.TAB_IDS,
@@ -682,6 +785,9 @@ def tabs(c: nav.Ctx) -> None:
             on_change=_pick,
             label_visibility="collapsed",
         )
+    with b, st.container(key="scenrow"):
+        if c.page in BAR_TABS:
+            scen_switch("scen_band")
 
 
 # ---------------------------------------------------------------- the first screen

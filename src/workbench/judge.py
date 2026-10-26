@@ -45,7 +45,8 @@ DIRECT = {
     "상장 관계기업 보유 수량 확인": ["assoc_discount"],  # P7-X2b
     # P7-X2b (config/p7x2b.yaml judgements): the large assumptions ranked by impact
     "목표 D/E": ["de"],
-    "재투자 비율": ["dna_ratio", "capex_ratio", "nwc_days"],
+    "재투자 비율": ["dna_ratio", "capex_ratio", "nwc_days", "fade_reinvest"],
+    "희석증권": [],  # P7-U1F D-3: a check item (no field changes the value)
     "이익률 수렴": ["conv_share", "conv_end"],
     "상장 관계기업": ["assoc_discount"],
     "RONIC": ["ronic"],
@@ -159,10 +160,29 @@ def resolve(
     value=None,
     reason: str | None = None,
 ) -> dict:
-    """action 'candidate' (index), 'direct' (field, value) or 'keep'. Returns {'ok', 'reason', 'session', 'result'}."""
+    """action 'candidate' (index), 'direct' (field, value), 'keep' or 'note' (P7-U1F: an audit note, the item stays open).
+    Returns {'ok', 'reason', 'session', 'result'}."""
     from src.workbench import session as S
 
     j = s["judgements"][item_id]
+    if action == "note":  # P7-U1F D-3 '원문 확인 후 판단': the note is recorded, the status does not change
+        j["note"] = {"reason": reason or "", "at": S._now(), "v": S.current(s)["v"]}
+        s["audit"].append(
+            {
+                "at": S._now(),
+                "v": S.current(s)["v"],
+                "field": None,
+                "label": "판단 메모(원문 확인 후 판단)",
+                "before": None,
+                "after": None,
+                "before_text": "",
+                "after_text": "",
+                "reason": reason or "",
+                "judgement": item_id,
+            }
+        )
+        S.save(s)
+        return {"ok": True, "reason": "", "session": s, "result": S.current(s)["result"]}
     if action == "keep":
         j.update(
             {

@@ -8,7 +8,7 @@ import streamlit as st
 from app.wb import components as ui
 from app.wb import fmt as F
 from app.wb import model as M
-from app.wb import nav
+from app.wb import nav, shell
 from app.wb import text as tx
 from app.wb import values as V
 from app.wb.style import T
@@ -40,8 +40,8 @@ def _ff_text(ff: dict) -> str:
 
 def football(c: nav.Ctx) -> None:
     o, s = c.o, c.s
-    ff = V.football(o, s, c.mode)
-    r = M.result(o, s, c.mode)
+    ff = V.football(o, s, c.mode, shell.scenario())
+    r = V.scen_result(o, s, c.mode, shell.scenario())  # P7-U2: the scenario chosen on the screen (default Base)
     ps, price = r.get("per_share"), ff.get("price")
     pr_txt = ""
     if price:
@@ -102,7 +102,7 @@ def evaluation(c: nav.Ctx) -> None:
     o, s = c.o, c.s
     ui.h2("평가 요약")
     sig = M.signals(o, s, c.mode)
-    r = M.result(o, s, c.mode)
+    r = V.scen_result(o, s, c.mode, shell.scenario())
     rel = M.relative(o, s, c.mode)
     ps = r.get("per_share")
     q25, q75, med = sig.get("q25"), sig.get("q75"), sig.get("peer_median")

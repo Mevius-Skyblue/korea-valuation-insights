@@ -157,12 +157,30 @@ def fcff(c: nav.Ctx, d: dict) -> None:
         rows.append({"c": [lab] + _fmt_row(vals, kind, mn) + [last], "strong": strong, "top": top})
     n_hist = len(d["hist"])
     shade = tuple(range(1, n_hist + 1)) + (len(head) - 1,)
-    tip = (
-        f"CAPEX ÷ 매출 {F.p1(d['drivers']['capex_ratio'])} vs D&A ÷ 매출 {F.p1(d['drivers']['dna_ratio'])} · "
-        f"수렴 구간 첫해 재투자 = NOPAT × g ÷ RONIC → FCFF가 명시 마지막 해와 다르게 이어질 수 있음(데이터 점검 D-2)"
+    fj = d.get("fade_jump") or {}
+    jump_txt = (
+        f"{fj['ratio']:.2f}배"
+        if fj.get("ratio") is not None
+        else ("부호 바뀜(음 → 양)" if fj.get("sign_flip") else "계산 불가(마지막 명시 FCFF ≤ 0)")
     )
+    lin = d.get("fade_rule") == "linear"
+    tip = (
+        f"명시 → 수렴 FCFF 배수 {jump_txt}(첫 수렴 연도 ÷ 마지막 명시 연도). "
+        f"CAPEX ÷ 매출 {F.p1(d['drivers']['capex_ratio'])} vs D&A ÷ 매출 {F.p1(d['drivers']['dna_ratio'])} · "
+        + (
+            "수렴 구간 재투자율: 마지막 명시 연도 값에서 g ÷ RONIC로 선형 수렴(사람 선택)"
+            if lin
+            else "수렴 구간 재투자 = NOPAT × g ÷ RONIC(첫해부터)"
+        )
+        + (
+            " · 불연속 → 가정·판단의 'CAPEX ÷ 매출' 후보(A 마지막 해 = 수렴 규칙, B 5년 평균, C 선형 수렴)"
+            if fj.get("jump")
+            else ""
+        )
+    )
+    mark = f"ⓘ 불연속 {jump_txt}" if fj.get("jump") else f"ⓘ 배수 {jump_txt}"
     ui.title_copy(
-        f"② FCFF 추정 <span class='wb-help' title='{ui.esc(tip)}'>ⓘ 확인</span>",
+        f"② FCFF 추정 <span class='wb-help{' wb-warn' if fj.get('jump') else ''}' title='{ui.esc(tip)}'>{ui.esc(mark)}</span>",
         "",
         ui.esc(
             f"{F.unit(mn)} · 기중 할인 (Mid-year) · 수렴 구간 (Fade) {fd[0]['label']}–{fd[-1]['label']}" if fd else F.unit(mn)
@@ -198,6 +216,34 @@ def tv(c: nav.Ctx, d: dict) -> None:
     else:
         rows.append(("참고: 출구 배수법 (Exit Multiple)", "Peer EV/EBITDA 계산 불가"))
     ui.lines(rows)
+
+
+def _dilution_row(dl: dict | None, mn: bool, u: str) -> tuple:
+    """P7-U1F D-3: the dilutive-securities line (0 in the calculation; balances already in total debt)."""
+    base = "주식 수는 발행 − 자기주식 기준. 전환·행사 희석은 반영하지 않음. CB·BW·EB 장부 금액(잔액)은 위 차입금에 포함. 전환형 = 전환사채·신주인수권·교환 관련 공시"
+    if dl is None:
+        return ("희석증권 (CB·BW·EB·스톡옵션)", "자료 없음(초안을 다시 만들면 표시)", False, base)
+    val = f"잔액 {F.amt(dl['balance_eok'], mn)}{u}" + (
+        f" · 주식가치의 {F.p1(dl['share_of_equity'])}" if F.ok(dl.get("share_of_equity")) and dl["balance_eok"] else ""
+    )
+    val += f" · {dl['years']}년 공시 스톡옵션 {dl['stock_option_n']} · 전환형 {dl['convertible_n']}"
+    tip = (
+        base
+        + " · 공시 건수는 거래소공시의 조정·행사·취득 공시 기준(발행결정은 대부분 빠짐)"
+        + (" · 판단 목록 '희석증권' 확인 항목" if dl.get("item") else "")
+    )
+    return ("희석증권 (CB·BW·EB·스톡옵션) — 반영 안 함", val, False, tip)
+
+
+def _dilution_links(dl: dict | None) -> None:
+    if not dl or not dl.get("recent"):
+        return
+    from src.workbench.events import VIEW
+
+    links = " · ".join(
+        f"<a href='{VIEW}{x['rcept_no']}' target='_blank'>{ui.esc(x['date'])} {ui.esc(x['name'][:24])}</a>" for x in dl["recent"]
+    )
+    st.markdown(f"<p class='wb-kpi-note'>희석증권 관련 최근 공시(원문): {links}</p>", unsafe_allow_html=True)
 
 
 def bridge(c: nav.Ctx, d: dict) -> None:
@@ -243,15 +289,11 @@ def bridge(c: nav.Ctx, d: dict) -> None:
             False,
             tx.plain_words(sh.get("source") or ""),
         ),
-        (
-            "희석증권 (CB·BW·스톡옵션)",
-            "확인 필요 — 반영 안 함",
-            False,
-            "주식 수는 발행 − 자기주식 기준. 전환사채·신주인수권·주식매수선택권 희석은 반영하지 않음(데이터 점검 D-3)",
-        ),
+        _dilution_row(d.get("dilution"), mn, u),
         ("= 주당가치", F.won0(d["per_share"]) + "원", True),
     ]
     ui.lines(rows)
+    _dilution_links(d.get("dilution"))
     bi = M.bridge_info(o)
     cf = bi.get("customer_funds") or {}
     if bi.get("affiliate_loans"):
@@ -347,8 +389,20 @@ def scenarios(c: nav.Ctx, d: dict) -> None:
 
 
 def _grid(
-    title: str, sub: str, corner: str, cols: list[str], rows_lab: list[str], vals: list[list], center: tuple[int, int], note: str
+    c: nav.Ctx,
+    d: dict,
+    kind: str,
+    title: str,
+    sub: str,
+    corner: str,
+    cols: list[str],
+    rows_lab: list[str],
+    vals: list[list],
+    center: tuple[int, int],
+    note: str,
 ) -> None:
+    from app.wb import sens
+
     head = [corner] + cols
     rows = []
     for i, (rl, rv) in enumerate(zip(rows_lab, vals)):
@@ -356,8 +410,8 @@ def _grid(
             {"c": [rl] + [F.won0(v) if F.ok(v) else "계산 불가" for v in rv], "hl": {center[1] + 1} if i == center[0] else set()}
         )
     ui.title_copy(title, "", ui.esc(sub), ui.tsv(head, rows))
-    ui.tbl(head, rows, tips=False, compact=True)
-    st.markdown(f"<p class='wb-kpi-note'>{ui.esc(note)}</p>", unsafe_allow_html=True)
+    sens.table(c, d, kind, cols, rows_lab, vals, center, corner)  # P7-U2: a cell click previews and can carry the combination
+    st.markdown(f"<p class='wb-kpi-note'>{ui.esc(note)} · 칸을 누르면 미리보기</p>", unsafe_allow_html=True)
 
 
 def sens_wg(c: nav.Ctx, d: dict) -> None:
@@ -377,6 +431,9 @@ def sens_wg(c: nav.Ctx, d: dict) -> None:
         else "원/주 · Base"
     )
     _grid(
+        c,
+        d,
+        "wg",
         "민감도 · WACC × 영구성장률 (g)",
         "원/주 · Base",
         "g \\ WACC",
@@ -403,4 +460,16 @@ def sens_gm(c: nav.Ctx, d: dict) -> None:
     if ci >= 0 and cj >= 0 and cj + 1 < len(vals[ci]) and F.ok(vals[ci][cj + 1]) and F.ok(vals[ci][cj]):
         step = g["margin_shifts"][cj + 1] - g["margin_shifts"][cj]
         note = f"영업이익률 ±{step * 100:.0f}%p ≈ ±{abs(vals[ci][cj + 1] - vals[ci][cj]):,.0f}원"
-    _grid("민감도 · 영업이익률 × 매출 성장률", "원/주 · 기준 대비", "성장률 \\ 영업이익률", cols, rl, vals, (ci, cj), note)
+    _grid(
+        c,
+        d,
+        "gm",
+        "민감도 · 영업이익률 × 매출 성장률",
+        "원/주 · 기준 대비",
+        "성장률 \\ 영업이익률",
+        cols,
+        rl,
+        vals,
+        (ci, cj),
+        note,
+    )

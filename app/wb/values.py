@@ -305,9 +305,16 @@ def dcf_detail(o, s, mode: str) -> dict:
             "days": days,
             "units": "억원",
         }
+        from src.valuation.company_dcf import fade_jump
+
         out = {
             "meta": meta,
             "drivers": drivers,
+            # P7-U1F D-2: FCFF of the first fade year ÷ the last explicit year (engine table) and the fade rule in use
+            "fade_jump": fade_jump(tab, n_exp),
+            "fade_rule": overrides_of(cfg).get("fade_reinvest") or "rule",
+            # P7-U1F D-3: dilutive securities from the draft's diagnostics (summary.json; None = an older draft)
+            "dilution": (o.summ.get("diagnostics") or {}).get("dilution"),
             "hist": hist,
             "explicit": exp,
             "fade": fade,
@@ -357,8 +364,12 @@ def _date(sv):
 # ---------------------------------------------------------------- KPI band
 
 
-def kpi(o, s, mode: str) -> dict:
-    """Six KPI values of the current version (base scenario) and the v0 values for the Δ in the tooltips."""
+def kpi(o, s, mode: str, scen: str = "base") -> dict:
+    """Six KPI values of the current version and the v0 values for the Δ in the tooltips. P7-U2: scen = 'pessimistic' /
+    'optimistic' shows that scenario's engine values (per share, EV, equity, TV share: dcf_detail scenario block, the same
+    dcf_value calls as the Scenarios table); v0's EV / equity of that scenario are not computed (Δ '—')."""
+    from src.valuation.company_dcf import EOK
+
     r = M.result(o, s, mode)
     try:
         r0 = M.result(o, s, mode, 0)
@@ -369,6 +380,17 @@ def kpi(o, s, mode: str) -> dict:
         d = dcf_detail(o, s, mode)
         out["bridge"] = d.get("bridge")
         out["implied_multiple"] = (d.get("tv") or {}).get("implied_multiple")
+        sc = (d.get("scenarios") or {}).get(scen) if scen != "base" else None
+        if sc and r.get("per_share") is not None:
+            out["r"] = {
+                **r,
+                "per_share": sc["per_share"],
+                "ev": sc["ev"],
+                "equity": sc["per_share"] * d["shares"]["out"] / EOK,
+                "tv_share": sc["tv_share"],
+                "implied_multiple": sc["implied_multiple"],
+            }
+            out["r0"] = {"per_share": (r0.get("scenarios") or {}).get(scen)} if r0 else {}
     except (M.NeedInput, M.PublicDataUnavailable):
         out["bridge"] = None
     try:
@@ -391,6 +413,29 @@ def step_of(field: str, cur):
     if field == "rf_tenor":
         return 10 if int(cur) != 10 else 5
     return float(cur) + float(du["step"])
+
+
+_WARMED: set = set()
+
+
+def warm_deltas(o, s, mode: str) -> None:
+    """P7-U2 speed: compute the assumption tables' one-step Δ (the same deltas() and cache) in a thread while another tab
+    is open, so the first visit of the 가정·판단 tab does not wait for them. Once per session version and mode."""
+    import threading
+
+    k = (s["session_id"], M.version(s)["v"], mode, M.ukey(s) if mode == "public" else "")
+    if k in _WARMED:
+        return
+    _WARMED.add(k)
+
+    def run():
+        for g in TABLE_FIELDS:
+            try:
+                deltas(o, s, mode, [f for f in TABLE_FIELDS[g] if M.applicable(o, f)])
+            except Exception:  # noqa: BLE001 - the tab computes them itself
+                return
+
+    threading.Thread(target=run, daemon=True).start()
 
 
 def deltas(o, s, mode: str, fields: list[str]) -> dict:
@@ -565,10 +610,17 @@ def fin_table(o, s, mode: str) -> dict:
 FF_ORDER = ["EV/EBITDA", "PER", "EV/Sales", "PBR"]
 
 
-def football(o, s, mode: str) -> dict:
-    """DCF Bear~Bull (marker = base), peer IQR + median per multiple, the control block (VWAP x (1 + premium IQR)) and the
-    target price (PC close / public input)."""
+def scen_result(o, s, mode: str, scen: str = "base") -> dict:
+    """The version's result with the per share of the chosen scenario (P7-U2 screen switch; base = unchanged)."""
     r = M.result(o, s, mode)
+    sc = (r.get("scenarios") or {}).get(scen) if scen != "base" else None
+    return {**r, "per_share": sc} if _ok(sc) else r
+
+
+def football(o, s, mode: str, scen: str = "base") -> dict:
+    """DCF Bear~Bull (marker = the chosen scenario, default base), peer IQR + median per multiple, the control block
+    (VWAP x (1 + premium IQR)) and the target price (PC close / public input)."""
+    r = scen_result(o, s, mode, scen)
     sc = r.get("scenarios") or {}
     rows = []
     vals = [v for v in sc.values() if _ok(v)]

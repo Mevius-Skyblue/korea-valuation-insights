@@ -58,6 +58,10 @@ def run(public: bool = False) -> None:
     c = nav.state(public)
     is_ref = c.page.startswith("ref_")
     style.inject("ref" if is_ref else "work")
+    if not is_ref:
+        from app.wb import client
+
+        client.inject()  # P7-U2: fixed KPI bar, shortcuts, close warning (one script in the app document)
     if c.page == "calc":
         from app.wb import public_ui
 
@@ -90,6 +94,12 @@ def run(public: bool = False) -> None:
     shell.toast(c)
     shell.kpi_band(c)
     shell.tabs(c)
+    bar = c.page in shell.BAR_TABS
+    if bar:
+        shell.mini_bar(c)
+    from app.wb import client
+
+    client.state(c.page, bar, shell.dirty(c.s), c.mode == "public")
     page = c.page if c.page in _pages() else "summary"
     st_ = M.status(c.o, c.s)
     if st_["hold"] and st_["label"] != "확정" and page in nav.TAB_IDS and page != "summary":
@@ -104,4 +114,8 @@ def run(public: bool = False) -> None:
     else:
         with ui.card(f"tab_{page}", plain=True):
             _pages()[page](c)
+    if page != "assume":
+        from app.wb import values as V
+
+        V.warm_deltas(c.o, c.s, c.mode)  # P7-U2: the 가정·판단 tab's Δ column, ready before it is opened
     ui.footer(c.mode, M.AS_OF)

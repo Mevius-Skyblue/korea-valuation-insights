@@ -47,6 +47,9 @@ def visible_rows(s: dict) -> list[dict]:
 
 
 def render(c: nav.Ctx) -> None:
+    from app.wb import sens
+
+    sens.apply_line(c)  # P7-U2: a combination carried from a DCF sensitivity table
     with ui.card("judge"):
         panel(c)
     st.text_input("변경 이유 (다음 변경에 기록)", key="chg_reason", placeholder="[변경 이유] 예: 한공회 가이던스 적용")
@@ -176,7 +179,9 @@ def _cand_label(c: nav.Ctx, cd: dict, compact: bool = False) -> tuple[str, bool,
         )
         return lab, ok, full
     prev = (
-        f"{F.won0(pv['before'])} → {F.won0(pv['after'])}원" if pv.get("after") is not None else tx.plain_words(pv.get("error") or "계산 불가")
+        f"{F.won0(pv['before'])} → {F.won0(pv['after'])}원"
+        if pv.get("after") is not None
+        else tx.plain_words(pv.get("error") or "계산 불가")
     )
     return f"{_short(cd['label'])} {val} · {prev}", ok, full
 
@@ -190,8 +195,12 @@ def _item(c: nav.Ctx, r: dict) -> None:
         b, a = _ps(c, r["changed_v"] - 1), _ps(c, r["changed_v"])
         ba = f" · {F.won0(b)} → {F.won0(a)}원"
     title = f"{r['category']}  ·  {str(r['item'])[:60]}  ·  {_impact(r)}  ·  {st_}{ba}"
-    opened = st.session_state.get("judge_open") == jid
-    with st.expander(title, expanded=opened):
+    # P7-U2 speed: the candidate previews (a recalculation each) are computed when the row is opened, not for every row
+    xkey = f"jx_{jid}"
+    if st.session_state.get("judge_open") == jid:
+        st.session_state[xkey] = True
+    opened = bool(st.session_state.get(xkey))
+    with st.expander(title, key=xkey, on_change="rerun"):
         st.markdown(
             f"{ui.badge(st_, STATUS_CLS.get(st_, ''))} <span class='wb-kpi-note'>{ui.esc(r.get('detail') or '')[:300]}</span>"
             + (
@@ -209,7 +218,13 @@ def _item(c: nav.Ctx, r: dict) -> None:
         if cands:
             cols = st.columns(min(len(cands), 3))
             for i, cd in enumerate(cands):
-                lab, ok, full = _cand_label(c, cd)
+                if opened:
+                    lab, ok, full = _cand_label(c, cd)
+                else:
+                    lab = (
+                        f"{_short(cd['label'])} {M.spec.fmt(cd['field'], cd['value']) if cd['field'] != 'peers' else ''}".strip()
+                    )
+                    ok, full = True, tx.plain_words(cd["label"])
                 cols[i % len(cols)].button(
                     lab,
                     help=full,
@@ -230,6 +245,8 @@ def _item(c: nav.Ctx, r: dict) -> None:
                 b.multiselect("Peer", c.o.ctx.peers_all(), default=M.current_value(c.o, c.s, "peers"), key=f"jv_f_{jid}")
             elif fld == "premium":
                 b.selectbox("지분 구간", ["lt25", "25to50", "gt50"], key=f"jv_f_{jid}")
+            elif fld == "fade_reinvest":  # P7-U1F D-2 (C): one of two named rules
+                b.selectbox("규칙", list(M.spec.FADE_REINVEST), format_func=M.spec.FADE_REINVEST.get, key=f"jv_f_{jid}")
             else:
                 unit = " (%)" if fld in FD.PCT_FIELDS else (" (백만원)" if fld.endswith("_mn") else "")
                 b.text_input(f"직접 입력{unit}", value=FD.to_text(fld, M.current_value(c.o, c.s, fld)), key=f"jv_f_{jid}")
@@ -241,6 +258,28 @@ def _item(c: nav.Ctx, r: dict) -> None:
                 kwargs={"fkey": f"jf_f_{jid}", "vkey": f"jv_f_{jid}", "rkey": f"jr_f_{jid}"},
                 width="stretch",
             )
+        if r["category"] == "희석증권":  # P7-U1F D-3: a check item - two ways of handling, neither changes a value
+            a, b, d = st.columns([3, 1.4, 1.6], vertical_alignment="bottom")
+            a.text_input("메모 (기록)", key=f"jr_f_{jid}", placeholder="예: 전환가액·만기 확인, 내가격 아님")
+            b.button(
+                "부채 처리(지금)",
+                key=f"jk_f_{jid}",
+                on_click=_do,
+                args=(c.sid, jid, "keep"),
+                kwargs={"rkey": f"jr_f_{jid}"},
+                width="stretch",
+                help="CB·BW·EB 장부 금액을 총차입금에 두고 주식 수는 그대로(지금 모델). 그대로 유지로 기록",
+            )
+            d.button(
+                "원문 확인 후 판단",
+                key=f"jn_f_{jid}",
+                on_click=_do,
+                args=(c.sid, jid, "note"),
+                kwargs={"rkey": f"jr_f_{jid}"},
+                width="stretch",
+                help="메모만 감사 기록에 남기고 미처리로 둠(원문 확인 뒤 다시 처리)",
+            )
+            return
         a, b = st.columns([4, 1.4], vertical_alignment="bottom")
         a.text_input("변경 이유 (기록)", key=f"jr_f_{jid}", placeholder="예: 주석 확인 결과 일회성 손익")
         b.button(
@@ -280,7 +319,7 @@ def compact_row(c: nav.Ctx, r: dict) -> None:
                 )
         else:
             st.button("가정·판단에서 처리 →", key=f"jgo_{r['id']}", type="tertiary", on_click=_open_in_assume, args=(r["id"],))
-    d.markdown(f"<div style='text-align:right;font-size:15px;font-weight:600'>{_impact(r)}</div>", unsafe_allow_html=True)
+    d.markdown(f"<div style='text-align:right;font-size:15px;font-weight:500'>{_impact(r)}</div>", unsafe_allow_html=True)
 
 
 def _open_in_assume(jid: str) -> None:
@@ -307,15 +346,17 @@ def _do(
         raw = st.session_state.get(vkey)
         if fld == "premium":
             raw = {"stake_band": raw}
-        kw.update({"field": fld, "value": raw if fld in ("peers", "premium") else FD.parse(fld, raw)})
+        kw.update({"field": fld, "value": raw if fld in ("peers", "premium", "fade_reinvest") else FD.parse(fld, raw)})
     item = s["judgements"][jid]["item"]
-    if action != "keep":
+    if action not in ("keep", "note"):
         shell.note_change(s, tx.plain_words(str(item))[:30])
     r = M.resolve(s, jid, action, **kw)
     st.session_state["judge_open"] = jid
     if r["ok"]:
         msg = f"'{tx.plain_words(str(item))[:40]}' 처리: {s['judgements'][jid]['status']}"
-        if action != "keep":
+        if action == "note":
+            msg = f"'{tx.plain_words(str(item))[:40]}' 메모 기록(미처리 유지)"
+        elif action != "keep":
             msg += f" → v{M.version(s)['v']}"
         st.session_state["judge_flash"] = (True, msg + (f" (주의: {r['reason']})" if r.get("reason") else ""))
     else:
@@ -402,8 +443,16 @@ def _practice(c: nav.Ctx, f: str, cur, r: dict) -> tuple[str, bool]:
     return "", False
 
 
+_SRP_CITE: dict = {}  # process-wide: the cited SRP is one aggregate of the saved opinions (same for every company)
+
+
 def _srp_cite() -> float | None:
-    k = ("srp_cite",)
+    k = ("srp_cite", M.S.workspace() is None)
+    if k in _SRP_CITE:
+        return _SRP_CITE[k]
+    if M.SRP_CITE.get("v") is not None and not M.public_deploy():  # read when the session was opened (P7-U2)
+        _SRP_CITE[k] = M.SRP_CITE["v"]
+        return _SRP_CITE[k]
     if k not in M._CACHE:
         try:
             M.need_db("SRP 인용값")
@@ -417,6 +466,8 @@ def _srp_cite() -> float | None:
                 _close(con)
         except Exception:  # noqa: BLE001 - the button is just not offered
             M._CACHE[k] = None
+    if M._CACHE[k] is not None:
+        _SRP_CITE[k] = M._CACHE[k]
     return M._CACHE[k]
 
 
