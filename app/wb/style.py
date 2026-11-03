@@ -212,7 +212,6 @@ table.wb-t td.gap {{ color: {t["accent_dark"]}; font-weight: 500; }}
 .wb-ff .val {{ font-size: 14px; font-weight: 500; text-align: right; }}
 .wb-ff .ticks {{ display: flex; justify-content: space-between; font-size: 12px; color: {t["text_sub"]}; }}
 .wb-legend {{ display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }}
-.wb-wait {{ color: {t["text_sub"]}; }}
 .wb-evrow {{ display: grid; grid-template-columns: 92px minmax(0, 1fr) 64px 120px; gap: 0 12px; align-items: center; min-height: 40px; font-size: 14px; }}
 .wb-evdiv {{ display: flex; align-items: center; gap: 10px; height: 30px; font-size: 13px; color: {t["accent_dark"]}; font-weight: 500; }}
 .wb-evdiv span:last-child {{ flex: 1; border-top: 1px dashed {t["accent_line"]}; }}

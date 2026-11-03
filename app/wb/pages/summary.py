@@ -35,8 +35,6 @@ def _ff_text(ff: dict) -> str:
     rows = [[r["label"], r["sub"], F.won0(r["lo"]), F.won0(r["rep"]), F.won0(r["hi"])] for r in ff["rows"]]
     if ff.get("price"):
         rows.append(["주가", "평가기준일" if not ff["example"] else "예시", "", F.won0(ff["price"]), ""])
-    elif ff.get("price_wait"):
-        rows.append(["주가", M.PRICE_WAIT, "", "", ""])
     return ui.tsv(head, rows)
 
 
@@ -52,11 +50,6 @@ def football(c: nav.Ctx) -> None:
         pr_txt = (
             f"<span class='wb-legend' title='{ui.attr(tip)}'><span style='width:0;height:14px;border-left:2px dashed {T['blue_line']}'></span>"
             f"주가 {F.won0(price)}원{' (예시)' if ff['example'] else ''}</span>"
-        )
-    elif ff.get("price_wait"):  # P7-U5 U5-2: no price line from the example price
-        pr_txt = (
-            f"<span class='wb-legend wb-wait' title='{ui.attr('예시 시세 상태 — KPI 주가 칸에서 주가를 입력하면 주가선과 경영권 거래 막대가 나옵니다')}'>"
-            f"주가선 · {M.PRICE_WAIT}</span>"
         )
     ui.title_copy(
         tx.term("IQR", "평가방법별 주당가치") if False else "평가방법별 주당가치",
@@ -133,13 +126,9 @@ def evaluation(c: nav.Ctx) -> None:
             f"DCF ÷ Peer {basis} 중앙값 주당 · 신호 {sig.get('light_peer', '—')}",
         ),
         (
-            f"시장 {sig['ratio_market']:.2f}x"
-            if sig.get("ratio_market")
-            else (f"시장 · {M.PRICE_WAIT}" if not M.price_entered(s, c.mode) else "시장 —"),
+            f"시장 {sig['ratio_market']:.2f}x" if sig.get("ratio_market") else "시장 —",
             LIGHT.get(sig.get("light_market"), ""),
-            "DCF ÷ 주가 · 신호 "
-            + str(sig.get("light_market", "—"))
-            + ("" if M.price_entered(s, c.mode) else " · 예시 시세로는 판정하지 않음(KPI 주가 칸에서 입력)"),
+            "DCF ÷ 주가 · 신호 " + str(sig.get("light_market", "—")),
         ),
     ]
     st.markdown(
@@ -198,22 +187,16 @@ def premium_tiles(c: nav.Ctx) -> None:
     b.button("상세 →", key="to_premium", type="tertiary", on_click=nav.go, args=("premium",))
     pm = M.premium(o, s, c.mode)
     blk = pm.get("block")
-    wait = not M.price_entered(s, c.mode)  # P7-U5 U5-2
     st.markdown(
         "<div class='wb-prem'>"
         + "".join(
-            f"<div><span class='k'>{lab}</span><span class='v'>{F.pct_signed(pm[q])}</span>"
-            f"<span class='s'>{F.won0(blk[q]) + '원' if blk else (M.PRICE_WAIT if wait else '—')}</span></div>"
+            f"<div><span class='k'>{lab}</span><span class='v'>{F.pct_signed(pm[q])}</span><span class='s'>{F.won0(blk[q]) + '원' if blk else '—'}</span></div>"
             for lab, q in (("1사분위", "q25"), ("중앙값", "q50"), ("3사분위", "q75"))
         )
         + "</div>",
         unsafe_allow_html=True,
     )
-    note = (
-        f"블록 주당가 중앙값 {F.won0(blk['q50'])}원"
-        if blk
-        else (f"블록 주당가 · {M.PRICE_WAIT}" if wait else "VWAP 입력 시 블록 주당가")
-    )
+    note = f"블록 주당가 중앙값 {F.won0(blk['q50'])}원" if blk else "VWAP 입력 시 블록 주당가"
     st.markdown(f"<p class='wb-kpi-note'>{note} · {ui.esc(METHOD.get(pm['method'], pm['method']))}</p>", unsafe_allow_html=True)
 
 
@@ -229,17 +212,6 @@ def top5(c: nav.Ctx) -> None:
     a.markdown("<p class='wb-h2'>주요 판단<span class='wb-h2-sub'>상위 5</span></p>", unsafe_allow_html=True)
     b.button(f"전체 {len(rows)} →", key="to_assume", type="tertiary", on_click=nav.go, args=("assume",))
     d.button("초기화", key="reset_v0", help="자동 초안(v0)의 가정으로 새 버전(기록은 그대로)", on_click=_reset, args=(c.sid,))
-    if ranked:  # P7-U5 U5-5: column titles (the right number had none)
-        h1, h2, h3 = st.columns([2.2, 4.2, 1], vertical_alignment="bottom")
-        h1.markdown("<span class='wb-kpi-note'>판단 항목</span>", unsafe_allow_html=True)
-        h2.markdown(
-            "<span class='wb-kpi-note'>후보 (누르면 채택 · 반영 후 주당, 시나리오 폭은 Bear ~ Bull)</span>",
-            unsafe_allow_html=True,
-        )
-        h3.markdown(
-            f"<div class='wb-kpi-note' style='text-align:right'>{AT.impact_head()}</div>",
-            unsafe_allow_html=True,
-        )
     for r in ranked:
         AT.compact_row(c, r)
 

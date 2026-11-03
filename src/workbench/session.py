@@ -534,8 +534,6 @@ def set_public_inputs(s: dict, user: dict) -> dict:
         out["pref"] = pref
     if user.get("example") is True:  # P7-D: the screen's round example values (shown as '예시 입력', not a real close)
         out["example"] = True
-    if user.get("typed") is True:  # P7-U5 U5-2: the user saved the target close / VWAP form (the price is the user's)
-        out["typed"] = True
     s["public_inputs"] = out
     save(s)
     return s

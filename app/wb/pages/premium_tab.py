@@ -1,7 +1,6 @@
 """경영권 프리미엄 tab (P7-U1): conditions (stake band, buyer type, sample period) and the market-cap percentile, the three
 ways the D6 rule chooses from (neighbours / band table / quantile regression, rule and warnings behind ⓘ), the block
-price table (CP, block per share, implied DLOC; the premium is not applied to the DCF per share - P7-U5 U5-3) and
-stake -> deal amount.
+price table (CP, block per share, implied DLOC, DCF x (1 + CP) as a reference) and stake -> deal amount.
 Aggregates only (quartiles and counts); no deal names, dates or per-deal values. Block prices only with a market price
 (PC = 한국거래소 통계정보, public = the user's VWAP)."""
 
@@ -198,20 +197,22 @@ def block(c: nav.Ctx) -> None:
     o, s, mn = c.o, c.s, c.mn
     pm = M.premium(o, s, c.mode)
     blk = pm.get("block")
-    wait = not M.price_entered(s, c.mode)  # P7-U5 U5-2: example prices -> block prices wait for the user's price
+    r = M.result(o, s, c.mode)
+    ps = r.get("per_share")
     head = ["", "1사분위", "중앙값", "3사분위"]
     qs = ("q25", "q50", "q75")
     rows = [
         {"c": ["경영권 프리미엄 (CP)"] + [F.pct_signed(pm[q]) for q in qs], "strong": True},
-        ["블록 거래 주당가"] + ([F.won0(blk[q]) for q in qs] if blk else ([M.PRICE_WAIT] + [""] * 2 if wait else ["—"] * 3)),
+        ["블록 거래 주당가"] + ([F.won0(blk[q]) for q in qs] if blk else ["—"] * 3),
         ["내재 소수지분 할인 (DLOC)"] + [F.p1(pm[q] / (1 + pm[q])) for q in qs],
+        ["DCF × (1 + CP) (참고)"] + ([F.won0(ps * (1 + pm[q])) for q in qs] if F.ok(ps) else ["—"] * 3),
     ]
     n = pm.get("n_neighbour") if pm["method"] == "neighbours" else (pm.get("band") or {}).get("n")
     ui.title_copy("블록 거래가", f"{METHOD.get(pm['method'], pm['method'])} {n or ''}건 기준".strip(), "", ui.tsv(head, rows))
     ui.tbl(head, rows)
     a, b, d = st.columns([2.2, 1.4, 2.4], vertical_alignment="bottom")
     a.markdown(
-        f"<div class='wb-subrow'>20일 거래량가중평균가 (VWAP) <b>{F.won0(pm.get('vwap')) + '원' if pm.get('vwap') else (M.PRICE_WAIT if wait else '입력 전')}</b>"
+        f"<div class='wb-subrow'>20일 거래량가중평균가 (VWAP) <b>{F.won0(pm.get('vwap')) + '원' if pm.get('vwap') else '입력 전'}</b>"
         f"{' · KPI 주가 칸 입력' if c.mode == 'public' else ' · 한국거래소 통계정보'}</div>",
         unsafe_allow_html=True,
     )
@@ -226,7 +227,4 @@ def block(c: nav.Ctx) -> None:
             f"<div class='wb-subrow'><b>≈ {F.amt(amt, mn)}{'백만' if mn else '억'}</b> (중앙값)</div>", unsafe_allow_html=True
         )
     elif sv and not blk:
-        d.markdown(
-            f"<div class='wb-subrow'>{'거래금액 · ' + M.PRICE_WAIT if wait else 'VWAP 입력 시 거래금액'}</div>",
-            unsafe_allow_html=True,
-        )
+        d.markdown("<div class='wb-subrow'>VWAP 입력 시 거래금액</div>", unsafe_allow_html=True)
