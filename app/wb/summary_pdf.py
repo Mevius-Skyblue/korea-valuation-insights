@@ -62,8 +62,7 @@ def content(o, s, mode: str) -> dict:
             }
     cfg = o.cfg
     price_src = (
-        ("사용자 입력 시세" if M.price_entered(s, mode) else "주가 미입력(예시 시세로 계산, 주가·블록 미표시)")
-        + (" (예시 입력 — 실제 종가 아님)" if ff.get("example") and M.price_entered(s, mode) else "")
+        "사용자 입력 시세" + (" (예시 입력 — 실제 종가 아님)" if ff.get("example") else "")
         if mode == "public"
         else "한국거래소 통계정보"
     )
@@ -82,9 +81,7 @@ def content(o, s, mode: str) -> dict:
             ("주주가치 (Equity)", "—" if hold else F.amt(r.get("equity")) + "억원"),
             (
                 "주가 (" + ("입력" if mode == "public" else "기준일") + ")",
-                (F.won0(mk.get("close")) + "원" if M.price_entered(s, mode) else "미입력(예시)")
-                if F.ok(mk.get("close"))
-                else "—",  # P7-U5 U5-2
+                F.won0(mk.get("close")) + "원" if F.ok(mk.get("close")) else "—",
             ),
             ("WACC / g", f"{F.p1(r.get('wacc'))} / {F.p1(g)}"),
             ("영구가치 비중 (TV / EV)", F.p1(r.get("tv_share"), 0)),
@@ -177,7 +174,6 @@ def build(o, s, mode: str) -> tuple[bytes, list[str]]:
     )
     # judgements
     tx(0.06, 0.505, "주요 판단 (영향 순 상위 5)", 11, True)
-    tx(0.94, 0.505, "주당 영향(원, 자동 초안 기준)", 8, ha="right", color="#5A5E66")  # P7-U5 U5-5
     y = 0.48
     for cat, item, status, imp in c["judgements"] or [("", "판단 항목 없음", "", None)]:
         tx(0.06, y, cat, 8, color="#5A5E66")

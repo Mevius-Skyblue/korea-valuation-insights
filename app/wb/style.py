@@ -128,7 +128,7 @@ abbr.wb-term, .wb-term {{ text-decoration: underline dotted {t["line_strong"]}; 
 .wb-subrow b {{ color: {t["text"]}; font-weight: 500; }}
 .wb-band-top {{ background: {t["accent_bg"]}; border: 1px solid {t["accent_line"]}; color: {t["warn_text"]}; border-radius: 8px;
   padding: 8px 14px; font-size: 14px; font-weight: 500; }}
-[class*="st-key-search"] [data-baseweb="select"] > div, [class*="st-key-search"] .react-aria-ComboBox > div {{ min-height: 46px; border: 1.5px solid {t["line_strong"]} !important;
+.st-key-search [data-baseweb="select"] > div, .st-key-search .react-aria-ComboBox > div {{ min-height: 46px; border: 1.5px solid {t["line_strong"]} !important;
   border-radius: 10px !important; font-size: 17px; font-weight: 500; background: #FFFFFF; }}
 .st-key-units button, .st-key-modeseg button {{ min-height: 28px !important; padding: 0 8px !important; font-size: 13px !important; }}
 /* work tabs = segmented control styled as underline tabs */
@@ -212,7 +212,6 @@ table.wb-t td.gap {{ color: {t["accent_dark"]}; font-weight: 500; }}
 .wb-ff .val {{ font-size: 14px; font-weight: 500; text-align: right; }}
 .wb-ff .ticks {{ display: flex; justify-content: space-between; font-size: 12px; color: {t["text_sub"]}; }}
 .wb-legend {{ display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }}
-.wb-wait {{ color: {t["text_sub"]}; }}
 .wb-evrow {{ display: grid; grid-template-columns: 92px minmax(0, 1fr) 64px 120px; gap: 0 12px; align-items: center; min-height: 40px; font-size: 14px; }}
 .wb-evdiv {{ display: flex; align-items: center; gap: 10px; height: 30px; font-size: 13px; color: {t["accent_dark"]}; font-weight: 500; }}
 .wb-evdiv span:last-child {{ flex: 1; border-top: 1px dashed {t["accent_line"]}; }}

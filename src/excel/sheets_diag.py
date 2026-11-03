@@ -69,7 +69,7 @@ def diagnostics(c: Ctx):
             "DiagPeerValid",
             None,
         ),
-        ("기준일 종가(원)", None, "won", d.get("price_src") or "한국거래소 통계정보", "DiagPrice", "=Close"),  # P7-U5 U5-2
+        ("기준일 종가(원)", None, "won", "한국거래소 통계정보", "DiagPrice", "=Close"),
         ("DCF ÷ 종가", None, "ratio", "", "DiagMktRatio", "=DiagDcf/Close"),
         ("임계값: 피어 노랑 하한 배수(× q25)", 0.67, "ratio", "사전 고정", "DiagThPLo", None),
         ("임계값: 피어 노랑 상한 배수(× q75)", 1.5, "ratio", "사전 고정", "DiagThPHi", None),

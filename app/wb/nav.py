@@ -80,10 +80,6 @@ def go(page: str, sid: str | None = None, mode: str | None = None, keep_sid: boo
         new["sid"] = s_
     qp.clear()
     qp.update(new)
-    if st.session_state.get("picked_code"):  # P7-U5 U5-F1: navigating (top buttons, tabs) leaves a pending pick
-        from app.wb import shell
-
-        shell.drop_pick()
 
 
 def link(page: str, label: str, c: Ctx, anchor: str = "") -> str:

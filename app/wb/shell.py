@@ -81,11 +81,10 @@ def _options(c: nav.Ctx) -> tuple[list[str], dict]:
         k = f"s:{c.sid}"
         opts.append(k)
         lab[k] = f"최근 · {c.s['name']} · {c.s['code']} #{c.sid[-3:]}"
-    stt = M.status_table()  # P7-U5 U5-6: status at the end, 통과·보류 first, then (PC) 초안 없음, then 제외 - by name
-    for u in sorted(uni, key=lambda x: (M.STATUS_ORDER[stt.get(x["code"], "초안 없음")], x["name"])):
+    for u in uni:
         k = f"c:{u['code']}"
         opts.append(k)
-        lab[k] = f"{u['name']} · {u['code']} · {u['market']} — {stt.get(u['code'], '초안 없음')}"
+        lab[k] = f"{u['name']} · {u['code']} · {u['market']}"
     return opts, lab
 
 
@@ -104,26 +103,13 @@ def _meta_tip(c: nav.Ctx) -> str:
     )
 
 
-def search_key() -> str:
-    """P7-U5 U5-F1: 'search', then 'search1', 'search2' … after a pick is dropped - a new widget, so the browser cannot
-    send the dropped pick back (which set it again: [돌아가기] stayed on the switch card)."""
-    n = st.session_state.get("search_n", 0)
-    return "search" if not n else f"search{n}"
-
-
-def drop_pick() -> None:
-    """Forget a company picked in the search box (back to the open session, or any navigation)."""
-    if st.session_state.pop("picked_code", None) is not None:
-        st.session_state["search_n"] = st.session_state.get("search_n", 0) + 1
-
-
-def _on_search(key: str = "search") -> None:
-    v = st.session_state.get(key)
+def _on_search() -> None:
+    v = st.session_state.get("search")
     if not v:
         return
     kind, val = v.split(":", 1)
     if kind == "s":
-        drop_pick()
+        st.session_state.pop("picked_code", None)
         nav.go("summary", sid=val)
     else:
         st.session_state["picked_code"] = val
@@ -141,9 +127,8 @@ def search(c: nav.Ctx) -> None:
             opts,
             index=opts.index(cur) if cur in opts else None,
             format_func=lambda x: lab.get(x, x),
-            key=search_key(),
+            key="search",
             on_change=_on_search,
-            args=(search_key(),),
             placeholder="회사명 또는 종목코드",
             label_visibility="collapsed",
             help=_meta_tip(c),
@@ -190,19 +175,15 @@ def gate_line(code: str, name: str) -> dict:
         st.markdown(
             f"<div class='wb-subrow' title='{ui.attr(EXCLUDE_TIP)}'>자동 평가 가능 여부 {txt}</div>", unsafe_allow_html=True
         )
-        return {"ok": True, "has_draft": False, "status": "초안 없음"}
+        return {"ok": True, "has_draft": False}
     rows = "\n".join(
         f"{GATE_LABEL.get(r['id'], r['label'])}: {r['status']} {tx.plain_words(r['value'])}".strip() for r in gv["rows"]
     )
-    status = M.company_status(code)  # P7-U5 U5-6: the same table as the search list
-    fails = shown_fails(gv["fails"])
-    nodraft = status == "제외" and not fails and M.public_no_draft(code)
-    if nodraft:
-        fails = [{"id": "PUB", "label": "공개 배포 범위 밖", "why": M.PUBLIC_NO_DRAFT}]
-    if status == "제외":
-        why = " · ".join(FAIL_LABEL.get(f["id"], f["label"]) for f in fails) or "범위 밖"
+    hl = (ds["summary"].get("headline") or {}).get("status")
+    if not gv["passed"]:
+        why = " · ".join(FAIL_LABEL.get(f["id"], f["label"]) for f in gv["fails"]) or "범위 밖"
         b = ui.badge("제외", "warn") + f" · {ui.esc(why)} — 숫자 없이 사유만"
-    elif status == "보류":
+    elif hl == "자동 결과 보류":
         b = ui.badge("보류", "yellow") + f" · {ui.esc(tx.plain_words(gv['path']))} · 확인 항목이 있어 대표값 보류"
     else:
         b = ui.badge("통과", "ok") + f" · {ui.esc(tx.plain_words(gv['path']))}"
@@ -211,20 +192,13 @@ def gate_line(code: str, name: str) -> dict:
         f" <span class='wb-help'>ⓘ</span></div>",
         unsafe_allow_html=True,
     )
-    if status == "제외":
-        for f in fails:
+    if not gv["passed"]:
+        for f in gv["fails"]:
             st.markdown(
                 f"<p class='wb-kpi-note'>{ui.esc(FAIL_LABEL.get(f['id'], f['label']))}: {ui.esc(f['why'])}</p>",
                 unsafe_allow_html=True,
             )
-    return {"ok": status != "제외", "has_draft": True, "status": status}
-
-
-def shown_fails(fails: list[dict]) -> list[dict]:
-    """P7-U5 U5-6: a financial company (G1 / G1b) is out of scope for that reason; the revenue rule (G4: 영업수익 is not a
-    sales figure there) is left off the screen line (the gate data and the ⓘ table keep it)."""
-    ids = {f["id"] for f in fails}
-    return [f for f in fails if not (f["id"] == "G4" and ids & {"G1", "G1b"})]
+    return {"ok": bool(gv["passed"]), "has_draft": True}
 
 
 def start_block(c: nav.Ctx, code: str) -> None:
@@ -283,7 +257,7 @@ def _start(code: str, mode: str) -> None:
         st.button("다시 시도", key="retry_create")
         return
     box.update(label=f"세션 준비 완료({time.time() - t0:.0f}초)", state="complete")
-    drop_pick()
+    st.session_state.pop("picked_code", None)
     nav.go("summary", sid=s["session_id"], mode=mode)
     st.rerun()
 
@@ -381,37 +355,8 @@ def top(c: nav.Ctx) -> None:
                 menu(c)
         if c.s and c.o:
             sub(c)
-        if st.session_state.get("picked_code") and not (c.s and c.o):  # first screen: the gate line under the search
+        if st.session_state.get("picked_code") and (not c.s or st.session_state["picked_code"] != c.s["code"]):
             start_block(c, st.session_state["picked_code"])
-
-
-def switched(c: nav.Ctx) -> bool:
-    """P7-U5 U5-4: another company picked in the search while a session is open."""
-    p = st.session_state.get("picked_code")
-    return bool(p and c.s and c.o and p != c.s["code"])
-
-
-def _back() -> None:
-    drop_pick()  # the box comes back as a new widget showing the current session
-
-
-def switch_card(c: nav.Ctx) -> None:
-    """P7-U5 U5-4: instead of the open session's KPI band, tabs and panels - the picked company's gate line, [평가 시작] and
-    a way back to the current session."""
-    code = st.session_state["picked_code"]
-    u = next((x for x in M.universe() if x["code"] == code), {"name": code})
-    with ui.card("switch"):
-        st.markdown(
-            f"<p class='wb-h2'>{ui.esc(u['name'])} 선택됨<span class='wb-h2-sub'>[평가 시작]을 누르면 새 세션을 만듭니다</span></p>",
-            unsafe_allow_html=True,
-        )
-        start_block(c, code)
-        a, b = st.columns([5, 1.4], vertical_alignment="center")
-        a.markdown(
-            f"<div class='wb-subrow'>현재 세션: <b>{ui.esc(c.s['name'])}</b> {ui.esc(c.s['code'])} · v{M.version(c.s)['v']}</div>",
-            unsafe_allow_html=True,
-        )
-        b.button("돌아가기", key="switch_back", on_click=_back, width="stretch")
 
 
 def sub(c: nav.Ctx) -> None:
@@ -674,29 +619,17 @@ def _price_cell(c: nav.Ctx, mk: dict) -> None:
             unsafe_allow_html=True,
         )
         return
-    if close and not M.price_entered(s, c.mode):  # P7-U5 U5-2: the example price is not shown as the company's price
-        st.markdown(
-            _kc(
-                "주가 / 시가총액",
-                "주가 미입력",
-                "아래 [입력]에서 종가·VWAP",
-                "지금은 예시 시세로 계산 중(DCF·상대가치 주당은 주가와 무관) — 주가를 입력하면 시장 신호·주가선·블록 거래 주당가·"
-                "시가총액이 나옵니다. 공개 모드는 한국거래소 시세를 쓰지 않습니다",
-                "muted",
-            ),
-            unsafe_allow_html=True,
-        )
-    else:
-        sub_ = f"시총 {F.amt(close * shares / 1e8, c.mn)}{u}" if close else "입력 전"
-        st.markdown(
-            _kc(
-                "주가 / 시가총액",
-                F.won0(close) + "원" if close else "—",
-                sub_,
-                "사용자 입력(공개 모드: 한국거래소 시세를 쓰지 않음) · 유통주식수 DART 주식의 총수",
-            ),
-            unsafe_allow_html=True,
-        )
+    ex = (s.get("public_inputs") or {}).get("example")
+    sub_ = (f"시총 {F.amt(close * shares / 1e8, c.mn)}{u}" + (" · 예시" if ex else "")) if close else "입력 전"
+    st.markdown(
+        _kc(
+            "주가 / 시가총액",
+            F.won0(close) + "원" if close else "—",
+            sub_,
+            "사용자 입력(공개 모드: 한국거래소 시세를 쓰지 않음) · 유통주식수 DART 주식의 총수",
+        ),
+        unsafe_allow_html=True,
+    )
     with st.popover("입력", help="대상 종가·20일 VWAP(공개 모드)"):
         public_form(c, "kpi", target_only=True)
 
@@ -775,8 +708,6 @@ def public_form(c: nav.Ctx, key: str, target_only: bool = False) -> None:
             user = {
                 "close": num(close) if target_only else u.get("close"),
                 "vwap20": num(vw) if target_only else u.get("vwap20"),
-                # P7-U5 U5-2: saving the target form makes the price the user's (even when it equals the example value)
-                "typed": True if target_only and num(close) else bool(u.get("typed")),
                 "sub_close": {k_: num(v_) for k_, v_ in subs.items() if num(v_)},
                 "pref": {
                     k_: {"close": num(v_["close"]), "listed": num(v_["listed"])}
@@ -863,60 +794,10 @@ def tabs(c: nav.Ctx) -> None:
 # ---------------------------------------------------------------- the first screen
 
 
-EXAMPLE_CODE = "036200"  # P7-U5 U5-7: the example company of README · docs/demo · examples (유니셈)
-
-
-def intro_numbers() -> dict:
-    """P7-U5 U5-7: the two validation numbers of the intro card, from app/data/validation.json (the README source)."""
-    import re
-
-    v = json.loads((M.APP_DATA / "validation.json").read_text(encoding="utf-8"))
-    rows = {r["no"]: r for r in v["rows"] if r.get("no")}
-    op = re.match(r"(\d+)/(\d+)", rows[5]["result"])
-    return {
-        "denominator": v["holdout"]["denominator"],
-        "drawn": v["holdout"]["drawn"],
-        "op_hit": int(op.group(1)),
-        "op_n": int(op.group(2)),
-    }
-
-
-def intro(c: nav.Ctx) -> None:
-    """P7-U5 U5-7: what the tool is, two validation results and a start on the example company (the notice stays)."""
-    n = intro_numbers()
-    with ui.card("intro"):
-        st.markdown(
-            "<p class='wb-h2'>KVI 밸류에이션 워크벤치</p>"
-            "<p style='font-size:15px;margin:0 0 8px'>공시 데이터로 상장사 가치평가 초안을 만들고, 판단 항목을 검토해 엑셀·보고서로 내보내는 도구</p>"
-            "<div class='wb-cells'>"
-            f"<div><span class='k'>검증 표본</span><span class='v'>{n['denominator']}곳 전체 초안 생성</span>"
-            f"<span class='s'>처음 보는 회사 {n['drawn']}곳 중 평가 대상, 수정 없이 1회</span></div>"
-            f"<div><span class='k'>외부평가의견서 재현</span><span class='v'>{n['op_n']}건 중 {n['op_hit']}건 ±0.5% 이내</span>"
-            "<span class='s'>의견서 가정으로 다시 계산</span></div>"
-            "</div>",
-            unsafe_allow_html=True,
-        )
-        u = next((x for x in M.universe() if x["code"] == EXAMPLE_CODE), None)
-        a, b = st.columns([1.6, 4], vertical_alignment="center")
-        go_ = a.button(
-            f"예시로 시작: {u['name'] if u else '유니셈'}",
-            key="intro_example",
-            type="primary",
-            disabled=u is None,
-            width="stretch",
-        )
-        b.markdown(
-            f"<p class='wb-kpi-note'>검증 결과 전체: ⋯ → 참고 · 검증 결과 · {tx.project_links()}</p>", unsafe_allow_html=True
-        )
-    if go_:
-        _start(EXAMPLE_CODE, c.mode)
-
-
 def first_screen(c: nav.Ctx) -> None:
     if c.public:
         st.markdown(f"<div class='wb-band-top' role='note'>{tx.PUBLIC_NOTICE}</div>", unsafe_allow_html=True)
     if not st.session_state.get("picked_code"):
-        intro(c)
         with ui.card("guide"):
             ui.h2("처음 쓰는 경우")
             st.markdown(

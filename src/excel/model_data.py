@@ -70,9 +70,6 @@ def _load_model_data(cfg_path: str, with_engine: bool) -> dict:
     from src.report.engagement import example_label
 
     data["example_label"] = example_label(raw)  # P7-D: round example prices of the public screen
-    from src.report.engagement import price_source
-
-    data["price_src"] = price_source(raw)  # P7-U5 U5-2: public mode -> the user's / example price, not KRX
     from src.valuation.company_dcf import _close, _con
     from src.workbench.public_deploy import p5b_excel_data  # P6-A: P5-B reference aggregates (display only)
 
