@@ -675,11 +675,14 @@ def football(o, s, mode: str, scen: str = "base") -> dict:
             }
         )
     else:
-        rows.append({"label": "경영권 거래", "sub": "VWAP 입력 시", "lo": None, "hi": None, "rep": None, "kind": "block"})
+        wait = not M.price_entered(s, mode)  # P7-U5 U5-2: example prices -> the block bar waits for the user's price
+        sub = M.PRICE_WAIT if wait else "VWAP 입력 시"
+        rows.append({"label": "경영권 거래", "sub": sub, "lo": None, "hi": None, "rep": None, "kind": "block"})
     mk = M.market(o, s, mode)
     return {
         "rows": rows,
-        "price": mk.get("close"),
+        "price": mk.get("close") if M.price_entered(s, mode) else None,
+        "price_wait": not M.price_entered(s, mode),
         "example": bool((s.get("public_inputs") or {}).get("example")) and mode == "public",
         "source": mk.get("source"),
     }

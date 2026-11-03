@@ -73,7 +73,7 @@ _JS = r"""
   }, true);
   // ---------------------------------------------------------------- shortcuts
   function focusSearch() {
-    var i = D.querySelector('.st-key-search input'); if (!i) return;
+    var i = D.querySelector('[class*="st-key-search"] input'); if (!i) return;
     toTop(); i.focus(); i.click();
   }
   function help() { return D.getElementById('kvi-help'); }

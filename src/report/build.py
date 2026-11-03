@@ -431,7 +431,21 @@ def build_report(
         )
         D.b(L(f"신용등급 {cfg['kd']['rating']}: {cfg['kd']['rating_source']}"))
         D.b(L(f"재무상태표일 뒤 사건: {cfg['bridge']['post_bs_event']}"))
-    D.b(J(f"기준일 종가 {n('Close', 'won')}", "은") + L(" 한국거래소 통계정보(보통주) 값이다"))
+    from src.report.engagement import PRICE_WAIT_SRC, price_source
+
+    psrc = price_source(cfg)  # P7-U5 U5-2: public mode -> the user's or the example price (PC unchanged)
+    D.b(
+        J(f"기준일 종가 {n('Close', 'won')}", "은")
+        + L(
+            " 한국거래소 통계정보(보통주) 값이다"
+            if psrc is None
+            else (
+                " 예시 값이다(주가 미입력, 실제 종가 아님 — 시장 신호·블록 거래가는 참고 불가)"
+                if psrc == PRICE_WAIT_SRC
+                else " 사용자 입력 시세(보통주)다"
+            )
+        )
+    )
     evs = (cfg.get("report") or {}).get("events") or []  # P7-U1: disclosure reviews of the work screen (values unchanged)
     if evs:
         na = sum(1 for e in evs if e["mark"] == "해당 없음")

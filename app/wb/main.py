@@ -93,6 +93,10 @@ def run(public: bool = False) -> None:
         shell.first_screen(c)
         ui.footer(c.mode, M.AS_OF)
         return
+    if shell.switched(c):  # P7-U5 U5-4: another company picked -> no body of the current session
+        shell.switch_card(c)
+        ui.footer(c.mode, M.AS_OF)
+        return
     shell.toast(c)
     shell.kpi_band(c)
     shell.tabs(c)
