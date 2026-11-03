@@ -28,6 +28,7 @@ from pathlib import Path
 
 from src import yamlio
 from src.collect.core import ROOT
+from src.report.josa import J
 from src.workbench import spec
 
 BASE = ROOT / "data" / "workbench" / "sessions"  # PC default workspace (P7-C1)
@@ -394,7 +395,12 @@ def revert(s: dict, version: int, reason: str | None = None) -> dict:
     cur = current(s)
     ov = copy.deepcopy(target["overrides"])
     if ov == cur["overrides"]:
-        return {"ok": False, "reason": f"지금 가정이 이미 v{target['v']}와 같다", "session": s, "result": cur["result"]}
+        return {
+            "ok": False,
+            "reason": f"지금 가정이 이미 {J(f'v{target["v"]}', '와')} 같다",
+            "session": s,
+            "result": cur["result"],
+        }
     from src.market.user_provider import PublicDataUnavailable
 
     x = recalc.context(s["draft_config"])
@@ -419,7 +425,7 @@ def revert(s: dict, version: int, reason: str | None = None) -> dict:
                 "after": a,
                 "before_text": spec.fmt(f, b),
                 "after_text": spec.fmt(f, a),
-                "reason": reason or f"v{target['v']}로 되돌리기",
+                "reason": reason or f"{J(f'v{target["v"]}', '로')} 되돌리기",
                 "judgement": None,
                 "warnings": [],
                 "revert_to": target["v"],

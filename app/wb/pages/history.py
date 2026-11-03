@@ -11,6 +11,7 @@ from app.wb import fmt as F
 from app.wb import model as M
 from app.wb import nav, shell
 from app.wb import text as tx
+from src.report.josa import J
 
 
 def render(c: nav.Ctx) -> None:
@@ -48,7 +49,7 @@ def versions(c: nav.Ctx) -> None:
     rows = [
         {
             "c": [
-                f"v{x['v']}" + (f" (v{x['reverted_to']}로 되돌림)" if x.get("reverted_to") is not None else ""),
+                f"v{x['v']}" + (f" ({J(f'v{x["reverted_to"]}', '로')} 되돌림)" if x.get("reverted_to") is not None else ""),
                 x["created"][5:16],
                 F.won0(x["per_share"]),
                 tx.plain_words(x["change"])[:80],
@@ -86,7 +87,7 @@ def versions(c: nav.Ctx) -> None:
             why = st.text_input("이유", key="rev_why", placeholder="[되돌리는 이유]")
             if st.button(f"v{tv}의 가정으로 새 버전 만들기", key="rev_go"):
                 s2 = M.load(c.sid)
-                shell.note_change(s2, f"v{tv}로 되돌림")
+                shell.note_change(s2, f"{J(f'v{tv}', '로')} 되돌림")
                 rr = M.revert(s2, tv, why or None)
                 if rr["ok"]:
                     st.rerun()

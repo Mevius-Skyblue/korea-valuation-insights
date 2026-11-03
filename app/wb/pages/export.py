@@ -116,14 +116,14 @@ def _confirm(c: nav.Ctx) -> None:
 
     s = c.s
     v = M.version(s)["v"]
-    n_all, ptxt = pending_text(c)
+    n_all, ask, btn = confirm_texts(c, v)
     conf = s.get("confirmed") or {}
     job = JB.job(c.sid, "pc")
     busy = bool(job and job["alive"])
     if st.session_state.get("confirm_ask") == v and n_all:
-        st.warning(f"{ptxt}을 남긴 채 v{v}를 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)")
-        a, b = st.columns(2)
-        go_ = a.button(f"미처리 {n_all}건 남긴 채 확정", key="confirm_yes", type="primary", disabled=busy, width="stretch")
+        st.warning(ask)
+        a, b = st.columns([2.4, 1])  # P7-U4: room for the whole button label
+        go_ = a.button(btn, key="confirm_yes", type="primary", disabled=busy, width="stretch")
         if b.button("취소", key="confirm_no", width="stretch"):
             st.session_state.pop("confirm_ask", None)
             st.rerun()
@@ -233,6 +233,20 @@ def pending_text(c: nav.Ctx) -> tuple[int, str]:
     return n_all, txt
 
 
+def confirm_texts(c: nav.Ctx, v: int) -> tuple[int, str, str]:
+    """P7-U4 U4-2/U4-3: the question and the button of a confirmation with items left, on the same split as the question
+    ('남은 33건(판단 32 + 공시 확인 1) 두고 확정'), particles after the version number by its reading (v1을, v2를)."""
+    from app.wb import shell
+    from src.report.josa import J
+
+    n_all, ptxt = pending_text(c)
+    n_j = shell.tab_counts(c)["assume"]
+    n_e = n_all - n_j
+    ask = f"{J(ptxt, '을')} 남긴 채 {J(f'v{v}', '을')} 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)"
+    btn = f"남은 {n_all}건(판단 {n_j}" + (f" + 공시 확인 {n_e}" if n_e else "") + ") 두고 확정"
+    return n_all, ask, btn
+
+
 @st.fragment(run_every=0.5)
 def _live(c: nav.Ctx) -> None:
     """Live status of the latest PC confirmation: the Excel download as soon as the model exists, then the reconciliation
@@ -306,14 +320,12 @@ def _public(c: nav.Ctx) -> None:
         if not c.public:
             shell.public_form(c, "export", target_only=True)
     v = M.version(s)["v"]
-    n, ptxt = pending_text(c)
+    n, ask, btn = confirm_texts(c, v)
     go_ = False
     if c.public and st.session_state.get("confirm_ask") == v and n:  # P7-C3: the public export is the confirmation
-        st.warning(f"{ptxt}을 남긴 채 v{v}를 확정할까요? (남은 항목은 보고서에 '미처리'로 기록)")
-        a, b = st.columns(2)
-        go_ = a.button(
-            f"미처리 {n}건 남긴 채 확정", key="confirm_yes", type="primary", disabled=busy or bool(miss), width="stretch"
-        )
+        st.warning(ask)
+        a, b = st.columns([2.4, 1])  # P7-U4: room for the whole button label
+        go_ = a.button(btn, key="confirm_yes", type="primary", disabled=busy or bool(miss), width="stretch")
         if b.button("취소", key="confirm_no", width="stretch"):
             st.session_state.pop("confirm_ask", None)
             st.rerun()
