@@ -591,7 +591,19 @@ def inputs(c: Ctx):
         "",
         name="PrefTreasury",
     )
-    w.item("close", "기준일 종가(보통주)", mk["close"], "won", "원", KRX, asof, "✅", "", name="Close", krx="close")
+    w.item(
+        "close",
+        "기준일 종가(보통주)",
+        mk["close"],
+        "won",
+        "원",
+        d.get("price_src") or KRX,
+        asof,
+        "✅",
+        "",
+        name="Close",
+        krx="close",
+    )  # P7-U5 U5-2: public mode says whose price it is
     w.item(
         "rf_mc",
         "기준일 시가총액(대상 보통주)",

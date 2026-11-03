@@ -21,6 +21,8 @@ MIME = {
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ".pdf": "application/pdf",
 }
+PUBLIC_WAIT = "공개 서버(무료)에서는 엑셀·보고서까지 1~2분 걸릴 수 있습니다(개발 PC 측정: 확정 → 엑셀 약 20초)"  # P7-U5 U5-8
+DEPLOY_TIP = "엑셀 수식으로 다시 계산한 값과 엔진 값이 같은지 대조한 결과"
 MEMOS = [
     ("method", "평가방법 선택 근거·채택·가중치", "DCF 채택 이유, 상대가치·경영권 거래의 역할"),
     ("norm", "정상화 조정 (비경상 손익)", "과거 이익의 일회성 손익·영업 외 항목 처리"),
@@ -99,7 +101,19 @@ def preflight(c: nav.Ctx) -> None:
         ("미처리 판단", f"{ptxt.removeprefix('미처리 ')} (보고서에 표시)" if n else "없음", bool(n)),
         ("보고서 작성 칸", f"{done}/6", done < 6),
         ("평가 보류", "있음 · 확정하면 확정값이 대표값" if st_["hold"] else "없음", st_["hold"]),
-        ("주가 입력", ("입력됨" + (" · 예시" if ex else "")) if mk.get("close") else "없음 (블록가 제외)", not mk.get("close")),
+        (
+            "주가 입력",
+            (
+                (
+                    "미입력 · 예시 시세로 계산(엑셀·보고서에 '미입력(예시)' 표시)"
+                    if not M.price_entered(s, c.mode)
+                    else "입력됨" + (" · 예시" if ex else "")
+                )
+                if mk.get("close")
+                else "없음 (블록가 제외)"
+            ),
+            not mk.get("close") or not M.price_entered(s, c.mode),
+        ),
     ]
     st.markdown(
         "<div class='wb-lines'>"
@@ -129,7 +143,7 @@ def _confirm(c: nav.Ctx) -> None:
             st.rerun()
     else:
         go_ = False
-        label = f"v{v} 확정됨 · 다시 확정" if conf.get("v") == v else f"v{v} 확정 → 파일 생성"
+        label = f"v{v} 확정됨 · 다시 만들기" if conf.get("v") == v else f"v{v} 확정 → 파일 생성"  # P7-U5 U5-9
         if st.button(label, key="confirm_btn", type="primary", disabled=busy, width="stretch"):
             if n_all:
                 st.session_state["confirm_ask"] = v
@@ -330,7 +344,14 @@ def _public(c: nav.Ctx) -> None:
             st.session_state.pop("confirm_ask", None)
             st.rerun()
     else:
-        label = f"v{v} 확정 → 파일 생성" if c.public else f"v{v} 공개 모드로 내보내기"
+        done_ = (s.get("confirmed") or {}).get("v") == v and any(
+            x.get("mode") == "public" and x.get("v") == v for x in s.get("confirmations") or []
+        )  # P7-U5 U5-9: this version is already confirmed - say so (still enabled: the workspace files expire)
+        label = (
+            (f"v{v} 확정됨 · 다시 만들기" if done_ else f"v{v} 확정 → 파일 생성")
+            if c.public
+            else (f"v{v} 내보냄 · 다시 만들기" if done_ else f"v{v} 공개 모드로 내보내기")
+        )
         if st.button(label, key="pub_go", type="primary", disabled=bool(miss) or busy, width="stretch"):
             if c.public and n:
                 st.session_state["confirm_ask"] = v
@@ -358,7 +379,8 @@ def _public_live(c: nav.Ctx) -> None:
         if c.public:  # P7-C3: the Excel model can be taken as soon as it exists
             st.markdown(
                 f"<p style='font-size:14px'>{ui.badge('만드는 중')} 공개 모드 엑셀·대조·보고서({j['elapsed']:.0f}초) · 엑셀 {'준비됨' if j['xlsx'] else '만드는 중'} · "
-                f"엑셀 ↔ 엔진 대조 {ui.esc(j['reconcile'])} · 보고서 {'준비됨' if j['docx'] else '만드는 중'}</p>",
+                f"엑셀 ↔ 엔진 대조 {ui.esc(j['reconcile'])} · 보고서 {'준비됨' if j['docx'] else '만드는 중'}</p>"
+                f"<p class='wb-kpi-note'>{ui.esc(PUBLIC_WAIT)}</p>",  # P7-U5 U5-8
                 unsafe_allow_html=True,
             )
             if j["xlsx"]:
@@ -383,8 +405,10 @@ def _public_live(c: nav.Ctx) -> None:
     ok = sc["hits"] == 0
     recon = (rec.get("reconcile") or {}).get("status", "")
     if sc.get("deploy"):
-        st.markdown(
-            f"<p style='font-size:14px'>v{rec.get('v')} 공개 산출물 · 엑셀 ↔ 엔진 대조 {ui.badge(recon, 'ok' if recon == '일치' else '')} · {ui.esc(sc.get('note', ''))}</p>",
+        st.markdown(  # P7-U5 U5-9: the visitor line short, the scan note in the tooltip
+            f"<p style='font-size:14px' title='{ui.attr(DEPLOY_TIP + (' · ' + sc['note'] if sc.get('note') else ''))}'>"
+            f"v{rec.get('v')} 공개 산출물 · 엑셀 ↔ 엔진 대조 {ui.badge(recon, 'ok' if recon == '일치' else '')} "
+            "<span class='wb-help'>ⓘ</span></p>",
             unsafe_allow_html=True,
         )
     else:
