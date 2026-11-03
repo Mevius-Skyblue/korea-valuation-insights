@@ -78,9 +78,23 @@ def _ps(c: nav.Ctx, v):
         return None
 
 
+# P7-U5 U5-5: what the number on the right of a judgement is (src/pipeline/diagnose.py impacts -> rank_review)
+IMPACT_HEAD = "주당 영향(원)"
+IMPACT_TIP = (
+    "주당 영향(원): 자동 초안(v0) 기준, 이 항목의 대안 중 주당가치를 가장 크게 바꾸는 값을 골랐을 때의 Base 주당가치 변화"
+    "(시나리오 Base·SRP 기본 열). 시나리오 폭은 지금 폭에서 Bear − Base와 Bull − Base 중 큰 쪽(Base 자체는 안 바뀜). "
+    "정상 이익률은 이익률 경로 전체를 대안만큼 옮긴 값이라 후보 버튼(출발 이익률만 바꿈)의 '반영 후 주당'과 다를 수 있음. "
+    "처리한 뒤에도 다시 계산하지 않는 순위용 값 — 지금 버전 기준 결과는 후보 버튼의 주당"
+)
+
+
 def _impact(r: dict) -> str:
     imp = r.get("impact")
     return F.signed(imp) if F.ok(imp) else "—"
+
+
+def impact_head() -> str:
+    return f"<span class='wb-term' title='{ui.attr(IMPACT_TIP)}'>{IMPACT_HEAD} ⓘ</span>"
 
 
 def panel(c: nav.Ctx) -> None:
@@ -113,6 +127,9 @@ def panel(c: nav.Ctx) -> None:
     )
     pct = len(done) / len(rows) * 100 if rows else 100
     st.markdown(f"<div class='wb-progress'><div style='width:{pct:.1f}%'></div></div>", unsafe_allow_html=True)
+    st.markdown(  # P7-U5 U5-5: what the number in each row title is
+        f"<p class='wb-kpi-note'>행 제목 = 분류 · 항목 · {impact_head()} · 처리 상태</p>", unsafe_allow_html=True
+    )
     flash = st.session_state.pop("judge_flash", None)
     if flash:
         (st.success if flash[0] else st.error)(flash[1])
@@ -197,6 +214,12 @@ def _cand_label(c: nav.Ctx, cd: dict, compact: bool = False) -> tuple[str, bool,
     # fixed two-line form - name / per share - so a long name never wraps into a third line
     sl = short_name(cd["label"])
     head_ = sl if re.search(r"\d", sl) or len(val) > 12 or (compact and len(sl) > 14) else f"{sl} {val}"
+    sc = pv.get("scen") or {}
+    if cd["field"] == "scenario_width" and F.ok(sc.get("pessimistic")) and F.ok(sc.get("optimistic")):
+        # P7-U5 U5-5: the width does not move Base, so the button shows the Bear ~ Bull range at that width
+        rng = f"{F.won0(sc['pessimistic'])} ~ {F.won0(sc['optimistic'])}원"
+        full = f"{tx.plain_words(cd['label'])} {val} · Bear ~ Bull {rng} (Base {F.won0(pv.get('after'))}원 그대로)"
+        return (f"{head_}  \n{rng}" if compact else f"{head_} · Bear ~ Bull {rng}"), ok, full
     if pv.get("after") is not None:
         ps = f"{F.won0(pv['after'])}원"
         return (f"{head_}  \n{ps}" if compact else f"{head_} · {ps}"), ok, full
@@ -211,7 +234,7 @@ def _item(c: nav.Ctx, r: dict) -> None:
     if r.get("changed_v") is not None:
         b, a = _ps(c, r["changed_v"] - 1), _ps(c, r["changed_v"])
         ba = f" · {F.won0(b)} → {F.won0(a)}원"
-    title = f"{r['category']}  ·  {str(r['item'])[:60]}  ·  {_impact(r)}  ·  {st_}{ba}"
+    title = f"{r['category']}  ·  {str(r['item'])[:60]}  ·  {IMPACT_HEAD} {_impact(r)}  ·  {st_}{ba}"
     # P7-U2 speed: the candidate previews (a recalculation each) are computed when the row is opened, not for every row
     xkey = f"jx_{jid}"
     if st.session_state.get("judge_open") == jid:

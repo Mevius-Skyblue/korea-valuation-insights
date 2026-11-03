@@ -139,6 +139,63 @@ def draft_state(code: str) -> dict:
     return {"has_draft": ok, "summary": summ, "cfg_path": cfg_path}
 
 
+def gate_status(summ: dict | None) -> str:
+    """P7-U5 U5-6: the one-word status of the gate line (shell.gate_line) and of the search list, one rule:
+    no draft summary -> 초안 없음; gate not passed -> 제외; headline '자동 결과 보류' -> 보류; else 통과."""
+    if not summ:
+        return "초안 없음"
+    if not bool((summ.get("gate") or {}).get("passed")):
+        return "제외"
+    return "보류" if (summ.get("headline") or {}).get("status") == "자동 결과 보류" else "통과"
+
+
+def status_table() -> dict:
+    """P7-U5 U5-6: code -> gate_status for the search list, built once (not per rerun).
+    Public deployment: from the bundle's index.json (kind / hold, written with the snapshots; no snapshot is read).
+    PC: from outputs/pipeline/<code>/summary.json, rebuilt only when a summary file is added or rewritten."""
+    if public_deploy():
+        from src.workbench.public_deploy import index
+
+        k = ("status_table", "public")
+        if k not in _CACHE:
+            _CACHE[k] = {
+                code: ("제외" if x.get("kind") != "evaluable" else ("보류" if x.get("hold") else "통과"))
+                for code, x in index().items()
+            }
+        return _CACHE[k]
+    per = _CACHE.setdefault(("status_table", "pc"), {})  # (code, mtime) -> status: only new or rewritten files are read
+    out = {}
+    for f in sorted((ROOT / "outputs" / "pipeline").glob("*/summary.json")):
+        key = (f.parent.name, f.stat().st_mtime_ns)
+        if key not in per:
+            try:
+                per[key] = gate_status(json.loads(f.read_text(encoding="utf-8")))
+            except (OSError, json.JSONDecodeError):
+                continue
+        out[f.parent.name] = per[key]
+    return out
+
+
+STATUS_ORDER = {"통과": 0, "보류": 0, "초안 없음": 1, "제외": 2}
+PUBLIC_NO_DRAFT = "공개 배포에 이 회사의 초안이 없음(공개 범위를 정할 때 자동 평가 범위 밖) — PC 모드에서 평가"
+
+
+def company_status(code: str) -> str:
+    """The status the gate line and the search list both show (P7-U5 U5-6)."""
+    return status_table().get(code, "초안 없음")
+
+
+def public_no_draft(code: str) -> bool:
+    """Public deployment: a gate-only snapshot whose gate passes under the current rules (현대건설, 한화에어로스페이스 -
+    out of scope when the public range was fixed in P7-C3): no draft to start, so the list and the line say 제외."""
+    if not public_deploy():
+        return False
+    from src.workbench.public_deploy import index
+
+    x = index().get(code)
+    return bool(x) and x.get("kind") != "evaluable"
+
+
 GATES = [
     ("G1", "업종(금융업 아님)", ("G1_finance",)),
     ("G1b", "재무구조(금융회사형 아님)", ("G1b_finance_structure",)),
@@ -532,6 +589,20 @@ def relative(o: Opened, s: dict, mode: str) -> dict:
     return out
 
 
+PRICE_WAIT = "주가 입력 시 표시"  # P7-U5 U5-2: a display that leans on the target price, before the user typed one
+
+
+def price_entered(s: dict, mode: str) -> bool:
+    """P7-U5 U5-2: PC = the as-of close (always); public = the user saved the target close / VWAP form, or the stored
+    inputs are not the example values. In the example state the engine still computes with the example values (per
+    share unchanged); only the displays that lean on the target price wait (market signal, price line, block prices,
+    market cap)."""
+    if mode != "public":
+        return True
+    u = s.get("public_inputs") or {}
+    return bool(u.get("close")) and (bool(u.get("typed")) or not u.get("example"))
+
+
 def market(o: Opened, s: dict, mode: str) -> dict:
     """Target close / VWAP / market cap: PC = DB (한국거래소 통계정보), public = the user's inputs (None until typed)."""
     if mode == "public":
@@ -559,7 +630,7 @@ def signals(o: Opened, s: dict, mode: str) -> dict:
 
     r = result(o, s, mode)
     rel = relative(o, s, mode)
-    price = market(o, s, mode)["close"]
+    price = market(o, s, mode)["close"] if price_entered(s, mode) else None  # P7-U5 U5-2
     if r.get("per_share") is None:
         return {}
     out = sig(r["per_share"], rel["range"], price or float("nan"), load_rules()["diagnostics"])
@@ -608,7 +679,7 @@ def premium(o: Opened, s: dict, mode: str) -> dict:
             **pm,
         }
     out = dict(_CACHE[k])
-    base = mk.get("vwap")
+    base = mk.get("vwap") if price_entered(s, mode) else None  # P7-U5 U5-2: block prices wait for the user's price
     out["block"] = {q: base * (1 + out[q]) for q in ("q25", "q50", "q75")} if base else None
     out["vwap"] = base
     return out
@@ -994,7 +1065,12 @@ def candidate_preview(o: Opened, s: dict, mode: str, field: str, value) -> dict:
             ctx = public_ctx(o, s) if mode == "public" else o.ctx
             with LOCK:
                 r = R.recalc(o.cfg_path, {**ver["overrides"], field: v}, ctx=ctx)
-            _CACHE[k] = {"before": result(o, s, mode).get("per_share"), "after": r.get("per_share"), "error": r.get("error")}
+            _CACHE[k] = {
+                "before": result(o, s, mode).get("per_share"),
+                "after": r.get("per_share"),
+                "error": r.get("error"),
+                "scen": r.get("scenarios"),  # P7-U5 U5-5: a scenario-width candidate shows its Bear ~ Bull range
+            }
         except NeedInput:
             _CACHE[k] = {"error": "시세 입력 뒤 계산"}
         except PublicDataUnavailable as e:

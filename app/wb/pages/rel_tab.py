@@ -15,6 +15,11 @@ from app.wb import values as V
 
 ORDER = ["EV/EBITDA", "PER", "EV/Sales", "PBR"]
 METRIC = {"EV/EBITDA": "EBITDA", "PER": "지배순이익", "EV/Sales": "매출", "PBR": "지배지분"}
+# P7-U5 U5-1: the same formulas as METHODOLOGY A4 (U4-F1) and src/valuation/company_report.py
+FOOTNOTE = (
+    "주당가치: EV/EBITDA·EV/Sales = (배수 × 지표 − 순차입금 + 비영업자산 − 비지배지분) ÷ 주식 수 · "
+    "PER·PBR = 배수 × 지배주주 순이익(LTM)·지배주주 자본 ÷ 주식 수(순차입금 조정 없음)"
+)
 
 
 def render(c: nav.Ctx) -> None:
@@ -62,7 +67,7 @@ def multiples(c: nav.Ctx) -> None:
         min_width=820,
     )
     st.markdown(
-        "<p class='wb-kpi-note'>주당 = 배수 × LTM 지표 + 순현금·비영업 − 비지배"
+        f"<p class='wb-kpi-note'>{ui.esc(FOOTNOTE)}"
         + (" · 공개 모드: Peer별 배수·시가총액 숨김, 집계는 Peer 5곳 이상만" if c.mode == "public" else "")
         + "</p>",
         unsafe_allow_html=True,

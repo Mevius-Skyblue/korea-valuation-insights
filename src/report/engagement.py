@@ -16,6 +16,20 @@ def example_label(cfg: dict) -> str | None:
     return EXAMPLE_PRICE_LABEL if (((cfg or {}).get("public_mode") or {}).get("user") or {}).get("example") else None
 
 
+PRICE_WAIT_SRC = "미입력(예시 값 — 실제 종가 아님)"  # config/p7u5.yaml U5-2 export
+
+
+def price_source(cfg: dict) -> str | None:
+    """P7-U5 U5-2: source text of the target close in the Excel and the report. None = PC (한국거래소 통계정보, unchanged);
+    public mode = '사용자 입력 시세', or PRICE_WAIT_SRC while the prices are the screen's example values and the user has
+    not typed the target price (public_mode.user.typed)."""
+    pm = (cfg or {}).get("public_mode")
+    if not pm:
+        return None
+    u = pm.get("user") or {}
+    return PRICE_WAIT_SRC if u.get("example") and not u.get("typed") else "사용자 입력 시세"
+
+
 def engagement(cfg: dict) -> dict:
     from src.valuation.associates import params
 
